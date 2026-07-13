@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Menú Digital - Viewer</title>
 
-  <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <!-- html2pdf -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 
   <style>
     /* -------------------------
@@ -47,7 +46,6 @@
     /* Aplicar tema inicial */
     html { height:100%; }
     body { margin:0; min-height:100%; font-family:Inter, sans-serif; background:var(--bg); color:var(--text); transition:background .25s ease; }
-    html[data-theme="dark"], html[data-theme="light"], html[data-theme="gold"] { }
 
     /* Contenedor principal */
     #pdf-content { max-width:900px; margin: 30px auto 120px; padding: 24px; }
@@ -151,7 +149,6 @@
     <main id="menu-container"></main>
   </div>
 
-  <!-- Controles flotantes -->
   <div class="controls-container" aria-hidden="false">
     <button class="fab pdf" id="btn-pdf" title="Descargar PDF">PDF</button>
     <button class="fab lang" id="btn-lang" title="Idiomas">
@@ -162,7 +159,6 @@
     </button>
   </div>
 
-  <!-- Panel idiomas -->
   <div id="lang-panel" class="lang-panel" role="menu" aria-hidden="true"></div>
 
   <script>
@@ -171,6 +167,10 @@
     // -------------------------
     const FLAG_DIR = 'assets/flags/';
     const FLAG_MAP = { es:'es.png', en:'en.png', fr:'fr.png', it:'it.png', de:'de.png', pt:'pt.png', cn:'cn.png', sa:'sa.png' };
+
+    // Repositorio de GitHub para descargar los menús
+    const REPO_OWNER = 'wiissdeveloperapps-hub';
+    const REPO_NAME = 'menuforgeviews';
 
     // Aplicar tema inicial
     (function applyInitialTheme() {
@@ -183,12 +183,22 @@
     // -------------------------
     let menuData = null;
 
-    // Decodifica hash seguro (base64)
+    // Inicializa la app una vez tenemos los datos del menú
+    function initMenuApp(data) {
+      menuData = data;
+      // GUARDAMOS EN SESIÓN: Si recarga, lo recupera rápido
+      sessionStorage.setItem('cachedMenu', JSON.stringify(menuData));
+
+      buildLangPanel();
+      const defaultLang = menuData.defaultLang || 'es';
+      changeLanguage(defaultLang);
+    }
+
+    // Decodifica hash seguro legacy
     function decodeHash(hash) {
       try {
         return JSON.parse(decodeURIComponent(escape(atob(hash))));
       } catch (e) {
-        console.error('Error decodificando hash:', e);
         return null;
       }
     }
@@ -198,7 +208,6 @@
       const promises = urls.map(u => new Promise(res => {
         if (!u) return res();
         const img = new Image();
-        // Si es relativa, la convertimos a absoluta
         const src = resolveImageUrl(u);
         if (!src.startsWith('data:')) img.crossOrigin = 'anonymous';
         img.onload = () => res();
@@ -208,7 +217,6 @@
       return Promise.all(promises);
     }
 
-    // Convierte rutas relativas 'assets/...' a absolute URL
     function resolveImageUrl(url) {
       if (!url) return '';
       if (url.startsWith('data:')) return url;
@@ -221,19 +229,15 @@
       if (!menuData) return;
       const content = menuData.traducciones ? (menuData.traducciones[lang] || menuData.traducciones['es'] || menuData) : menuData;
 
-      // Título y subtítulo
       document.getElementById('restaurant-title').textContent = content.nombre || menuData.nombre || 'Restaurante';
       document.getElementById('subtitle').textContent = content.subtitulo || menuData.subtitulo || '';
 
-      // Logo letter (primera letra del nombre)
       const logoLetter = (content.nombre || menuData.nombre || 'M').trim().charAt(0).toUpperCase();
       document.getElementById('logo-letter').textContent = logoLetter;
 
-      // Meta info (fecha / nota)
       const meta = content.meta?.note || menuData.meta?.note || '';
       document.getElementById('meta-info').textContent = meta;
 
-      // Recolectar imágenes
       const imageUrls = [];
       (content.categorias || []).forEach(cat => {
         (cat.platos || []).forEach(p => {
@@ -242,10 +246,8 @@
         });
       });
 
-      // Preload
       await preloadImages(imageUrls);
 
-      // Render
       const container = document.getElementById('menu-container');
       container.innerHTML = '';
 
@@ -276,10 +278,9 @@
             img.alt = p.nombre || '';
             media.appendChild(img);
           } else {
-            // placeholder
             const ph = document.createElement('div');
             ph.style.width = '100%'; ph.style.height = '100%'; ph.style.display='flex'; ph.style.alignItems='center'; ph.style.justifyContent='center';
-            ph.style.color = 'var(--muted)'; ph.textContent = 'No image';
+            ph.style.color = 'var(--muted)'; ph.textContent = 'Sin imagen';
             media.appendChild(ph);
           }
 
@@ -310,19 +311,14 @@
           card.appendChild(body);
           grid.appendChild(card);
         });
-
         container.appendChild(grid);
       });
-
-      console.info('Renderizado OK. Categorías:', (content.categorias || []).length);
     }
 
-    // Construye dinámicamente el panel de idiomas según menuData.traducciones
     function buildLangPanel() {
       const panel = document.getElementById('lang-panel');
       panel.innerHTML = '';
       const langs = menuData?.traducciones ? Object.keys(menuData.traducciones) : ['es','en'];
-      // Asegurar que 'es' esté al principio
       if (!langs.includes('es')) langs.unshift('es');
 
       langs.forEach(code => {
@@ -340,7 +336,6 @@
 
         const label = document.createElement('div');
         label.className = 'lang-label';
-        // Si el JSON incluye meta.languageName, lo usamos
         const labelText = (menuData?.traducciones?.[code]?.meta?.languageName) || (code.toUpperCase());
         label.textContent = labelText;
 
@@ -358,7 +353,6 @@
       renderMenu(code);
     }
 
-    // PDF generation: oculta controles, espera imágenes y genera PDF
     function descargarPDF() {
       const element = document.getElementById('pdf-content');
       const controls = document.querySelector('.controls-container');
@@ -372,7 +366,6 @@
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      // Esperar a que las imágenes del DOM terminen de cargar
       const imgs = Array.from(document.querySelectorAll('#menu-container img'));
       const loads = imgs.map(img => new Promise(res => {
         if (img.complete) return res();
@@ -390,9 +383,6 @@
       });
     }
 
-    // -------------------------
-    // Eventos UI
-    // -------------------------
     document.getElementById('btn-lang').addEventListener('click', () => {
       const panel = document.getElementById('lang-panel');
       panel.classList.toggle('active');
@@ -401,24 +391,74 @@
     document.getElementById('btn-pdf').addEventListener('click', descargarPDF);
 
     // -------------------------
-    // Inicialización: leer hash
+    // LÓGICA PRINCIPAL DE CARGA
     // -------------------------
     window.addEventListener('load', () => {
       const hash = window.location.hash.substring(1);
-      if (!hash) {
-        document.getElementById('restaurant-title').textContent = 'Escanea un QR válido';
+
+      // CASO 1: Descargar desde GitHub remoto
+      if (hash.startsWith('remote:')) {
+        const id = hash.replace('remote:', '');
+        const rawJsonUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/menus/${id}.json`;
+        
+        document.getElementById('restaurant-title').textContent = 'Cargando carta...';
+
+        fetch(rawJsonUrl)
+          .then(res => {
+            if (!res.ok) throw new Error('Menú no encontrado en servidor');
+            return res.json();
+          })
+          .then(data => initMenuApp(data))
+          .catch(err => {
+            // Si el archivo ya no existe (porque lo borró el Git Action), miramos en caché
+            const cached = sessionStorage.getItem('cachedMenu');
+            if (cached) {
+              initMenuApp(JSON.parse(cached));
+            } else {
+              document.getElementById('restaurant-title').textContent = 'El menú ha expirado o no existe';
+            }
+          });
         return;
       }
-      menuData = decodeHash(hash);
-      if (!menuData) {
-        document.getElementById('restaurant-title').textContent = 'Error leyendo menú';
+
+      // CASO 2: Descomprimir desde Pako (Fallback de emergencia)
+      if (hash.startsWith('pako:')) {
+        try {
+          const b64Data = hash.replace('pako:', '');
+          // Decodificar Base64 seguro para Pako
+          const strData = atob(b64Data);
+          const charData = strData.split('').map(x => x.charCodeAt(0));
+          const binData = new Uint8Array(charData);
+          
+          // Descomprimir
+          const data = pako.inflate(binData);
+          const jsonStr = new TextDecoder().decode(data);
+          
+          initMenuApp(JSON.parse(jsonStr));
+        } catch (e) {
+          console.error('Error Pako:', e);
+          document.getElementById('restaurant-title').textContent = 'Error abriendo menú offline';
+        }
         return;
       }
-      // Construir panel idiomas y renderizar
-      buildLangPanel();
-      // Si el JSON incluye un idioma por defecto, úsalo
-      const defaultLang = menuData.defaultLang || 'es';
-      changeLanguage(defaultLang);
+
+      // CASO 3: Lógica antigua u ocultación del hash por recarga
+      if (hash) {
+        const data = decodeHash(hash);
+        if (data) {
+          initMenuApp(data);
+        } else {
+          document.getElementById('restaurant-title').textContent = 'Formato de menú inválido';
+        }
+      } else {
+        // Si no hay hash (alguien hizo refresh y el hash se borró, o lo guardó en favoritos sin hash)
+        const cached = sessionStorage.getItem('cachedMenu');
+        if (cached) {
+          initMenuApp(JSON.parse(cached));
+        } else {
+          document.getElementById('restaurant-title').textContent = 'Escanea un QR para empezar';
+        }
+      }
     });
   </script>
 </body>
