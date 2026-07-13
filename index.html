@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --gold: #c5a059; 
+            --bg: #0f0f0f; 
+            --card-bg: #1a1a1a; 
+            --text-main: #ffffff; 
+            --text-muted: #a0a0a0; 
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 100px; }
+        
+        /* Header con elegancia */
+        .header { padding: 60px 20px; text-align: center; border-bottom: 1px solid #333; }
+        .header h1 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.5rem; margin: 0; }
+        .header p { color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; margin-top: 10px; }
+
+        #menu-container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        
+        /* Categorías */
+        .categoria-titulo { 
+            font-family: 'Playfair Display', serif; color: var(--gold); 
+            text-align: center; font-size: 1.8rem; margin: 50px 0 30px; 
+            position: relative;
+        }
+        .categoria-titulo::after { content: ""; display: block; width: 50px; height: 1px; background: var(--gold); margin: 10px auto; }
+
+        /* Tarjetas de lujo */
+        .plato-card { 
+            background: var(--card-bg); border-radius: 16px; margin-bottom: 20px; 
+            display: flex; align-items: center; border: 1px solid #333; 
+            overflow: hidden; transition: 0.3s;
+        }
+        .plato-card:hover { border-color: var(--gold); }
+        .plato-img { width: 110px; height: 110px; object-fit: cover; }
+        .plato-info { padding: 20px; flex: 1; }
+        .plato-nombre { font-size: 1.2rem; font-weight: 600; margin: 0 0 5px; color: #fff; }
+        .plato-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin: 0; }
+        .plato-precio { color: var(--gold); font-weight: 700; margin-top: 10px; font-size: 1.1rem; }
+
+        /* Idiomas */
+        .lang-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; z-index: 100; cursor: pointer; box-shadow: 0 0 20px rgba(197, 160, 89, 0.3); }
+        .lang-options { position: fixed; bottom: 100px; right: 30px; display: none; flex-direction: column; gap: 10px; }
+        .lang-options.active { display: flex; }
+        .lang-btn { cursor: pointer; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); width: 45px; height: 45px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 id="restaurant-title">...</h1>
+        <p>Nuestro Menú</p>
+    </header>
+    
+    <main id="menu-container"></main>
+
+    <div id="lang-menu" class="lang-options">
+        <div class="lang-btn" onclick="changeLanguage('es', 'assets/flags/es.png')"><img src="assets/flags/es.png" width="45"></div>
+        <div class="lang-btn" onclick="changeLanguage('en', 'assets/flags/en.png')"><img src="assets/flags/en.png" width="45"></div>
+        <div class="lang-btn" onclick="changeLanguage('fr', 'assets/flags/fr.png')"><img src="assets/flags/fr.png" width="45"></div>
+    </div>
+    <div class="lang-fab" onclick="document.getElementById('lang-menu').classList.toggle('active')"><img id="current-flag" src="assets/flags/es.png" width="35"></div>
+
+    <div id="google_translate_element" style="display:none;"></div>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'es'}, 'google_translate_element'); }
+        function changeLanguage(langCode, flagSrc) {
+            document.getElementById('current-flag').src = flagSrc;
+            const select = document.querySelector('.goog-te-combo');
+            if (select) { select.value = langCode; select.dispatchEvent(new Event('change')); }
+            document.getElementById('lang-menu').classList.remove('active');
+        }
+
+        function renderMenu(data) {
+            document.getElementById('restaurant-title').innerText = data.nombre || "Restaurante";
+            const container = document.getElementById('menu-container');
+            container.innerHTML = data.categorias.map(cat => `
+                <h2 class="categoria-titulo">${cat.nombre}</h2>
+                ${cat.platos.map(p => `
+                    <div class="plato-card">
+                        ${p.imagen ? `<img src="${p.imagen}" class="plato-img">` : ''}
+                        <div class="plato-info">
+                            <h3 class="plato-nombre">${p.nombre}</h3>
+                            <p class="plato-desc">${p.descripcion || ''}</p>
+                            <div class="plato-precio">${p.precio}€</div>
+                        </div>
+                    </div>`).join('')}
+            `).join('');
+        }
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('data')) renderMenu(JSON.parse(decodeURIComponent(escape(atob(params.get('data'))))));
+        };
+    </script>
+</body>
+</html>
