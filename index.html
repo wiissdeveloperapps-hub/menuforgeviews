@@ -3,28 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Menú Digital</title>
+  <title>Menú Gourmet</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root { --bg: #0a0a0a; --card: #151515; --text: #ffffff; --accent: #c5a059; --muted: #9aa0a6; }
     body { margin:0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
     
     /* Header Premium */
-    .header-container { padding: 30px 20px; border-bottom: 1px solid #222; }
+    .header-container { padding: 30px 20px; border-bottom: 1px solid #222; text-align: center; }
     .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto; }
     h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent); margin: 0; }
     
-    /* Selector de Idiomas con Banderas */
-    .lang-btn { background: none; border: none; cursor: pointer; padding: 5px; }
-    .lang-btn img { width: 30px; height: 20px; border-radius: 4px; object-fit: cover; }
-    .lang-panel { position: fixed; top: 80px; right: 20px; background: #1a1a1a; padding: 10px; border-radius: 12px; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; }
-    .lang-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* Selector de Banderas */
+    .lang-wrapper { position: relative; }
+    .lang-btn { background: #222; border: 1px solid #444; cursor: pointer; padding: 5px; border-radius: 6px; }
+    .lang-btn img { width: 30px; height: 20px; border-radius: 3px; display: block; }
+    .lang-panel { position: absolute; top: 40px; right: 0; background: #1a1a1a; padding: 10px; border-radius: 12px; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lang-panel.active { display: grid; }
 
     /* Menú */
     #menu-container { max-width: 600px; margin: 20px auto; padding: 0 20px; }
     .cat-title { font-family: 'Playfair Display', serif; color: var(--accent); margin: 30px 0 15px; font-size: 1.4rem; text-align: center; border-bottom: 1px solid #222; padding-bottom: 10px; }
     .plato-card { display: flex; align-items: center; gap: 15px; background: var(--card); border-radius: 12px; margin-bottom: 15px; padding: 10px; border: 1px solid #222; }
-    .plato-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+    .plato-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #222; }
+    .plato-info { flex: 1; }
     .plato-info h3 { margin: 0; font-size: 1rem; }
     .plato-info p { margin: 4px 0 0; font-size: 0.85rem; color: var(--muted); }
     .plato-price { color: var(--accent); font-weight: 700; margin-top: 5px; display: block; }
@@ -35,11 +37,13 @@
   <div class="header-container">
     <div class="header-top">
       <h1 id="restaurant-title">Cargando...</h1>
-      <button class="lang-btn" id="btn-lang"><img id="current-flag" src="assets/flags/es.png"></button>
+      <div class="lang-wrapper">
+        <button class="lang-btn" id="btn-lang"><img id="current-flag" src="assets/flags/es.png"></button>
+        <div id="lang-panel" class="lang-panel"></div>
+      </div>
     </div>
   </div>
 
-  <div id="lang-panel" class="lang-panel"></div>
   <main id="menu-container"></main>
 
   <script>
@@ -57,14 +61,14 @@
           const res = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/contents/menus/${id}.json`);
           menuData = await res.json();
           buildLangPanel();
-          render(menuData.defaultLang || 'es');
+          render('es');
         } catch(e) { document.getElementById('restaurant-title').textContent = 'Error al cargar'; }
       }
     });
 
     function buildLangPanel() {
       const panel = document.getElementById('lang-panel');
-      const langs = Object.keys(menuData.traducciones || {es: {}});
+      const langs = Object.keys(menuData.traducciones || {});
       langs.forEach(code => {
         const btn = document.createElement('button');
         btn.className = 'lang-btn';
@@ -81,7 +85,7 @@
     }
 
     function render(lang) {
-      const data = menuData.traducciones ? (menuData.traducciones[lang] || menuData.traducciones['es']) : menuData;
+      const data = menuData.traducciones[lang];
       document.getElementById('restaurant-title').textContent = data.nombre;
       const container = document.getElementById('menu-container');
       container.innerHTML = '';
@@ -91,7 +95,7 @@
         (cat.platos || []).forEach(p => {
           container.innerHTML += `
             <div class="plato-card">
-              <img src="${p.urlImagen || ''}" class="plato-img" onerror="this.style.display='none'">
+              <img src="${p.imagen || p.urlImagen}" class="plato-img" onerror="this.style.display='none'">
               <div class="plato-info">
                 <h3>${p.nombre}</h3>
                 <p>${p.descripcion || ''}</p>
