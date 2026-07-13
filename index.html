@@ -33,8 +33,10 @@
         .fab-lang { background: var(--gold); box-shadow: 0 0 20px rgba(197, 160, 89, 0.3); border: 2px solid var(--gold);}
         .lang-options { position: fixed; bottom: 105px; right: 35px; display: none; flex-direction: column; gap: 10px; z-index: 99;}
         .lang-options.active { display: flex; }
-        .lang-btn { cursor: pointer; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); width: 45px; height: 45px; }
-        .lang-btn img, .fab-lang img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%;}
+        .lang-btn { cursor: pointer; border-radius: 6px; overflow: hidden; border: 2px solid var(--gold); width: 120px; height: 40px; display:flex; align-items:center; gap:8px; padding:4px 8px; background: #111; color: #fff; }
+        .lang-flag { width: 32px; height: 32px; border-radius: 4px; overflow:hidden; display:inline-block; }
+        .lang-flag img { width:100%; height:100%; object-fit:cover; display:block; }
+        .lang-label { font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -46,10 +48,7 @@
         <main id="menu-container"></main>
     </div>
 
-    <div id="lang-menu" class="lang-options">
-        <div class="lang-btn" onclick="changeLanguage('es', 'assets/flags/es.png')"><img src="assets/flags/es.png" alt="ES"></div>
-        <div class="lang-btn" onclick="changeLanguage('en', 'assets/flags/en.png')"><img src="assets/flags/en.png" alt="EN"></div>
-    </div>
+    <div id="lang-menu" class="lang-options"></div>
 
     <div class="controls-container">
         <button class="fab-btn fab-pdf" onclick="descargarPDF()">PDF</button>
@@ -60,15 +59,25 @@
 
     <script>
         let menuData = null;
+        // Mapa de idioma -> archivo de flag (ajusta si tus nombres son distintos)
+        const FLAG_MAP = {
+            es: 'es.png',
+            en: 'en.png',
+            fr: 'fr.png',
+            it: 'it.png',
+            de: 'de.png',
+            pt: 'pt.png',
+            cn: 'cn.png',
+            sa: 'sa.png'
+        };
 
         window.onload = () => {
             const hash = window.location.hash.substring(1);
             if (hash) {
                 try {
-                    // Decodifica el JSON que viene en el hash
                     menuData = JSON.parse(decodeURIComponent(escape(atob(hash))));
-                    // Render inicial en español
-                    renderMenu('es');
+                    buildLangMenu(); // construye el selector dinámico
+                    renderMenu('es'); // idioma por defecto
                 } catch (e) {
                     document.getElementById('restaurant-title').innerText = "Error leyendo menú";
                     console.error('Error decodificando hash:', e);
@@ -78,29 +87,83 @@
             }
         };
 
-        function changeLanguage(langCode, flagSrc) {
-            document.getElementById('current-flag').src = flagSrc;
+        // Construye dinámicamente el menú de idiomas según menuData.traducciones
+        function buildLangMenu() {
+            const menu = document.getElementById('lang-menu');
+            menu.innerHTML = '';
+            const langs = menuData?.traducciones ? Object.keys(menuData.traducciones) : ['es','en'];
+            // Aseguramos que 'es' esté presente
+            if (!langs.includes('es')) langs.unshift('es');
+
+            langs.forEach(code => {
+                const btn = document.createElement('div');
+                btn.className = 'lang-btn';
+                btn.onclick = () => { changeLanguage(code); };
+
+                const flagWrap = document.createElement('div');
+                flagWrap.className = 'lang-flag';
+                const img = document.createElement('img');
+                // Intentamos usar el archivo de flags según FLAG_MAP; si no existe, se mostrará 404
+                const flagFile = FLAG_MAP[code] || `${code}.png`;
+                img.src = `assets/flags/${flagFile}`;
+                img.alt = code;
+                flagWrap.appendChild(img);
+
+                const label = document.createElement('div');
+                label.className = 'lang-label';
+                // Si en las traducciones hay un nombre legible para el idioma, lo usamos; si no, mostramos el código
+                const labelText = (menuData?.traducciones?.[code]?.meta?.languageName) || code.toUpperCase();
+                label.textContent = labelText;
+
+                btn.appendChild(flagWrap);
+                btn.appendChild(label);
+                menu.appendChild(btn);
+            });
+        }
+
+        function changeLanguage(langCode) {
+            const flagFile = FLAG_MAP[langCode] || `${langCode}.png`;
+            document.getElementById('current-flag').src = `assets/flags/${flagFile}`;
             document.getElementById('lang-menu').classList.remove('active');
             renderMenu(langCode);
         }
 
-        // Pre-carga imágenes y espera a que todas terminen (soporta data: y rutas)
+        // Pre-carga imágenes y espera a que todas terminen (soporta data: y rutas relativas)
         function preloadImages(urls) {
             const promises = urls.map(url => new Promise((resolve) => {
                 if (!url) return resolve();
-                // Si es data: no necesita crossOrigin
-                const img = new Image();
-                if (!url.startsWith('data:')) {
-                    img.crossOrigin = 'anonymous';
-                }
-                img.onload = () => resolve();
-                img.onerror = () => {
-                    console.warn('Imagen no cargada:', url);
+                try {
+                    const img = new Image();
+                    // Si es data: no necesita crossOrigin
+                    if (!url.startsWith('data:')) {
+                        img.crossOrigin = 'anonymous';
+                    }
+                    img.onload = () => resolve();
+                    img.onerror = () => {
+                        console.warn('Imagen no cargada:', url);
+                        resolve();
+                    };
+                    // Si la URL es relativa (empieza por 'assets/'), la convertimos a absoluta para evitar problemas de resolución
+                    if (url.startsWith('assets/')) {
+                        img.src = new URL(url, window.location.href).href;
+                    } else {
+                        img.src = url;
+                    }
+                } catch (err) {
+                    console.warn('Error pre-cargando imagen:', err, url);
                     resolve();
-                };
-                img.src = url;
+                }
             }));
             return Promise.all(promises);
+        }
+
+        // Resuelve una URL de imagen para el DOM (convierte rutas relativas a absolutas)
+        function resolveImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('data:')) return url;
+            if (url.startsWith('http://') || url.startsWith('https://')) return url;
+            // rutas relativas como 'assets/...' -> hacemos absolute URL
+            return new URL(url, window.location.href).href;
         }
 
         async function renderMenu(lang) {
@@ -121,7 +184,10 @@
                 (cat.platos || []).forEach(p => {
                     // El visor espera la propiedad 'imagen' (según lo que mapeas en la app)
                     const imgUrl = p.imagen || p.urlImagen || p.imagenBase64 || '';
-                    if (imgUrl) imageUrls.push(imgUrl);
+                    if (imgUrl) {
+                        // Si es ruta relativa, la resolvemos para la pre-carga
+                        imageUrls.push(imgUrl.startsWith('assets/') ? new URL(imgUrl, window.location.href).href : imgUrl);
+                    }
                 });
             });
 
@@ -140,7 +206,8 @@
                     const card = document.createElement('div');
                     card.className = 'plato-card';
 
-                    const imgUrl = p.imagen || p.urlImagen || p.imagenBase64 || '';
+                    const rawImgUrl = p.imagen || p.urlImagen || p.imagenBase64 || '';
+                    const imgUrl = resolveImageUrl(rawImgUrl);
 
                     if (imgUrl) {
                         const img = document.createElement('img');
@@ -173,6 +240,9 @@
                     container.appendChild(card);
                 });
             });
+
+            // Log para depuración: cuántas imágenes se han intentado renderizar
+            console.info('Renderizado completado. Categorías:', (content.categorias || []).length);
         }
 
         function descargarPDF() {
