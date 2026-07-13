@@ -16,17 +16,46 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* DARK MODE */
+        /* DARK MODE — CONTRASTE ALTO */
         body.dark-mode {
-            background-color: #1e1e1e !important;
-            color: #f8f9fa !important;
+            background-color: #121212 !important;
+            color: #f1f1f1 !important;
         }
         body.dark-mode header {
-            background-color: #2c2c2c !important;
-            color: #fff !important;
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+            border-bottom-color: #333 !important;
+        }
+        body.dark-mode .category-title {
+            color: #ffffff !important;
+            border-bottom-color: #4da3ff !important;
         }
         body.dark-mode .dish {
-            background-color: #2c2f33 !important;
+            background-color: #1c1c1c !important;
+            color: #f1f1f1 !important;
+            box-shadow: 0 2px 6px rgba(255,255,255,0.05) !important;
+        }
+        body.dark-mode .dish-name {
+            color: #ffffff !important;
+        }
+        body.dark-mode .dish-desc {
+            color: #d0d0d0 !important;
+        }
+        body.dark-mode .dish-price {
+            color: #ffffff !important;
+        }
+        body.dark-mode .lang-selector-wrap {
+            background-color: #2a2a2a !important;
+            border-color: #555 !important;
+        }
+        body.dark-mode #language-selector {
+            color: #ffffff !important;
+        }
+        body.dark-mode .btn-pdf {
+            background-color: #c62828 !important;
+        }
+        body.dark-mode .btn-theme {
+            background-color: #444 !important;
             color: #fff !important;
         }
 
@@ -57,20 +86,72 @@
             font-weight: 700;
         }
 
-        /* LANGUAGE SELECTOR WITH FLAGS */
-        #language-selector {
-            padding: 10px 15px;
-            font-size: 1em;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            background-color: #fff;
-            margin-bottom: 10px;
-            background-repeat: no-repeat;
-            background-position: 8px center;
-            background-size: 22px 16px;
-            padding-left: 36px;
+        /* TOP BUTTONS */
+        .top-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
         }
 
+        /* LANGUAGE SELECTOR MODERNO */
+        .lang-selector-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+        }
+
+        .lang-flag {
+            width: 22px;
+            height: 16px;
+            border-radius: 3px;
+            object-fit: cover;
+        }
+
+        #language-selector {
+            border: none;
+            background: transparent;
+            font-size: 1em;
+            cursor: pointer;
+            padding-right: 4px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-pdf {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-theme {
+            background: #343a40;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3em;
+        }
+
+        /* MENU */
         #menu-container {
             padding: 20px;
             max-width: 800px;
@@ -140,42 +221,6 @@
             color: #000;
             align-self: flex-end;
         }
-
-        /* TEMPLATE: CLÁSICA */
-        body.template-clasica .category-title {
-            font-family: "Times New Roman", serif;
-            border-bottom-color: #8B4513;
-        }
-        body.template-clasica .dish { border: 1px solid #ddd; }
-
-        /* TEMPLATE: RÚSTICA */
-        body.template-rustica { background-color: #f5f5dc; }
-        body.template-rustica header { background-color: #D2B48C; border-bottom-color: #8B4513; }
-        body.template-rustica .category-title { color: #556B2F; border-bottom-color: #556B2F; }
-        body.template-rustica .dish { background-color: #fffef0; border: 1px solid #D2B48C; }
-
-        /* BUTTONS */
-        .top-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        .btn {
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-pdf {
-            background: #007bff;
-            color: white;
-        }
-        .btn-theme {
-            background: #343a40;
-            color: white;
-        }
     </style>
 </head>
 
@@ -186,9 +231,23 @@
     <h1 id="restaurant-name"></h1>
 
     <div class="top-buttons">
-        <select id="language-selector"></select>
-        <button id="btn-pdf" class="btn btn-pdf">📄 PDF</button>
-        <button id="btn-theme" class="btn btn-theme">🌙 / ☀️</button>
+
+        <!-- Selector de idioma con bandera -->
+        <div class="lang-selector-wrap">
+            <img id="current-flag" class="lang-flag" src="assets/flags/es.png">
+            <select id="language-selector"></select>
+        </div>
+
+        <!-- Botón PDF -->
+        <button id="btn-pdf" class="btn btn-pdf">
+            📄 PDF
+        </button>
+
+        <!-- Botón modo claro/oscuro -->
+        <button id="btn-theme" class="btn-theme">
+            🌙
+        </button>
+
     </div>
 </header>
 
@@ -207,6 +266,7 @@
         restaurantLogo: document.getElementById('restaurant-logo'),
         restaurantName: document.getElementById('restaurant-name'),
         langSelector: document.getElementById('language-selector'),
+        currentFlag: document.getElementById('current-flag'),
         menuContainer: document.getElementById('menu-container')
     };
 
@@ -266,10 +326,6 @@
             const option = document.createElement('option');
             option.value = langCode;
             option.textContent = fullMenuData.traducciones[langCode].meta.languageName;
-
-            // BANDERAS LOCALES
-            option.style.backgroundImage = `url(assets/flags/${langCode}.png)`;
-
             dom.langSelector.appendChild(option);
         });
 
@@ -277,8 +333,16 @@
         const initialLang = fullMenuData.traducciones[browserLang] ? browserLang : Object.keys(fullMenuData.traducciones)[0];
         dom.langSelector.value = initialLang;
 
+        // bandera inicial
+        dom.currentFlag.src = `assets/flags/${initialLang}.png`;
+
         renderMenu(initialLang);
-        dom.langSelector.addEventListener('change', (e) => renderMenu(e.target.value));
+
+        dom.langSelector.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            dom.currentFlag.src = `assets/flags/${lang}.png`;
+            renderMenu(lang);
+        });
     }
 
     function renderMenu(langCode) {
@@ -330,6 +394,8 @@
     /* DARK MODE */
     document.getElementById('btn-theme').addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
+        document.getElementById('btn-theme').textContent =
+            document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
 
 </script>
