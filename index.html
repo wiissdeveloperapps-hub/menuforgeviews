@@ -368,31 +368,29 @@
             return;
         }
 
-        // Logo
-        dom.restaurantLogo.src = fullMenuData.logoRestaurante || '';
-
-        // Ocultar si no hay logo
-        if (!fullMenuData.logoRestaurante || fullMenuData.logoRestaurante.trim() === "") {
-            dom.restaurantLogo.style.display = "none";
-        } else {
-            dom.restaurantLogo.style.display = "block";
-        }
+        dom.restaurantLogo.src = fullMenuData.logoRestaurante || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         dom.restaurantName.textContent = langData.nombreRestaurante || fullMenuData.nombreRestaurante || 'Restaurante';
         document.body.className = `template-${fullMenuData.plantilla || 'moderna'}`;
+
+        // Acceder al mapa de imágenes
+        const imageMap = fullMenuData.recursos?.imagenes || {};
 
         let menuHtml = langData.categorias?.map(category => `
             <div class="category">
                 <h2 class="category-title">${category.nombre}</h2>
-                ${category.platos?.map(dish => `
+                ${category.platos?.map(dish => {
+                    // Obtener la imagen del mapa de recursos usando idImagen
+                    const imageUrl = dish.idImagen ? imageMap[dish.idImagen] : '';
+                    return `
                     <div class="dish">
-                        ${dish.imagen ? `<img class="dish-img" src="${dish.imagen}" alt="${dish.nombre}">` : ''}
+                        ${imageUrl ? `<img class="dish-img" src="${imageUrl}" alt="${dish.nombre}">` : ''}
                         <div class="dish-details">
                             <div class="dish-name">${dish.nombre}</div>
                             <p class="dish-desc">${dish.descripcion || ''}</p>
                             <div class="dish-price">${formatPrice(dish.precio)}</div>
                         </div>
                     </div>
-                `).join('') || ''}
+                `}).join('') || ''}
             </div>
         `).join('') || '<p>Este menú está vacío.</p>';
 
