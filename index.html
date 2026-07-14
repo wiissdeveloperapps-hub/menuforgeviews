@@ -87,12 +87,12 @@
             -moz-appearance: none;
         }
 
-        /* HEADER */
+        /* HEADER OPTIMIZADO PARA MÓVIL */
         header {
             background-color: #ffffff;
-            padding: 20px;
+            padding: 15px 10px; /* Reducido padding superior/inferior */
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -100,38 +100,47 @@
             transition: all 0.4s ease;
         }
 
+        .header-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 0 5px;
+        }
+
         #restaurant-logo {
-            max-height: 80px;
-            max-width: 80px;
+            max-height: 60px; /* Reducido tamaño del logo */
+            max-width: 60px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #fff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            display: inline-block; /* Para el fallback de la imagen */
+            border: 2px solid #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: inline-block;
         }
 
         #restaurant-name {
-            font-size: 2.2em;
-            margin: 10px 0 5px 0;
+            font-size: 1.6em; /* Fuente más compacta */
+            margin: 0;
             font-weight: 800;
             letter-spacing: -0.5px;
+            line-height: 1.1;
         }
 
-        /* RESTAURANT META INFO */
+        /* RESTAURANT META INFO (Más compacto) */
         .restaurant-meta {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 15px;
-            font-size: 0.9em;
+            gap: 8px 15px; /* Menor gap */
+            margin-top: 10px;
+            font-size: 0.85em; /* Texto más pequeño */
             color: #6c757d;
         }
 
         .restaurant-meta-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .restaurant-meta a {
@@ -145,16 +154,15 @@
         }
 
         .meta-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px; /* Icono más pequeño */
+            height: 14px;
             fill: currentColor;
         }
 
-        /* TOP BUTTONS */
-        .top-buttons {
+        /* TOP BUTTONS EN HEADER */
+        .header-actions {
             display: flex;
-            gap: 12px;
-            justify-content: center;
+            gap: 8px;
             align-items: center;
         }
 
@@ -162,9 +170,9 @@
         .lang-selector-wrap {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 12px;
+            gap: 4px;
+            padding: 6px 10px; /* Más compacto */
+            border-radius: 10px;
             background: #fff;
             border: 1px solid #dee2e6;
             cursor: pointer;
@@ -175,34 +183,35 @@
         }
 
         .lang-flag {
-            width: 24px;
-            height: 18px;
-            border-radius: 4px;
+            width: 20px; /* Bandera más pequeña */
+            height: 15px;
+            border-radius: 3px;
             object-fit: cover;
         }
 
         #language-selector {
             border: none;
             background: transparent;
-            font-size: 1em;
+            font-size: 0.9em; /* Texto más pequeño */
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
-            padding-right: 4px;
+            padding-right: 2px;
             outline: none;
         }
 
         /* BUTTONS */
         .btn {
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 6px 10px; /* Más compacto */
+            border-radius: 10px;
             border: none;
             cursor: pointer;
             font-weight: 700;
+            font-size: 0.85em; /* Texto más pequeño */
             font-family: inherit;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: transform 0.2s ease, opacity 0.2s ease;
         }
         .btn:hover {
@@ -211,19 +220,19 @@
         .btn-pdf {
             background: #dc3545;
             color: white;
-            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
         }
         .btn-theme {
             background: #212529;
             color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 34px; /* Más pequeño */
+            height: 34px;
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.3em;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             cursor: pointer;
             border: none;
             transition: transform 0.2s ease;
@@ -234,59 +243,59 @@
 
         /* MENU */
         #menu-container {
-            padding: 20px;
+            padding: 15px;
             max-width: 800px;
-            margin: 20px auto;
+            margin: 0 auto 20px auto;
         }
 
         #loader {
             text-align: center;
             padding: 50px;
-            font-size: 1.5em;
+            font-size: 1.3em;
             color: #6c757d;
             font-weight: 600;
         }
 
         /* CATEGORY */
         .category {
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
         .category-title {
-            font-size: 2em;
+            font-size: 1.6em; /* Reducido */
             font-weight: 800;
             color: #1a1a1a;
-            border-bottom: 3px solid #007bff;
-            padding-bottom: 12px;
-            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
         }
 
         /* DISH CARD (ULTRA PREMIUM) */
         .dish {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 16px;
             overflow: hidden;
             cursor: pointer; 
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
             position: relative;
         }
         .dish:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
         }
         
         .dish-img {
-            width: 130px;
-            height: 130px;
+            width: 100px; /* Imagen más pequeña */
+            height: 100px;
             object-fit: cover;
             flex-shrink: 0;
         }
         
         .dish-details {
-            padding: 16px 16px 16px 0;
+            padding: 12px 12px 12px 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -294,21 +303,21 @@
         }
         
         .dish:not(:has(.dish-img)) .dish-details {
-            padding-left: 16px;
+            padding-left: 12px;
         }
 
         .dish-name {
-            font-size: 1.3em;
+            font-size: 1.15em;
             font-weight: 700;
-            margin: 0 0 6px;
-            letter-spacing: -0.3px;
+            margin: 0 0 4px;
+            letter-spacing: -0.2px;
         }
         
         .dish-desc {
             color: #6c757d;
-            margin: 0 0 12px;
-            font-size: 0.95em;
-            line-height: 1.4;
+            margin: 0 0 8px;
+            font-size: 0.85em;
+            line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -324,7 +333,7 @@
         }
         
         .dish-price {
-            font-size: 1.4em;
+            font-size: 1.2em;
             font-weight: 800;
         }
 
@@ -333,12 +342,16 @@
             background: rgba(0, 123, 255, 0.1);
             color: #007bff;
             border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+        }
+        .dish-action-icon svg {
+            width: 16px;
+            height: 16px;
         }
         
         .dish:hover .dish-action-icon {
@@ -351,28 +364,28 @@
         /* ANIMACIONES DE ENTRADA (SLIDE-IN) */
         .fade-in-slide {
             opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateX(-20px);
+            transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         .fade-in-slide.visible {
             opacity: 1;
             transform: translateX(0);
         }
 
-        /* MODAL POPUP (Efecto Glassmorphism Premium) */
+        /* MODAL POPUP */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         .modal-overlay.active {
             opacity: 1;
@@ -380,15 +393,15 @@
         }
         .modal-content {
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 420px;
+            max-width: 400px;
             max-height: 85vh;
             overflow-y: auto;
             position: relative;
-            transform: translateY(30px) scale(0.95);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
         .modal-overlay.active .modal-content {
             transform: translateY(0) scale(1);
@@ -396,15 +409,15 @@
         
         .modal-close {
             position: absolute;
-            top: 16px;
-            right: 16px;
+            top: 12px;
+            right: 12px;
             background: rgba(0, 0, 0, 0.05);
             color: #333;
             border: none;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 1.1em;
+            width: 32px;
+            height: 32px;
+            font-size: 1em;
             cursor: pointer;
             z-index: 10;
             display: flex;
@@ -424,40 +437,39 @@
         
         .modal-img-wrapper {
             text-align: center;
-            padding-top: 35px;
-            padding-bottom: 0;
+            padding-top: 30px;
         }
         .modal-img {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
             display: inline-block;
         }
 
         .modal-body {
-            padding: 25px 35px 35px;
+            padding: 20px 25px 25px;
             text-align: center;
         }
         .modal-title {
-            font-size: 1.8em;
+            font-size: 1.5em;
             font-weight: 800;
-            margin: 0 0 15px;
-            line-height: 1.1;
+            margin: 0 0 10px;
+            line-height: 1.2;
             letter-spacing: -0.5px;
         }
         
         .modal-price {
-            font-size: 1.7em;
+            font-size: 1.4em;
             font-weight: 800;
             color: #1a1a1a; 
             display: inline-block;
-            padding: 8px 24px;
+            padding: 6px 18px;
             background: rgba(0, 0, 0, 0.04);
-            border-radius: 12px;
+            border-radius: 10px;
             letter-spacing: -0.5px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         body.dark-mode .modal-price {
             color: #ffffff;
@@ -466,8 +478,8 @@
 
         .modal-desc {
             color: #555;
-            font-size: 1.05em;
-            line-height: 1.6;
+            font-size: 0.95em;
+            line-height: 1.5;
             margin: 0;
         }
 
@@ -477,25 +489,28 @@
 <body>
 
 <header id="header-container" style="display:none;">
-    <img id="restaurant-logo" src="" alt="Logo del restaurante">
-    <h1 id="restaurant-name"></h1>
-    
-    <div id="restaurant-meta" class="restaurant-meta"></div>
-
-    <div class="top-buttons">
-        <div class="lang-selector-wrap">
-            <img id="current-flag" class="lang-flag" src="assets/flags/es.png" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'">
-            <select id="language-selector"></select>
+    <div class="header-top-row">
+        <div class="header-actions">
+            <div class="lang-selector-wrap">
+                <img id="current-flag" class="lang-flag" src="assets/flags/es.png" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'">
+                <select id="language-selector"></select>
+            </div>
         </div>
 
-        <button id="btn-pdf" class="btn btn-pdf">
-            📄 PDF
-        </button>
+        <img id="restaurant-logo" src="" alt="Logo">
 
-        <button id="btn-theme" class="btn-theme">
-            🌙
-        </button>
+        <div class="header-actions">
+            <button id="btn-pdf" class="btn btn-pdf" title="Descargar PDF">
+                📄
+            </button>
+            <button id="btn-theme" class="btn-theme" title="Cambiar Tema">
+                🌙
+            </button>
+        </div>
     </div>
+
+    <h1 id="restaurant-name"></h1>
+    <div id="restaurant-meta" class="restaurant-meta"></div>
 </header>
 
 <div id="menu-container">
@@ -645,18 +660,16 @@
             return;
         }
 
-        // Mostrar logo (con fallback transparente si no hay)
         dom.restaurantLogo.src = fullMenuData.logoRestaurante || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         if(!fullMenuData.logoRestaurante) {
-            dom.restaurantLogo.style.display = 'none';
+            dom.restaurantLogo.style.visibility = 'hidden'; // Ocultar sin perder espacio
         } else {
-            dom.restaurantLogo.style.display = 'inline-block';
+            dom.restaurantLogo.style.visibility = 'visible';
         }
         
         dom.restaurantName.textContent = langData.nombreRestaurante || fullMenuData.nombreRestaurante || 'Restaurante';
         document.body.className = `template-${fullMenuData.plantilla || 'moderna'}`;
 
-        // Construir la sección de Metadatos (teléfono, email, dirección)
         let metaHtml = '';
         
         if (fullMenuData.telefonoRestaurante) {
@@ -679,7 +692,6 @@
 
         if (fullMenuData.direccionRestaurante) {
             const safeDir = escapeHTML(fullMenuData.direccionRestaurante);
-            // Creamos un link a Google Maps basándonos en la cadena de texto de la dirección
             const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullMenuData.direccionRestaurante)}`;
             metaHtml += `
                 <div class="restaurant-meta-item">
@@ -689,7 +701,6 @@
         }
 
         dom.restaurantMeta.innerHTML = metaHtml;
-        // Ocultar el contenedor si no hay metadatos para ahorrar espacio
         dom.restaurantMeta.style.display = metaHtml ? 'flex' : 'none';
 
         const imageMap = fullMenuData.recursos?.imagenes || {};
@@ -740,9 +751,6 @@
         dom.menuContainer.innerHTML = `<p style="color: red; text-align: center; font-size: 1.2em;">${message}</p>`;
     }
 
-    /* ========================================================
-       LÓGICA DE ANIMACIONES Y MODAL
-    ======================================================== */
     function initScrollAnimations() {
         const elements = document.querySelectorAll('.fade-in-slide');
         const observer = new IntersectionObserver((entries) => {
@@ -801,12 +809,10 @@
         };
     }
 
-    /* PDF */
     document.getElementById('btn-pdf').addEventListener('click', () => {
         window.print();
     });
 
-    /* DARK MODE */
     document.getElementById('btn-theme').addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         document.getElementById('btn-theme').textContent =
