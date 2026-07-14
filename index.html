@@ -205,10 +205,9 @@
             font-size: 2em;
             font-weight: 800;
             color: #1a1a1a;
-            border-bottom: 4px solid #007bff;
-            padding-bottom: 8px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 12px;
             margin-bottom: 30px;
-            display: inline-block;
         }
 
         /* DISH CARD (ULTRA PREMIUM) */
@@ -220,7 +219,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             margin-bottom: 20px;
             overflow: hidden;
-            cursor: pointer; /* Hace que toda la tarjeta parezca clicable */
+            cursor: pointer; 
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
             position: relative;
         }
@@ -244,7 +243,6 @@
             justify-content: center;
         }
         
-        /* Si la tarjeta no tiene imagen, devolvemos el padding izquierdo */
         .dish:not(:has(.dish-img)) .dish-details {
             padding-left: 16px;
         }
@@ -293,7 +291,6 @@
             transition: all 0.3s ease;
         }
         
-        /* Efecto al pasar el ratón por toda la tarjeta */
         .dish:hover .dish-action-icon {
             background: #007bff;
             color: #ffffff;
@@ -387,17 +384,16 @@
             transform: scale(1.1);
         }
         
-        /* Imagen pequeña y elegante dentro del popup */
         .modal-img-wrapper {
             text-align: center;
             padding-top: 35px;
-            padding-bottom: 10px;
+            padding-bottom: 0;
         }
         .modal-img {
             width: 140px;
             height: 140px;
             object-fit: cover;
-            border-radius: 24px; /* Bordes muy suaves */
+            border-radius: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.12);
             display: inline-block;
         }
@@ -409,27 +405,33 @@
         .modal-title {
             font-size: 1.8em;
             font-weight: 800;
-            margin: 0 0 12px;
+            margin: 0 0 15px;
             line-height: 1.1;
             letter-spacing: -0.5px;
         }
+        
+        /* PRECIO: Modificado para elegancia y contraste puro */
+        .modal-price {
+            font-size: 1.7em;
+            font-weight: 800;
+            color: #1a1a1a; 
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 12px;
+            letter-spacing: -0.5px;
+            margin-bottom: 25px;
+        }
+        body.dark-mode .modal-price {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
         .modal-desc {
             color: #555;
             font-size: 1.05em;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-        
-        /* PRECIO CON COLOR AZUL FIJO PARA AMBOS MODOS */
-        .modal-price {
-            font-size: 2em;
-            font-weight: 800;
-            color: #007bff; /* Azul vibrante siempre */
-            display: inline-block;
-            padding: 10px 24px;
-            background: rgba(0, 123, 255, 0.1);
-            border-radius: 16px;
-            letter-spacing: -0.5px;
+            line-height: 1.6;
+            margin: 0;
         }
 
     </style>
@@ -473,8 +475,8 @@
 
         <div class="modal-body">
             <h3 id="modal-title" class="modal-title"></h3>
-            <p id="modal-desc" class="modal-desc"></p>
             <div id="modal-price" class="modal-price"></div>
+            <p id="modal-desc" class="modal-desc"></p>
         </div>
     </div>
 </div>
@@ -621,7 +623,6 @@
                     const safeDesc = escapeHTML(dish.descripcion);
                     const safePrice = formatPrice(dish.precio);
                     
-                    // Ahora TODA la tarjeta tiene los data-attributes y es clicable
                     return `
                     <div class="dish" data-name="${safeName}" data-desc="${safeDesc}" data-price="${safePrice}" data-img="${imageUrl}">
                         ${imageUrl ? `<img class="dish-img" src="${imageUrl}" alt="${safeName}">` : ''}
@@ -679,7 +680,6 @@
     }
 
     function initModalEvents() {
-        // Seleccionamos toda la tarjeta en lugar del botón
         const dishes = document.querySelectorAll('.dish');
         const modal = document.getElementById('dish-modal');
         const mImgWrapper = document.getElementById('modal-img-wrapper');
