@@ -47,8 +47,6 @@
         body.dark-mode .modal-desc { color: #a0a0a5; }
         body.dark-mode select, body.dark-mode select option { background-color: #252528 !important; color: #ffffff !important; }
         body.dark-mode .search-input { background-color: #252528; color: #fff; border-color: #3a3a3e; }
-        body.dark-mode .menu-card { background-color: #1c1c1f; border-color: #2a2a2d; }
-        body.dark-mode .menu-card-title { color: #fff; }
 
         /* ========================================================
            HEADER (DISEÑO ORIGINAL RESTAURADO)
@@ -186,7 +184,7 @@
         }
         #loader { text-align: center; padding: 50px; font-size: 1.5em; color: #6c757d; font-weight: 600; }
 
-        /* HOME: GRID DE MENÚS (DISEÑO PREMIUM) */
+        /* HOME: GRID DE MENÚS (IMAGEN DE FONDO OPACA CON TEXTO CENTRADO) */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -194,36 +192,53 @@
             margin-top: 10px;
         }
         .menu-card {
-            background: #fff;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid #eaeaea;
             position: relative;
-        }
-        .menu-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-            border-color: #007bff;
+            height: 220px; /* Altura fija para efecto banner */
         }
         .menu-card-img {
             width: 100%;
-            height: 160px;
+            height: 100%;
             object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .menu-card-body { padding: 20px; text-align: center; }
-        .menu-card-title { font-size: 1.5em; font-weight: 800; margin: 0 0 10px 0; letter-spacing: -0.5px; }
-        .menu-card-badge {
-            display: inline-block;
-            background: rgba(0, 123, 255, 0.1);
-            color: #007bff;
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+        .menu-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55); /* Capa oscura */
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        .menu-card:hover .menu-card-img {
+            transform: scale(1.08); /* Efecto zoom interior suave */
+        }
+        .menu-card:hover .menu-card-overlay {
+            background: rgba(0, 0, 0, 0.45); /* Aclara ligeramente al pasar el ratón */
+        }
+        .menu-card-title {
+            color: #ffffff;
+            font-size: 2.2em;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.6);
         }
 
         /* ========================================================
@@ -396,13 +411,13 @@ const I18N = {
 };
 
 /**
- * PORTADAS POR DEFECTO PREMIUM (Base64 SVG)
- * Para evitar que salga el mismo plato de café si no hay imagen en la carta.
+ * PORTADAS POR DEFECTO (Imágenes Locales)
+ * Asegúrate de que las rutas coincidan con tu estructura de carpetas de assets.
  */
 const DEFAULT_COVERS = {
-    normal: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgNDAwIDIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJjM2U1MCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzM0OThkYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTAwIiByPSI1MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==", // Azul oscuro/Gris elegante
-    diario: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgNDAwIDIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UzNWMzNyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2U2N2UzMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PHBhdGggZD0iTTAgMjAwIFEyMDAgMTAwIDQwMCAyMDAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==", // Naranja cálido
-    especial: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgNDAwIDIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFhMWExYSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2Q0YWYzNyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PHBvbHlnb24gcG9pbnRzPSIyMDAsNTAgMjUwLDE1MCAxNTAsMTUwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+" // Negro/Dorado
+    normal: "assets/principal/normal.jpg",
+    diario: "assets/principal/diario.jpg",
+    especial: "assets/principal/especial.jpg"
 };
 
 
@@ -600,14 +615,12 @@ const app = {
             
             const trans = menu.traducciones?.[this.currentLang];
             const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
-            const translatedTipo = t[tipo] || tipo.toUpperCase();
 
             html += `
                 <div class="menu-card fade-in-slide" onclick="app.navigateToMenu('${menu.id}')">
                     <img class="menu-card-img" src="${coverImg}" alt="${this.escapeHTML(menuName)}" loading="lazy">
-                    <div class="menu-card-body">
+                    <div class="menu-card-overlay">
                         <h2 class="menu-card-title">${this.escapeHTML(menuName)}</h2>
-                        <span class="menu-card-badge">${translatedTipo}</span>
                     </div>
                 </div>
             `;
