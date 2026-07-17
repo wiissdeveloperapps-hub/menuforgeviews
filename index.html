@@ -3,504 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Menú Digital Premium</title>
+    <title>Menú Digital</title>
     
     <!-- Librerías de descompresión -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     
-    <!-- Fuentes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* ========================================================
-           VARIABLES Y CONFIGURACIÓN BASE (SISTEMA DE DISEÑO)
+           GENERAL Y MODO OSCURO (MANTENIDO DEL ORIGINAL)
         ======================================================== */
-        :root {
-            --bg-body: #f5f5f7;
-            --bg-header: rgba(255, 255, 255, 0.85);
-            --bg-card: #ffffff;
-            --bg-search: #f0f0f5;
-            --text-main: #1d1d1f;
-            --text-secondary: #86868b;
-            --border-color: #e5e5ea;
-            --accent: #0071e3;
-            --accent-hover: #0077ed;
-            --shadow-sm: 0 4px 6px rgba(0,0,0,0.02);
-            --shadow-md: 0 10px 20px rgba(0,0,0,0.04);
-            --shadow-hover: 0 20px 40px rgba(0,0,0,0.08);
-            --modal-overlay: rgba(0,0,0,0.4);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f6f8;
+            color: #1a1a1a;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         body.dark-mode {
-            --bg-body: #000000;
-            --bg-header: rgba(29, 29, 31, 0.85);
-            --bg-card: #1c1c1e;
-            --bg-search: #2c2c2e;
-            --text-main: #f5f5f7;
-            --text-secondary: #a1a1a6;
-            --border-color: #38383a;
-            --accent: #0a84ff;
-            --accent-hover: #409cff;
-            --shadow-sm: 0 4px 6px rgba(0,0,0,0.2);
-            --shadow-md: 0 10px 20px rgba(0,0,0,0.3);
-            --shadow-hover: 0 20px 40px rgba(0,0,0,0.5);
-            --modal-overlay: rgba(0,0,0,0.7);
+            background-color: #0f0f11 !important;
+            color: #f1f1f1 !important;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            transition: var(--transition);
-            -webkit-font-smoothing: antialiased;
+        body.dark-mode header {
+            background-color: #161618 !important;
+            color: #ffffff !important;
+            border-bottom-color: #2a2a2d !important;
         }
+        body.dark-mode .restaurant-meta a { color: #a0a0a5 !important; }
+        body.dark-mode .restaurant-meta a:hover { color: #007bff !important; }
+        body.dark-mode .category-title { color: #ffffff !important; border-bottom-color: #007bff !important; }
+        body.dark-mode .dish { background-color: #1c1c1f !important; color: #f1f1f1 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; }
+        body.dark-mode .dish:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.5) !important; }
+        body.dark-mode .dish-name { color: #ffffff !important; }
+        body.dark-mode .dish-desc { color: #a0a0a5 !important; }
+        body.dark-mode .dish-price { color: #ffffff !important; }
+        body.dark-mode .lang-selector-wrap { background-color: #252528 !important; border-color: #3a3a3e !important; }
+        body.dark-mode #language-selector { color: #ffffff !important; }
+        body.dark-mode .btn-theme { background-color: #333 !important; color: #fff !important; }
+        body.dark-mode .modal-content { background: #1c1c1f; color: #f1f1f1; box-shadow: 0 25px 50px rgba(0,0,0,0.7); }
+        body.dark-mode .modal-desc { color: #a0a0a5; }
+        body.dark-mode select, body.dark-mode select option { background-color: #252528 !important; color: #ffffff !important; }
+        body.dark-mode .search-input { background-color: #252528; color: #fff; border-color: #3a3a3e; }
+        body.dark-mode .menu-card { background-color: #1c1c1f; border-color: #2a2a2d; }
+        body.dark-mode .menu-card-title { color: #fff; }
 
         /* ========================================================
-           CABECERA (HEADER) ULTRA-PREMIUM CON GLASSMORPHISM
+           HEADER (DISEÑO ORIGINAL RESTAURADO)
         ======================================================== */
         header {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             position: sticky;
             top: 0;
             z-index: 100;
-            background-color: var(--bg-header);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            transition: var(--transition);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 200px;
+            border-bottom: 1px solid #eaeaea;
+            transition: all 0.4s ease;
         }
 
         #btn-back {
-            background: var(--bg-search);
-            color: var(--text-main);
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 1.2em;
-            transition: var(--transition);
-            display: none; /* Oculto en la home */
+            transition: all 0.2s ease;
+            display: none; /* Oculto en home */
         }
-        #btn-back:hover { transform: scale(1.05); }
+        #btn-back:hover { background: #007bff; color: white; transform: scale(1.05); }
 
         #restaurant-logo {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
+            max-height: 80px;
+            max-width: 80px;
+            border-radius: 50%;
             object-fit: cover;
-            border: 1px solid var(--border-color);
+            border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: inline-block;
         }
-
-        .brand-info { display: flex; flex-direction: column; }
 
         #restaurant-name {
-            font-size: 1.2em;
-            font-weight: 700;
+            font-size: 2.2em;
+            margin: 10px 0 5px 0;
+            font-weight: 800;
             letter-spacing: -0.5px;
-            white-space: nowrap;
-        }
-        #restaurant-subtitle {
-            font-size: 0.75em;
-            color: var(--text-secondary);
         }
 
-        /* BUSCADOR */
-        .header-center {
-            flex-grow: 1;
-            max-width: 600px;
+        /* RESTAURANT META INFO */
+        .restaurant-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #6c757d;
         }
+        .restaurant-meta-item { display: flex; align-items: center; gap: 5px; }
+        .restaurant-meta a { color: inherit; text-decoration: none; transition: color 0.2s; }
+        .restaurant-meta a:hover { color: #007bff; }
+        .meta-icon { width: 16px; height: 16px; fill: currentColor; }
+
+        /* BUSCADOR INTEGRADO EN HEADER */
         .search-container {
+            max-width: 400px;
+            margin: 0 auto 15px auto;
             position: relative;
-            width: 100%;
         }
         .search-input {
             width: 100%;
-            padding: 12px 20px 12px 45px;
+            padding: 12px 20px 12px 40px;
             border-radius: 20px;
-            border: 1px solid transparent;
-            background-color: var(--bg-search);
-            color: var(--text-main);
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
             font-family: inherit;
             font-size: 0.95em;
-            transition: var(--transition);
             outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
         }
-        .search-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
-        }
+        .search-input:focus { border-color: #007bff; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); }
         .search-icon {
             position: absolute;
-            left: 15px;
+            left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
+            color: #6c757d;
+            width: 18px;
+            height: 18px;
         }
 
-        /* BOTONES DERECHA */
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 200px;
-            justify-content: flex-end;
+        /* TOP BUTTONS */
+        .top-buttons { display: flex; gap: 12px; justify-content: center; align-items: center; }
+
+        /* LANGUAGE SELECTOR MODERNO */
+        .lang-selector-wrap {
+            display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+            border-radius: 12px; background: #fff; border: 1px solid #dee2e6;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .lang-selector-wrap:hover { border-color: #007bff; }
+        .lang-flag { width: 24px; height: 18px; border-radius: 4px; object-fit: cover; }
+        #language-selector {
+            border: none; background: transparent; font-size: 1em; font-weight: 600;
+            font-family: inherit; cursor: pointer; padding-right: 4px; outline: none; appearance: none;
         }
 
-        .lang-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: var(--bg-search);
-            border-radius: 16px;
-            cursor: pointer;
+        .btn {
+            padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer;
+            font-weight: 700; font-family: inherit; display: flex; align-items: center;
+            gap: 6px; transition: transform 0.2s ease;
         }
-        .lang-selector img {
-            width: 20px;
-            border-radius: 4px;
+        .btn:hover { transform: scale(1.05); }
+        .btn-pdf { background: #dc3545; color: white; box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2); }
+        .btn-theme {
+            background: #212529; color: white; width: 44px; height: 44px; border-radius: 12px;
+            display: flex; justify-content: center; align-items: center; font-size: 1.3em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; border: none; transition: transform 0.2s ease;
         }
-        .lang-selector select {
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-            appearance: none;
-        }
-
-        .icon-btn {
-            background: var(--bg-search);
-            color: var(--text-main);
-            border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: var(--transition);
-        }
-        .icon-btn:hover { background: var(--border-color); }
+        .btn-theme:hover { transform: scale(1.05) rotate(5deg); }
 
         /* ========================================================
-           CONTENEDOR PRINCIPAL Y VISTAS
+           CONTENEDOR PRINCIPAL
         ======================================================== */
-        main {
-            padding: 40px 20px;
-            max-width: 1000px;
+        #main-content {
+            padding: 20px;
+            max-width: 800px;
             margin: 0 auto;
-            min-height: 80vh;
+            min-height: 70vh;
         }
+        #loader { text-align: center; padding: 50px; font-size: 1.5em; color: #6c757d; font-weight: 600; }
 
-        /* HOME: GRID DE MENÚS */
+        /* HOME: GRID DE MENÚS (DISEÑO PREMIUM) */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 20px;
+            margin-top: 10px;
         }
-
         .menu-card {
-            background: var(--bg-card);
-            border-radius: 24px;
+            background: #fff;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
             position: relative;
-            border: 1px solid var(--border-color);
         }
         .menu-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            border-color: #007bff;
         }
         .menu-card-img {
             width: 100%;
-            height: 180px;
+            height: 160px;
             object-fit: cover;
-            background: var(--bg-search);
         }
-        .menu-card-content {
-            padding: 25px;
-            text-align: center;
-        }
-        .menu-card-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 5px;
-            letter-spacing: -0.5px;
-        }
+        .menu-card-body { padding: 20px; text-align: center; }
+        .menu-card-title { font-size: 1.5em; font-weight: 800; margin: 0 0 10px 0; letter-spacing: -0.5px; }
         .menu-card-badge {
             display: inline-block;
-            background: rgba(0, 113, 227, 0.1);
-            color: var(--accent);
-            padding: 4px 12px;
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+            padding: 6px 14px;
             border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-top: 10px;
+            font-size: 0.85em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        /* VISTA DE LA CARTA (MENÚ SELECCIONADO) */
+        /* ========================================================
+           VISTA CARTA: CATEGORÍAS Y PLATOS (DISEÑO ORIGINAL)
+        ======================================================== */
+        .category { margin-bottom: 50px; }
         .category-title {
-            font-size: 2.2em;
-            font-weight: 800;
-            margin: 50px 0 25px 0;
-            letter-spacing: -0.8px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-        .category-title:first-child { margin-top: 0; }
-
-        .dish-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            font-size: 2em; font-weight: 800; color: #1a1a1a;
+            border-bottom: 3px solid #007bff; padding-bottom: 12px; margin-bottom: 30px;
         }
 
-        .dish-card {
-            display: flex;
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--border-color);
-            gap: 20px;
-            align-items: center;
+        .dish {
+            display: flex; gap: 16px; background-color: #ffffff; border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 20px; overflow: hidden;
+            cursor: pointer; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
         }
-        .dish-card:hover {
-            transform: scale(1.01);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .dish-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 14px;
-            object-fit: cover;
-            flex-shrink: 0;
-            background: var(--bg-search);
-        }
-        
-        .dish-info { flex-grow: 1; }
-        .dish-name {
-            font-size: 1.25em;
-            font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: -0.3px;
-        }
+        .dish:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+        .dish-img { width: 130px; height: 130px; object-fit: cover; flex-shrink: 0; }
+        .dish-details { padding: 16px 16px 16px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .dish:not(:has(.dish-img)) .dish-details { padding-left: 16px; }
+        .dish-name { font-size: 1.3em; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.3px; }
         .dish-desc {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 10px;
-            line-height: 1.4;
+            color: #6c757d; margin: 0 0 12px; font-size: 0.95em; line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
-        .dish-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .dish-price { font-size: 1.4em; font-weight: 800; }
+        
+        .dish-action-icon {
+            background: rgba(0, 123, 255, 0.1); color: #007bff; border-radius: 50%;
+            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease;
         }
-        .dish-price {
-            font-size: 1.3em;
-            font-weight: 800;
-            color: var(--accent);
+        .dish:hover .dish-action-icon {
+            background: #007bff; color: #ffffff; transform: translateX(4px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
         }
-        .dish-source {
-            font-size: 0.75em;
-            color: var(--text-secondary);
-            background: var(--bg-search);
-            padding: 4px 8px;
-            border-radius: 8px;
+        .dish-source-badge { font-size: 0.7em; background: #eee; padding: 4px 8px; border-radius: 6px; color: #555; }
+        body.dark-mode .dish-source-badge { background: #333; color: #bbb; }
+
+        /* ANIMACIONES */
+        .fade-in-slide {
+            opacity: 0; transform: translateX(-30px);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+        .fade-in-slide.visible { opacity: 1; transform: translateX(0); }
 
         /* ========================================================
-           ESTADOS Y MODALES
+           MODAL (DISEÑO ORIGINAL)
         ======================================================== */
-        .hidden { display: none !important; }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-        .empty-state h2 { margin-bottom: 10px; color: var(--text-main); }
-
-        /* Modal */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--modal-overlay);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition);
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease;
         }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-content {
-            background: var(--bg-card);
-            width: 90%;
-            max-width: 450px;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            transform: translateY(30px) scale(0.95);
-            transition: var(--transition);
-            position: relative;
+            background: #ffffff; border-radius: 24px; width: 90%; max-width: 420px; max-height: 85vh;
+            overflow-y: auto; position: relative; transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 25px 50px rgba(0,0,0,0.15);
         }
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-        .modal-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: none;
-        }
-        .modal-body { padding: 30px; }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
         .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            z-index: 10;
+            position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.05); color: #333;
+            border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 1.1em;
+            cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
         }
-        .modal-title {
-            font-size: 1.8em;
-            font-weight: 800;
-            margin-bottom: 10px;
-            line-height: 1.1;
+        body.dark-mode .modal-close { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .modal-close:hover { background: #dc3545; color: white; transform: scale(1.1); }
+        
+        .modal-img-wrapper { text-align: center; padding-top: 35px; padding-bottom: 0; }
+        .modal-img {
+            width: 140px; height: 140px; object-fit: cover; border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12); display: inline-block;
         }
+        .modal-body { padding: 25px 35px 35px; text-align: center; }
+        .modal-title { font-size: 1.8em; font-weight: 800; margin: 0 0 15px; line-height: 1.1; letter-spacing: -0.5px; }
         .modal-price {
-            display: inline-block;
-            font-size: 1.4em;
-            font-weight: 700;
-            color: var(--accent);
-            background: rgba(0, 113, 227, 0.1);
-            padding: 6px 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            font-size: 1.7em; font-weight: 800; color: #1a1a1a; display: inline-block;
+            padding: 8px 24px; background: rgba(0, 0, 0, 0.04); border-radius: 12px;
+            letter-spacing: -0.5px; margin-bottom: 25px;
         }
-        .modal-desc {
-            font-size: 1.05em;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+        body.dark-mode .modal-price { color: #ffffff; background: rgba(255, 255, 255, 0.08); }
+        .modal-desc { color: #555; font-size: 1.05em; line-height: 1.6; margin: 0; }
 
         /* ========================================================
-           RESPONSIVE
+           RESPONSIVE MOBILE
         ======================================================== */
-        @media (max-width: 768px) {
-            header { flex-wrap: wrap; padding: 12px; }
-            .header-left { min-width: auto; }
-            .brand-info { display: none; } /* Ocultar texto del logo en móvil para dar espacio */
-            .header-center { order: 3; max-width: 100%; width: 100%; margin-top: 10px; }
-            .header-right { min-width: auto; flex-grow: 1; }
-            
-            main { padding: 20px 15px; }
-            
-            .dish-card { padding: 12px; gap: 12px; }
-            .dish-img { width: 80px; height: 80px; }
-            .category-title { font-size: 1.8em; margin-top: 30px; }
+        @media (max-width: 480px) {
+            header { padding: 12px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+            #btn-back { top: 12px; left: 10px; width: 38px; height: 38px; }
+            #restaurant-logo { max-width: 55px; max-height: 55px; border-width: 2px; }
+            #restaurant-name { font-size: 1.5em; margin: 6px 0 4px 0; }
+            .restaurant-meta { gap: 6px 10px; font-size: 0.78em; margin-bottom: 10px; }
+            .search-container { margin-bottom: 10px; }
+            .search-input { padding: 10px 15px 10px 35px; font-size: 0.9em; }
+            .top-buttons { gap: 8px; }
+            .lang-selector-wrap { padding: 6px 8px; gap: 4px; }
+            .lang-flag { width: 18px; height: 14px; }
+            #language-selector { font-size: 0.8em; }
+            .btn-pdf { padding: 6px 10px; font-size: 0.75em; }
+            .btn-theme { width: 34px; height: 34px; font-size: 1em; border-radius: 10px; }
         }
     </style>
 </head>
 
 <body>
 
-<header id="main-header" class="hidden">
-    <!-- Zona Izquierda (Botón volver, Logo, Info) -->
-    <div class="header-left">
-        <button id="btn-back" onclick="app.navigateHome()" title="Volver al inicio">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        </button>
-        <img id="global-logo" src="" alt="Logo" class="hidden">
-        <div class="brand-info">
-            <h1 id="global-name">Restaurante</h1>
-            <span id="global-subtitle">Menú Digital</span>
-        </div>
+<header id="header-container" style="display:none;">
+    <button id="btn-back" onclick="app.navigateHome()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+    <img id="restaurant-logo" src="" alt="Logo">
+    <h1 id="restaurant-name">Cargando...</h1>
+    
+    <!-- Metadatos (Teléfono, Email, Mapa) -->
+    <div id="restaurant-meta" class="restaurant-meta"></div>
+
+    <!-- Buscador Integrado -->
+    <div class="search-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar platos..." oninput="app.handleSearch(this.value)">
     </div>
 
-    <!-- Zona Central (Buscador Global) -->
-    <div class="header-center">
-        <div class="search-container">
-            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" class="search-input" placeholder="Buscar platos en todas las cartas..." oninput="app.handleSearch(this.value)">
+    <!-- Controles -->
+    <div class="top-buttons">
+        <div class="lang-selector-wrap">
+            <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+            <select id="language-selector"></select>
         </div>
-    </div>
-
-    <!-- Zona Derecha (Idioma, Tema) -->
-    <div class="header-right">
-        <div class="lang-selector">
-            <img id="current-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Flag">
-            <select id="language-selector" onchange="app.changeLanguage(this.value)"></select>
-        </div>
-        <button id="btn-theme" class="icon-btn" onclick="app.toggleTheme()" title="Cambiar Tema">🌙</button>
+        <button id="btn-pdf" class="btn btn-pdf" onclick="window.print()">📄 PDF</button>
+        <button id="btn-theme" class="btn-theme" onclick="app.toggleTheme()">🌙</button>
     </div>
 </header>
 
-<main id="app-content">
-    <div class="empty-state">
-        <h2>Cargando...</h2>
-        <p>Preparando la experiencia digital.</p>
-    </div>
-</main>
+<div id="main-content">
+    <div id="loader">Preparando la experiencia...</div>
+</div>
 
-<!-- Modal de Plato -->
+<!-- Modal -->
 <div id="dish-modal" class="modal-overlay" onclick="app.closeModal(event)">
     <div class="modal-content">
-        <button class="modal-close" onclick="app.closeModal(event, true)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-        <img id="modal-img" class="modal-img" src="" alt="">
+        <button id="modal-close" class="modal-close" onclick="app.closeModal(event, true)">✖</button>
+        <div id="modal-img-wrapper" class="modal-img-wrapper">
+            <img id="modal-img" class="modal-img" src="" alt="">
+        </div>
         <div class="modal-body">
             <h3 id="modal-title" class="modal-title"></h3>
             <div id="modal-price" class="modal-price"></div>
@@ -511,110 +382,137 @@
 
 <script>
 /**
- * ARQUITECTURA SPA PARA EL MENÚ
+ * DICCIONARIO DE TRADUCCIONES UI ESTÁTICAS
  */
+const I18N = {
+    es: { search: "Buscar platos en todas las cartas...", back: "Volver", normal: "CARTA", diario: "MENÚ DEL DÍA", especial: "MENÚ ESPECIAL", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", results: "Resultados de búsqueda" },
+    en: { search: "Search dishes in all menus...", back: "Back", normal: "MENU", diario: "DAILY MENU", especial: "SPECIAL MENU", emptyMenu: "This menu is empty.", emptySearch: "No results found for", results: "Search Results" },
+    fr: { search: "Rechercher des plats...", back: "Retour", normal: "CARTE", diario: "MENU DU JOUR", especial: "MENU SPÉCIAL", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", results: "Résultats de recherche" },
+    it: { search: "Cerca piatti...", back: "Indietro", normal: "MENU", diario: "MENU DEL GIORNO", especial: "MENU SPECIALE", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", results: "Risultati della ricerca" },
+    de: { search: "Gerichte suchen...", back: "Zurück", normal: "SPEISEKARTE", diario: "TAGESMENÜ", especial: "SPEZIALMENÜ", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", results: "Suchergebnisse" },
+    pt: { search: "Pesquisar pratos...", back: "Voltar", normal: "MENU", diario: "MENU DO DIA", especial: "MENU ESPECIAL", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", results: "Resultados da pesquisa" },
+    cn: { search: "搜索菜品...", back: "返回", normal: "菜单", diario: "每日菜单", especial: "特别菜单", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", results: "搜索结果" },
+    sa: { search: "البحث عن الأطباق...", back: "عودة", normal: "قائمة طعام", diario: "القائمة اليومية", especial: "قائمة خاصة", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", results: "نتائج البحث" }
+};
+
+/**
+ * PORTADAS POR DEFECTO PREMIUM (Base64 SVG)
+ * Para evitar que salga el mismo plato de café si no hay imagen en la carta.
+ */
+const DEFAULT_COVERS = {
+    normal: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgNDAwIDIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJjM2U1MCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzM0OThkYiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTAwIiByPSI1MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==", // Azul oscuro/Gris elegante
+    diario: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgNDAwIDIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UzNWMzNyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2U2N2UzMiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PHBhdGggZD0iTTAgMjAwIFEyMDAgMTAwIDQwMCAyMDAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==", // Naranja cálido
+    especial: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgNDAwIDIwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFhMWExYSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2Q0YWYzNyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2cpIi8+PHBvbHlnb24gcG9pbnRzPSIyMDAsNTAgMjUwLDE1MCAxNTAsMTUwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+" // Negro/Dorado
+};
+
+
 const app = {
+    REPO_OWNER: 'wiissdeveloperapps-hub',
+    REPO_NAME: 'menuforgeviews',
+    
     data: null,
     currentLang: 'es',
-    currentView: 'home', // 'home', 'menu', 'search'
+    currentView: 'home', // home | menu
     currentMenuId: null,
     searchQuery: '',
 
-    // URLs de configuración
-    REPO_OWNER: 'wiissdeveloperapps-hub',
-    REPO_NAME: 'menuforgeviews',
-
-    // Referencias DOM
     dom: {
-        header: document.getElementById('main-header'),
-        content: document.getElementById('app-content'),
+        header: document.getElementById('header-container'),
+        content: document.getElementById('main-content'),
         btnBack: document.getElementById('btn-back'),
-        globalName: document.getElementById('global-name'),
-        globalLogo: document.getElementById('global-logo'),
+        logo: document.getElementById('restaurant-logo'),
+        name: document.getElementById('restaurant-name'),
+        meta: document.getElementById('restaurant-meta'),
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         searchInput: document.getElementById('search-input'),
-        btnTheme: document.getElementById('btn-theme'),
         
-        // Modal
         modal: document.getElementById('dish-modal'),
-        modalImg: document.getElementById('modal-img'),
-        modalTitle: document.getElementById('modal-title'),
-        modalPrice: document.getElementById('modal-price'),
-        modalDesc: document.getElementById('modal-desc')
+        mImgWrapper: document.getElementById('modal-img-wrapper'),
+        mImg: document.getElementById('modal-img'),
+        mTitle: document.getElementById('modal-title'),
+        mPrice: document.getElementById('modal-price'),
+        mDesc: document.getElementById('modal-desc')
     },
 
-    // 1. INICIALIZACIÓN
-    // 1. INICIALIZACIÓN Y ENRUTADOR DE QR
+    // 1. INICIALIZACIÓN (Maneja QR Global y QR Antiguo)
     async init() {
         try {
             const hash = window.location.hash.substring(1);
-            if (!hash) {
-                throw new Error("Escanea un código QR válido para ver el menú.");
-            }
+            if (!hash) throw new Error("Escanea un código QR válido para ver el menú.");
 
             let jsonData;
 
-            // Identificar qué tipo de QR se ha escaneado basado en el prefijo
             if (hash.startsWith('pako:')) {
-                // Modo Emergencia Offline (pako + base64)
                 jsonData = this.decompressPako(hash.substring(5));
             } else if (hash.startsWith('restaurant:')) {
-                // Nuevo Modo Global Multi-Carta
                 const id = hash.replace('restaurant:', '');
                 jsonData = await this.fetchRemote(id, 'restaurants');
             } else if (hash.startsWith('remote:')) {
-                // Viejo Modo Fallback Carta Individual
                 const id = hash.replace('remote:', '');
                 jsonData = await this.fetchRemote(id, 'menus');
             } else {
-                // Por si acaso entra sin prefijo, intentamos en la nueva carpeta
                 jsonData = await this.fetchRemote(hash, 'restaurants');
             }
 
-            // NORMALIZACIÓN VITAL:
-            // Si el QR viene del fallback individual antiguo, el JSON es solo una carta
-            // (no tiene "menus: []"). Lo envolvemos para que la interfaz SPA funcione siempre.
+            // Normalización para soportar QR antiguos (1 sola carta) en la nueva interfaz
             if (!jsonData.menus) {
                 this.data = {
                     restaurantInfo: {
                         nombre: jsonData.nombreRestaurante || 'Restaurante',
-                        logoBase64: jsonData.logoRestaurante || ''
+                        logoBase64: jsonData.logoRestaurante || '',
+                        telefono: jsonData.telefonoRestaurante,
+                        direccion: jsonData.direccionRestaurante,
+                        email: jsonData.emailRestaurante
                     },
-                    menus: [jsonData] // Metemos la carta individual dentro del array
+                    menus: [jsonData] 
                 };
             } else {
-                this.data = jsonData; // Si es Global, ya viene con la estructura correcta
+                this.data = jsonData;
             }
 
-            this.setupApp();
+            this.setupUI();
             
         } catch (error) {
-            console.error('Error de Inicialización:', error);
-            this.dom.content.innerHTML = `
-                <div class="empty-state">
-                    <h2>Ups...</h2>
-                    <p>${error.message}</p>
-                </div>
-            `;
+            console.error(error);
+            this.dom.content.innerHTML = `<div style="text-align:center; padding: 50px; color: red;"><h3>Error</h3><p>${error.message}</p></div>`;
         }
     },
 
-    // 2. CONFIGURACIÓN BASE DE LA APP
-    setupApp() {
-        this.dom.header.classList.remove('hidden');
+    // 2. CONFIGURACIÓN INICIAL (Header e Idiomas)
+    setupUI() {
+        this.dom.header.style.display = 'block';
 
-        // Configurar Info Global del Restaurante (Nuevo JSON Structure)
+        // Restaurar Metadatos del Restaurante
         const rInfo = this.data.restaurantInfo || {};
-        if (rInfo.nombre) this.dom.globalName.textContent = rInfo.nombre;
+        this.dom.name.textContent = rInfo.nombre || 'Restaurante';
+        
         if (rInfo.logoBase64) {
-            this.dom.globalLogo.src = rInfo.logoBase64;
-            this.dom.globalLogo.classList.remove('hidden');
+            this.dom.logo.src = rInfo.logoBase64;
+            this.dom.logo.style.display = 'inline-block';
+        } else {
+            this.dom.logo.style.display = 'none';
         }
 
-        // Determinar idiomas escaneando el primer menú disponible
-        // (Asumimos que todos los menús comparten los mismos idiomas base en sus traducciones)
-        const firstMenu = this.data.menus && this.data.menus[0];
+        let metaHtml = '';
+        if (rInfo.telefono) {
+            const safePhone = this.escapeHTML(rInfo.telefono);
+            metaHtml += `<div class="restaurant-meta-item"><svg class="meta-icon" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg><a href="tel:${safePhone}">${safePhone}</a></div>`;
+        }
+        if (rInfo.email) {
+            const safeEmail = this.escapeHTML(rInfo.email);
+            metaHtml += `<div class="restaurant-meta-item"><svg class="meta-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><a href="mailto:${safeEmail}">${safeEmail}</a></div>`;
+        }
+        if (rInfo.direccion) {
+            const safeDir = this.escapeHTML(rInfo.direccion);
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
+            metaHtml += `<div class="restaurant-meta-item"><svg class="meta-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><a href="${mapsUrl}" target="_blank">${safeDir}</a></div>`;
+        }
+        this.dom.meta.innerHTML = metaHtml;
+        this.dom.meta.style.display = metaHtml ? 'flex' : 'none';
+
+        // Configurar Idiomas detectando el primer menú
+        const firstMenu = this.data.menus[0];
         if (firstMenu && firstMenu.traducciones) {
             this.dom.langSelect.innerHTML = '';
             Object.keys(firstMenu.traducciones).forEach(lang => {
@@ -623,19 +521,31 @@ const app = {
                 opt.textContent = firstMenu.traducciones[lang].meta?.languageName || lang.toUpperCase();
                 this.dom.langSelect.appendChild(opt);
             });
-
-            // Establecer idioma por defecto
             const browserLang = navigator.language.split('-')[0];
             this.currentLang = firstMenu.traducciones[browserLang] ? browserLang : Object.keys(firstMenu.traducciones)[0];
             this.dom.langSelect.value = this.currentLang;
             this.updateFlag();
         }
 
-        // Iniciar en la pantalla principal
+        // Eventos
+        this.dom.langSelect.addEventListener('change', (e) => {
+            this.currentLang = e.target.value;
+            this.updateFlag();
+            this.updateUITexts();
+            this.refreshCurrentView();
+        });
+
+        this.updateUITexts();
         this.navigateHome();
     },
 
-    // 3. NAVEGACIÓN Y RENDERIZADO DE VISTAS
+    updateUITexts() {
+        const t = I18N[this.currentLang] || I18N['es'];
+        this.dom.searchInput.placeholder = t.search;
+        this.dom.btnBack.title = t.back;
+    },
+
+    // 3. RUTAS
     navigateHome() {
         this.currentView = 'home';
         this.currentMenuId = null;
@@ -652,60 +562,70 @@ const app = {
         this.currentView = 'menu';
         this.currentMenuId = menuId;
         this.dom.btnBack.style.display = 'flex';
-        this.dom.searchInput.value = ''; // Limpiar búsqueda al entrar a una carta
+        this.dom.searchInput.value = ''; 
         this.searchQuery = '';
         this.renderMenu(menuId);
     },
 
-    // RENDER: GRID DE CARTAS
+    refreshCurrentView() {
+        if (this.searchQuery) this.renderSearch();
+        else if (this.currentView === 'menu') this.renderMenu(this.currentMenuId);
+        else this.renderHomeGrid();
+    },
+
+    // 4. RENDERERS
     renderHomeGrid() {
         const menus = this.data.menus || [];
+        const t = I18N[this.currentLang] || I18N['es'];
         
         if (menus.length === 0) {
-            this.dom.content.innerHTML = '<div class="empty-state"><h2>Sin cartas</h2><p>Este restaurante no tiene menús disponibles.</p></div>';
+            this.dom.content.innerHTML = `<div id="loader">${t.emptyMenu}</div>`;
             return;
         }
 
-        // Si solo hay un menú y no estamos buscando, redirigir automáticamente
+        // Si solo hay un menú, redirigir directo (comportamiento legacy)
         if (menus.length === 1 && !this.searchQuery) {
             this.navigateToMenu(menus[0].id);
-            this.dom.btnBack.style.display = 'none'; // No mostrar volver si solo hay 1 menú
+            this.dom.btnBack.style.display = 'none';
             return;
         }
 
         let html = '<div class="menu-grid">';
         menus.forEach(menu => {
-            // Buscar la primera imagen disponible en los recursos del menú para la portada
-            const imagenes = menu.recursos?.imagenes || {};
-            const imgKeys = Object.keys(imagenes);
-            const coverImg = imgKeys.length > 0 ? imagenes[imgKeys[0]] : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100%" height="100%" fill="%23f0f0f5"/></svg>';
+            const imgKeys = Object.keys(menu.recursos?.imagenes || {});
+            const tipo = (menu.tipoMenu || 'normal').toLowerCase();
+            
+            // Usar portada base64 premium correspondiente si no hay imágenes en la carta
+            const coverImg = imgKeys.length > 0 ? menu.recursos.imagenes[imgKeys[0]] : (DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal);
             
             const trans = menu.traducciones?.[this.currentLang];
-            const menuName = trans?.nombreRestaurante || menu.nombreCarta || 'Carta';
+            const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
+            const translatedTipo = t[tipo] || tipo.toUpperCase();
 
             html += `
-                <div class="menu-card" onclick="app.navigateToMenu('${menu.id}')">
+                <div class="menu-card fade-in-slide" onclick="app.navigateToMenu('${menu.id}')">
                     <img class="menu-card-img" src="${coverImg}" alt="${this.escapeHTML(menuName)}" loading="lazy">
-                    <div class="menu-card-content">
+                    <div class="menu-card-body">
                         <h2 class="menu-card-title">${this.escapeHTML(menuName)}</h2>
-                        <span class="menu-card-badge">${menu.tipoMenu ? menu.tipoMenu.toUpperCase() : 'CARTA'}</span>
+                        <span class="menu-card-badge">${translatedTipo}</span>
                     </div>
                 </div>
             `;
         });
         html += '</div>';
         this.dom.content.innerHTML = html;
+        this.initScrollAnimations();
         window.scrollTo(0,0);
     },
 
-    // RENDER: VISTA DE UN MENÚ ESPECÍFICO
     renderMenu(menuId) {
         const menu = this.data.menus.find(m => m.id === menuId);
         if (!menu) return this.navigateHome();
+        const t = I18N[this.currentLang] || I18N['es'];
 
         const trans = menu.traducciones?.[this.currentLang];
-        if (!trans || !trans.categorias) {
-            this.dom.content.innerHTML = '<div class="empty-state"><h2>Error</h2><p>Traducción no disponible para esta carta.</p></div>';
+        if (!trans || !trans.categorias || trans.categorias.length === 0) {
+            this.dom.content.innerHTML = `<div id="loader">${t.emptyMenu}</div>`;
             return;
         }
 
@@ -713,31 +633,24 @@ const app = {
         let html = '';
 
         trans.categorias.forEach(cat => {
+            html += `<div class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(cat.nombre)}</h2>`;
-            html += `<div class="dish-list">`;
-            
             cat.platos?.forEach(dish => {
                 html += this.generateDishCardHTML(dish, images, null);
             });
-            
             html += `</div>`;
         });
 
-        this.dom.content.innerHTML = html || '<div class="empty-state"><p>Esta carta está vacía.</p></div>';
+        this.dom.content.innerHTML = html;
+        this.initScrollAnimations();
         window.scrollTo(0,0);
     },
 
-    // 4. MOTOR DE BÚSQUEDA GLOBAL
+    // 5. BUSCADOR
     handleSearch(query) {
         this.searchQuery = query.trim().toLowerCase();
-        
         if (!this.searchQuery) {
-            // Restaurar vista anterior
-            if (this.currentView === 'menu') {
-                this.renderMenu(this.currentMenuId);
-            } else {
-                this.renderHomeGrid();
-            }
+            this.refreshCurrentView();
             return;
         }
         this.renderSearch();
@@ -746,14 +659,14 @@ const app = {
     renderSearch() {
         let resultsHTML = '';
         let matchCount = 0;
+        const t = I18N[this.currentLang] || I18N['es'];
 
-        // Mostrar botón volver durante búsqueda si estábamos en la home
         this.dom.btnBack.style.display = 'flex';
 
         this.data.menus.forEach(menu => {
             const trans = menu.traducciones?.[this.currentLang];
             const images = menu.recursos?.imagenes || {};
-            const menuName = trans?.nombreRestaurante || menu.nombreCarta || 'Carta';
+            const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
 
             if (trans && trans.categorias) {
                 trans.categorias.forEach(cat => {
@@ -771,145 +684,122 @@ const app = {
         });
 
         if (matchCount === 0) {
-            this.dom.content.innerHTML = `
-                <div class="empty-state">
-                    <h2>Sin resultados</h2>
-                    <p>No encontramos "${this.escapeHTML(this.searchQuery)}" en nuestras cartas.</p>
-                </div>
-            `;
+            this.dom.content.innerHTML = `<div id="loader">${t.emptySearch} "${this.escapeHTML(this.searchQuery)}"</div>`;
         } else {
             this.dom.content.innerHTML = `
-                <h2 class="category-title">Resultados de búsqueda (${matchCount})</h2>
-                <div class="dish-list">${resultsHTML}</div>
+                <div class="category fade-in-slide">
+                    <h2 class="category-title">${t.results} (${matchCount})</h2>
+                    ${resultsHTML}
+                </div>
             `;
+            this.initScrollAnimations();
         }
     },
 
-    // COMPONENTES REUTILIZABLES
     generateDishCardHTML(dish, images, sourceMenuName) {
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
-        const name = this.escapeHTML(dish.nombre);
-        const desc = this.escapeHTML(dish.descripcion);
-        const price = this.formatPrice(dish.precio);
+        const safeName = this.escapeHTML(dish.nombre);
+        const safeDesc = this.escapeHTML(dish.descripcion);
+        const safePrice = this.formatPrice(dish.precio);
         
-        // Codificar data para el onclick
-        const safeData = encodeURIComponent(JSON.stringify({
-            name, desc, price, imgUrl, source: sourceMenuName
-        }));
+        const safeData = encodeURIComponent(JSON.stringify({ name: safeName, desc: safeDesc, price: safePrice, imgUrl }));
 
         return `
-            <div class="dish-card" onclick="app.openModal('${safeData}')">
-                ${imgUrl ? `<img class="dish-img" src="${imgUrl}" alt="${name}" loading="lazy">` : ''}
-                <div class="dish-info">
-                    <h3 class="dish-name">${name}</h3>
-                    ${desc ? `<p class="dish-desc">${desc}</p>` : ''}
-                    <div class="dish-footer">
-                        <span class="dish-price">${price}</span>
-                        ${sourceMenuName ? `<span class="dish-source">${this.escapeHTML(sourceMenuName)}</span>` : ''}
+            <div class="dish" onclick="app.openModal('${safeData}')">
+                ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy">` : ''}
+                <div class="dish-details">
+                    <div class="dish-name">${safeName}</div>
+                    ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
+                    <div class="dish-bottom-row">
+                        <div class="dish-price">${safePrice} ${sourceMenuName ? `<span class="dish-source-badge">${this.escapeHTML(sourceMenuName)}</span>` : ''}</div>
+                        <div class="dish-action-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     },
 
-    // 5. GESTIÓN DEL MODAL
+    // 6. MODAL (Lógica del Original)
     openModal(safeDataStr) {
         const data = JSON.parse(decodeURIComponent(safeDataStr));
-        
-        this.dom.modalTitle.textContent = data.name;
-        this.dom.modalPrice.textContent = data.price;
-        this.dom.modalDesc.innerHTML = data.desc || '<i>Sin descripción adicional.</i>';
+        this.dom.mTitle.innerHTML = data.name;
+        this.dom.mPrice.innerHTML = data.price;
+        this.dom.mDesc.innerHTML = data.desc || '<i>Sin descripción.</i>';
         
         if (data.imgUrl) {
-            this.dom.modalImg.src = data.imgUrl;
-            this.dom.modalImg.style.display = 'block';
+            this.dom.mImg.src = data.imgUrl;
+            this.dom.mImgWrapper.style.display = 'block';
         } else {
-            this.dom.modalImg.style.display = 'none';
+            this.dom.mImg.src = '';
+            this.dom.mImgWrapper.style.display = 'none';
         }
 
         this.dom.modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
+        document.body.style.overflow = 'hidden';
     },
 
     closeModal(event, force = false) {
-        // Cierra si se fuerza (botón X) o si se clickea el overlay (fuera del contenido)
         if (force || event.target === this.dom.modal) {
             this.dom.modal.classList.remove('active');
             document.body.style.overflow = '';
         }
     },
 
-    // 6. UTILIDADES Y EVENTOS
-    changeLanguage(langCode) {
-        this.currentLang = langCode;
-        this.updateFlag();
-        // Refrescar vista actual
-        if (this.searchQuery) {
-            this.renderSearch();
-        } else if (this.currentView === 'menu') {
-            this.renderMenu(this.currentMenuId);
-        } else {
-            this.renderHomeGrid();
-        }
-    },
-
-    updateFlag() {
-        this.dom.currentFlag.src = `assets/flags/${this.currentLang}.png`;
-    },
-
+    // 7. UTILIDADES
+    updateFlag() { this.dom.currentFlag.src = `assets/flags/${this.currentLang}.png`; },
+    
     toggleTheme() {
         document.body.classList.toggle('dark-mode');
-        this.dom.btnTheme.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        document.getElementById('btn-theme').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     },
-
+    
     formatPrice(price) {
         if (typeof price !== 'number') return '';
         return price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
     },
-
+    
     escapeHTML(str) {
         if (!str) return '';
-        return String(str).replace(/[&<>"']/g, function(match) {
-            return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match];
-        });
+        return String(str).replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match]));
     },
 
-    // DECOMPRESIÓN (Mantenido de tu lógica original)
+    initScrollAnimations() {
+        const elements = document.querySelectorAll('.fade-in-slide');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), index * 70);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: "0px 0px -20px 0px" });
+        elements.forEach(el => observer.observe(el));
+        // Force display logic to trigger instantly for elements already in view
+        setTimeout(() => elements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if(rect.top < window.innerHeight) el.classList.add('visible');
+        }), 100);
+    },
+
+    // 8. RED Y DECOMPRESIÓN
     decompressPako(base64String) {
-        try {
-            const compressed = atob(base64String).split('').map(c => c.charCodeAt(0));
-            const decompressed = pako.inflate(new Uint8Array(compressed), { to: 'string' });
-            return JSON.parse(decompressed);
-        } catch (error) {
-            throw new Error('Los datos están corruptos.');
-        }
+        const compressed = atob(base64String).split('').map(c => c.charCodeAt(0));
+        return JSON.parse(pako.inflate(new Uint8Array(compressed), { to: 'string' }));
     },
 
-  // DECOMPRESIÓN Y FETCH REMOTO MULTI-CARPETA
     async fetchRemote(id, folder) {
-        // La URL ahora lee dinámicamente de la carpeta 'restaurants' o 'menus'
         const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${this.REPO_NAME}/main/contents/${folder}/${id}.json`;
-        
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`El menú no se encuentra disponible (ID: ${id})`);
+        if (!response.ok) throw new Error(`El menú no está disponible o no se encuentra.`);
         
-        // Descargamos el texto crudo. 
-        // GitHub decodifica el Base64 que enviaste, dejando el string de LZString.
         const rawText = await response.text();
-        
-        // Descomprimimos con la función inversa a la de la App
-        const decompressedString = LZString.decompressFromEncodedURIComponent(rawText);
-        
-        if (decompressedString) {
-            return JSON.parse(decompressedString);
-        } else {
-            // Fallback: Por si alguna vez subes un JSON sin comprimir para pruebas
-            return JSON.parse(rawText);
-        }
-    },
+        const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
+        return JSON.parse(decompressed || rawText);
+    }
 };
 
-// Arrancar la aplicación al cargar
 document.addEventListener('DOMContentLoaded', () => app.init());
 
 </script>
