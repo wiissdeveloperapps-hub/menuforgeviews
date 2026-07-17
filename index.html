@@ -548,14 +548,21 @@ const app = {
     async init() {
         try {
             const hash = window.location.hash.substring(1);
+            
+            if (!hash) {
+                throw new Error("Falta el ID en la URL (ejemplo: #ID_RESTAURANTE)");
+            }
+
             let jsonData;
 
+            // Compatibilidad por si sigues usando pako en pruebas locales
             if (hash.startsWith('pako:')) {
                 jsonData = this.decompressPako(hash.substring(5));
-            } else if (hash.startsWith('remote:')) {
-                jsonData = await this.fetchRemote(hash.substring(7));
             } else {
-                throw new Error("Formato de URL no válido.");
+                // Si no es pako, asumimos directamente que es el ID del restaurante.
+                // Limpiamos el prefijo 'remote:' por si se lo estuvieras pasando por inercia.
+                const restaurantId = hash.replace('remote:', '');
+                jsonData = await this.fetchRemote(restaurantId);
             }
 
             this.data = jsonData;
@@ -852,12 +859,22 @@ const app = {
         }
     },
 
+   // DECOMPRESIÓN Y FETCH REMOTO
     async fetchRemote(id) {
-        const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${this.REPO_NAME}/main/contents/menus/${id}.json`;
+        // Se corrige la ruta apuntando a la carpeta restaurants/ tal y como se sube desde la app
+        const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${this.REPO_NAME}/main/contents/restaurants/${id}.json`;
+        
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`No se pudo cargar remoto ID: ${id}`);
+        if (!response.ok) throw new Error(`No se encontró el menú en el servidor (ID: ${id})`);
+        
+        // Descargamos el texto. Al venir de raw.githubusercontent, ya es el string de LZString
         const rawText = await response.text();
-        let jsonString = LZString.decompressFromEncodedURIComponent(rawText) || rawText;
+        
+        // Aplicamos la descompresión inversa a la que usaste en el upload
+        const jsonString = LZString.decompressFromEncodedURIComponent(rawText);
+        
+        if (!jsonString) throw new Error("Los datos descargados no se pudieron descomprimir correctamente.");
+        
         return JSON.parse(jsonString);
     }
 };
