@@ -172,6 +172,47 @@
         }
         .btn-theme:hover { transform: scale(1.05) rotate(5deg); }
 
+        /* CATEGORY TABS */
+        .category-tabs-container {
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+            margin-top: 15px;
+            display: none; /* Oculto por defecto, se muestra con JS */
+        }
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            margin-bottom: -15px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+        .category-tab {
+            padding: 8px 18px;
+            border-radius: 20px;
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 700;
+            font-size: 0.9em;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+        .category-tab:hover { background-color: #dee2e6; }
+        .category-tab.active {
+            background-color: #007bff;
+            color: #ffffff;
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        body.dark-mode .category-tab { background-color: #252528; color: #a0a0a5; border-color: #252528; }
+        body.dark-mode .category-tab.active { background-color: #007bff; color: #ffffff; border-color: #007bff; }
+
         /* ========================================================
            CONTENEDOR PRINCIPAL
         ======================================================== */
@@ -396,10 +437,17 @@
         <input type="text" id="search-input" class="search-input" placeholder="Buscar platos..." oninput="app.handleSearch(this.value)">
     </div>
 
+    <!-- Pestañas de categorías -->
+    <div id="category-tabs-container" class="category-tabs-container">
+        <div id="category-tabs" class="category-tabs">
+            <!-- Se rellena con JS -->
+        </div>
+    </div>
+
     <div class="top-buttons">
         <div class="lang-selector-wrap">
             <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-            <select id="language-selector"></select>
+            <select id="language-selector" aria-label="Selector de idioma"></select>
         </div>
         <button id="btn-pdf" class="btn btn-pdf" onclick="window.print()">📄 PDF</button>
         <button id="btn-theme" class="btn-theme" onclick="app.toggleTheme()">🌙</button>
@@ -457,6 +505,7 @@ const app = {
     currentView: 'home', 
     currentMenuId: null,
     searchQuery: '',
+    categoryTabsObserver: null,
 
     dom: {
         header: document.getElementById('header-container'),
@@ -468,6 +517,8 @@ const app = {
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         searchInput: document.getElementById('search-input'),
+        categoryTabsContainer: document.getElementById('category-tabs-container'),
+        categoryTabs: document.getElementById('category-tabs'),
         
         modal: document.getElementById('dish-modal'),
         mImgWrapper: document.getElementById('modal-img-wrapper'),
@@ -620,6 +671,8 @@ const app = {
         this.currentView = 'home';
         this.currentMenuId = null;
         this.dom.btnBack.style.display = 'none';
+        this.dom.categoryTabsContainer.style.display = 'none';
+        if (this.categoryTabsObserver) this.categoryTabsObserver.disconnect();
         
         if (this.searchQuery) {
             this.renderSearch();
@@ -633,7 +686,6 @@ const app = {
         this.currentMenuId = menuId;
         this.dom.btnBack.style.display = 'flex';
         this.dom.searchInput.value = ''; 
-        this.searchQuery = '';
         this.renderMenu(menuId);
     },
 
@@ -697,22 +749,62 @@ const app = {
             trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
         }
 
+        // Si no hay categorías, mostrar mensaje y ocultar pestañas
         if (!trans || !trans.categorias || trans.categorias.length === 0) {
             this.dom.content.innerHTML = `<div id="loader">${t.emptyMenu}</div>`;
+            this.dom.categoryTabs.innerHTML = '';
+            this.dom.categoryTabsContainer.style.display = 'none';
             return;
         }
 
+        this.dom.categoryTabsContainer.style.display = 'block';
         const images = menu.recursos?.imagenes || {};
         let html = '';
+        let tabsHtml = '';
 
+        // Generar pestañas y contenido de categorías
         trans.categorias.forEach(cat => {
-            html += `<div class="category fade-in-slide">`;
+            const categorySlug = this.slugify(cat.nombre);
+            tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(cat.nombre)}</div>`;
+
+            html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(cat.nombre)}</h2>`;
             cat.platos?.forEach(dish => {
                 html += this.generateDishCardHTML(dish, images, null);
             });
             html += `</div>`;
         });
+
+        this.dom.categoryTabs.innerHTML = tabsHtml;
+        
+        // Añadir listeners a las pestañas para el scroll
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    const headerHeight = this.dom.header.offsetHeight;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Observer para resaltar la pestaña activa al hacer scroll (scroll-spy)
+        if (this.categoryTabsObserver) this.categoryTabsObserver.disconnect();
+        const observerOptions = {
+            root: null,
+            rootMargin: `-${this.dom.header.offsetHeight + 20}px 0px 0px 0px`,
+            threshold: 0.1
+        };
+        this.categoryTabsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                const tab = document.querySelector(`.category-tab[data-target="${id}"]`);
+                if (tab) tab.classList.toggle('active', entry.isIntersecting);
+            });
+        }, observerOptions);
+        document.querySelectorAll('.category').forEach(section => this.categoryTabsObserver.observe(section));
 
         this.dom.content.innerHTML = html;
         this.initScrollAnimations();
@@ -734,6 +826,8 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
 
         this.dom.btnBack.style.display = 'flex';
+        this.dom.categoryTabsContainer.style.display = 'none';
+        if (this.categoryTabsObserver) this.categoryTabsObserver.disconnect();
 
         this.data.menus.forEach(menu => {
             // Fallback de seguridad
@@ -838,6 +932,16 @@ const app = {
     escapeHTML(str) {
         if (!str) return '';
         return String(str).replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[match]));
+    },
+
+    slugify(text) {
+        if (!text) return '';
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
     },
 
     initScrollAnimations() {
