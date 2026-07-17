@@ -598,7 +598,6 @@ const app = {
             return;
         }
 
-        // Si solo hay un menú, redirigir directo (comportamiento legacy)
         if (menus.length === 1 && !this.searchQuery) {
             this.navigateToMenu(menus[0].id);
             this.dom.btnBack.style.display = 'none';
@@ -607,18 +606,17 @@ const app = {
 
         let html = '<div class="menu-grid">';
         menus.forEach(menu => {
-            const imgKeys = Object.keys(menu.recursos?.imagenes || {});
+            // FORZAMOS EL USO DE NUESTRA CONSTANTE LOCAL, IGNORANDO TOTALMENTE EL JSON
             const tipo = (menu.tipoMenu || 'normal').toLowerCase();
-            
-            // Usar portada base64 premium correspondiente si no hay imágenes en la carta
-            const coverImg = imgKeys.length > 0 ? menu.recursos.imagenes[imgKeys[0]] : (DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal);
+            const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
             
             const trans = menu.traducciones?.[this.currentLang];
             const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
 
             html += `
                 <div class="menu-card fade-in-slide" onclick="app.navigateToMenu('${menu.id}')">
-                    <img class="menu-card-img" src="${coverImg}" alt="${this.escapeHTML(menuName)}" loading="lazy">
+                    <!-- Añadimos un timestamp a la URL para evitar caché del navegador -->
+                    <img class="menu-card-img" src="${coverImg}?t=${new Date().getTime()}" alt="${this.escapeHTML(menuName)}" loading="lazy">
                     <div class="menu-card-overlay">
                         <h2 class="menu-card-title">${this.escapeHTML(menuName)}</h2>
                     </div>
