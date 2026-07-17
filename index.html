@@ -180,11 +180,11 @@
             max-width: 800px;
             margin: 0 auto;
             min-height: 70vh;
-            padding-bottom: 80px; /* Espacio extra para que no tape el banner de cookies */
+            padding-bottom: 80px; 
         }
         #loader { text-align: center; padding: 50px; font-size: 1.5em; color: #6c757d; font-weight: 600; }
 
-        /* HOME: GRID DE MENÚS (IMAGEN OPACA + TEXTO CENTRADO) */
+        /* HOME: GRID DE MENÚS */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -242,7 +242,7 @@
         }
 
         /* ========================================================
-           VISTA CARTA: CATEGORÍAS Y PLATOS
+           VISTA CARTA
         ======================================================== */
         .category { margin-bottom: 50px; }
         .category-title {
@@ -279,7 +279,6 @@
         .dish-source-badge { font-size: 0.7em; background: #eee; padding: 4px 8px; border-radius: 6px; color: #555; }
         body.dark-mode .dish-source-badge { background: #333; color: #bbb; }
 
-        /* ANIMACIONES */
         .fade-in-slide {
             opacity: 0; transform: translateX(-30px);
             transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -373,7 +372,6 @@
             .btn-pdf { padding: 6px 10px; font-size: 0.75em; }
             .btn-theme { width: 34px; height: 34px; font-size: 1em; border-radius: 10px; }
             
-            /* Ajustes cookies móvil */
             #cookie-banner { flex-direction: column; text-align: center; gap: 12px; padding: 16px; }
             .cookie-text { margin-right: 0; font-size: 0.85em; }
             .btn-cookie { width: 100%; }
@@ -391,16 +389,13 @@
     <img id="restaurant-logo" src="" alt="Logo">
     <h1 id="restaurant-name">Cargando...</h1>
     
-    <!-- Metadatos (Teléfono, Email, Mapa) -->
     <div id="restaurant-meta" class="restaurant-meta"></div>
 
-    <!-- Buscador Integrado -->
     <div class="search-container">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="search-input" class="search-input" placeholder="Buscar platos..." oninput="app.handleSearch(this.value)">
     </div>
 
-    <!-- Controles -->
     <div class="top-buttons">
         <div class="lang-selector-wrap">
             <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
@@ -415,7 +410,6 @@
     <div id="loader">Preparando la experiencia...</div>
 </div>
 
-<!-- Modal -->
 <div id="dish-modal" class="modal-overlay" onclick="app.closeModal(event)">
     <div class="modal-content">
         <button id="modal-close" class="modal-close" onclick="app.closeModal(event, true)">✖</button>
@@ -437,9 +431,6 @@
 </div>
 
 <script>
-/**
- * DICCIONARIO DE TRADUCCIONES UI ESTÁTICAS (Incluye textos de Cookies)
- */
 const I18N = {
     es: { search: "Buscar platos en todas las cartas...", back: "Volver", normal: "CARTA", diario: "MENÚ DEL DÍA", especial: "MENÚ ESPECIAL", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", results: "Resultados de búsqueda", cookieMsg: "Utilizamos cookies para mejorar su experiencia. Al continuar, acepta su uso.", cookieBtn: "Aceptar" },
     en: { search: "Search dishes in all menus...", back: "Back", normal: "MENU", diario: "DAILY MENU", especial: "SPECIAL MENU", emptyMenu: "This menu is empty.", emptySearch: "No results found for", results: "Search Results", cookieMsg: "We use cookies to improve your experience. By continuing, you accept their use.", cookieBtn: "Accept" },
@@ -451,9 +442,6 @@ const I18N = {
     sa: { search: "البحث عن الأطباق...", back: "عودة", normal: "قائمة طعام", diario: "القائمة اليومية", especial: "قائمة خاصة", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", results: "نتائج البحث", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك. بالاستمرار، فإنك توافق على استخدامها.", cookieBtn: "قبول" }
 };
 
-/**
- * PORTADAS POR DEFECTO LOCALES
- */
 const DEFAULT_COVERS = {
     normal: "assets/principal/normal.jpg",
     diario: "assets/principal/diario.jpg",
@@ -567,15 +555,31 @@ const app = {
 
         const firstMenu = this.data.menus[0];
         if (firstMenu && firstMenu.traducciones) {
+            // Inteligencia de idiomas
+            let rawBrowserLang = navigator.language.split('-')[0].toLowerCase();
+            
+            // Adaptar códigos estándar a las claves del proyecto
+            if (rawBrowserLang === 'zh') rawBrowserLang = 'cn';
+            if (rawBrowserLang === 'ar') rawBrowserLang = 'sa';
+            
+            const supportedLangs = Object.keys(I18N);
+            
+            // Regla de negocio: Si el idioma está en los 8 soportados lo usamos, si no, forzamos inglés.
+            this.currentLang = supportedLangs.includes(rawBrowserLang) ? rawBrowserLang : 'en';
+
             this.dom.langSelect.innerHTML = '';
-            Object.keys(firstMenu.traducciones).forEach(lang => {
+            
+            // Garantizamos que se listan todos los idiomas de la carta + el idioma forzado (por seguridad)
+            const langsToRender = new Set(Object.keys(firstMenu.traducciones));
+            langsToRender.add(this.currentLang);
+
+            langsToRender.forEach(lang => {
                 const opt = document.createElement('option');
                 opt.value = lang;
-                opt.textContent = firstMenu.traducciones[lang].meta?.languageName || lang.toUpperCase();
+                opt.textContent = firstMenu.traducciones[lang]?.meta?.languageName || lang.toUpperCase();
                 this.dom.langSelect.appendChild(opt);
             });
-            const browserLang = navigator.language.split('-')[0];
-            this.currentLang = firstMenu.traducciones[browserLang] ? browserLang : Object.keys(firstMenu.traducciones)[0];
+            
             this.dom.langSelect.value = this.currentLang;
             this.updateFlag();
         }
@@ -597,15 +601,12 @@ const app = {
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
         
-        // Textos del banner de cookies
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
     },
 
-    // Lógica para mostrar y aceptar cookies
     initCookies() {
         if (!localStorage.getItem('cookiesAccepted_MenuForge')) {
-            // Un pequeño retraso para que aparezca fluidamente al cargar
             setTimeout(() => this.dom.cookieBanner.classList.add('show'), 800);
         }
     },
@@ -661,11 +662,13 @@ const app = {
         menus.forEach(menu => {
             const tipo = (menu.tipoMenu || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
-            
-            // Añadimos el timestamp para romper la caché del navegador
             const noCacheImg = `${coverImg}?t=${new Date().getTime()}`;
             
-            const trans = menu.traducciones?.[this.currentLang];
+            // Fallback: si el restaurante no tiene el idioma forzado (ej. inglés), cargamos el primero disponible
+            let trans = menu.traducciones?.[this.currentLang];
+            if (!trans && menu.traducciones) {
+                trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
+            }
             const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
 
             html += `
@@ -688,7 +691,12 @@ const app = {
         if (!menu) return this.navigateHome();
         const t = I18N[this.currentLang] || I18N['es'];
 
-        const trans = menu.traducciones?.[this.currentLang];
+        // Fallback de seguridad
+        let trans = menu.traducciones?.[this.currentLang];
+        if (!trans && menu.traducciones) {
+            trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
+        }
+
         if (!trans || !trans.categorias || trans.categorias.length === 0) {
             this.dom.content.innerHTML = `<div id="loader">${t.emptyMenu}</div>`;
             return;
@@ -728,7 +736,12 @@ const app = {
         this.dom.btnBack.style.display = 'flex';
 
         this.data.menus.forEach(menu => {
-            const trans = menu.traducciones?.[this.currentLang];
+            // Fallback de seguridad
+            let trans = menu.traducciones?.[this.currentLang];
+            if (!trans && menu.traducciones) {
+                trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
+            }
+            
             const images = menu.recursos?.imagenes || {};
             const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
 
