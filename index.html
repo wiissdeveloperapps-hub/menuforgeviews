@@ -545,32 +545,58 @@ const app = {
     },
 
     // 1. INICIALIZACIÓN
+    // 1. INICIALIZACIÓN Y ENRUTADOR DE QR
     async init() {
         try {
             const hash = window.location.hash.substring(1);
-            
             if (!hash) {
-                throw new Error("Falta el ID en la URL (ejemplo: #ID_RESTAURANTE)");
+                throw new Error("Escanea un código QR válido para ver el menú.");
             }
 
             let jsonData;
 
-            // Compatibilidad por si sigues usando pako en pruebas locales
+            // Identificar qué tipo de QR se ha escaneado basado en el prefijo
             if (hash.startsWith('pako:')) {
+                // Modo Emergencia Offline (pako + base64)
                 jsonData = this.decompressPako(hash.substring(5));
+            } else if (hash.startsWith('restaurant:')) {
+                // Nuevo Modo Global Multi-Carta
+                const id = hash.replace('restaurant:', '');
+                jsonData = await this.fetchRemote(id, 'restaurants');
+            } else if (hash.startsWith('remote:')) {
+                // Viejo Modo Fallback Carta Individual
+                const id = hash.replace('remote:', '');
+                jsonData = await this.fetchRemote(id, 'menus');
             } else {
-                // Si no es pako, asumimos directamente que es el ID del restaurante.
-                // Limpiamos el prefijo 'remote:' por si se lo estuvieras pasando por inercia.
-                const restaurantId = hash.replace('remote:', '');
-                jsonData = await this.fetchRemote(restaurantId);
+                // Por si acaso entra sin prefijo, intentamos en la nueva carpeta
+                jsonData = await this.fetchRemote(hash, 'restaurants');
             }
 
-            this.data = jsonData;
+            // NORMALIZACIÓN VITAL:
+            // Si el QR viene del fallback individual antiguo, el JSON es solo una carta
+            // (no tiene "menus: []"). Lo envolvemos para que la interfaz SPA funcione siempre.
+            if (!jsonData.menus) {
+                this.data = {
+                    restaurantInfo: {
+                        nombre: jsonData.nombreRestaurante || 'Restaurante',
+                        logoBase64: jsonData.logoRestaurante || ''
+                    },
+                    menus: [jsonData] // Metemos la carta individual dentro del array
+                };
+            } else {
+                this.data = jsonData; // Si es Global, ya viene con la estructura correcta
+            }
+
             this.setupApp();
             
         } catch (error) {
-            console.error('Error:', error);
-            this.dom.content.innerHTML = `<div class="empty-state"><h2>Error</h2><p>${error.message}</p></div>`;
+            console.error('Error de Inicialización:', error);
+            this.dom.content.innerHTML = `
+                <div class="empty-state">
+                    <h2>Ups...</h2>
+                    <p>${error.message}</p>
+                </div>
+            `;
         }
     },
 
@@ -859,24 +885,28 @@ const app = {
         }
     },
 
-   // DECOMPRESIÓN Y FETCH REMOTO
-    async fetchRemote(id) {
-        // Se corrige la ruta apuntando a la carpeta restaurants/ tal y como se sube desde la app
-        const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${this.REPO_NAME}/main/contents/restaurants/${id}.json`;
+  // DECOMPRESIÓN Y FETCH REMOTO MULTI-CARPETA
+    async fetchRemote(id, folder) {
+        // La URL ahora lee dinámicamente de la carpeta 'restaurants' o 'menus'
+        const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${this.REPO_NAME}/main/contents/${folder}/${id}.json`;
         
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`No se encontró el menú en el servidor (ID: ${id})`);
+        if (!response.ok) throw new Error(`El menú no se encuentra disponible (ID: ${id})`);
         
-        // Descargamos el texto. Al venir de raw.githubusercontent, ya es el string de LZString
+        // Descargamos el texto crudo. 
+        // GitHub decodifica el Base64 que enviaste, dejando el string de LZString.
         const rawText = await response.text();
         
-        // Aplicamos la descompresión inversa a la que usaste en el upload
-        const jsonString = LZString.decompressFromEncodedURIComponent(rawText);
+        // Descomprimimos con la función inversa a la de la App
+        const decompressedString = LZString.decompressFromEncodedURIComponent(rawText);
         
-        if (!jsonString) throw new Error("Los datos descargados no se pudieron descomprimir correctamente.");
-        
-        return JSON.parse(jsonString);
-    }
+        if (decompressedString) {
+            return JSON.parse(decompressedString);
+        } else {
+            // Fallback: Por si alguna vez subes un JSON sin comprimir para pruebas
+            return JSON.parse(rawText);
+        }
+    },
 };
 
 // Arrancar la aplicación al cargar
