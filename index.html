@@ -262,12 +262,12 @@
         body.dark-mode .cart-item { border-bottom-color: #2a2a2d; }
         .cart-item:last-child { border-bottom: none; }
         .cart-item-name { font-weight: 600; flex-grow: 1; margin-right: 10px; }
-        .cart-item-controls { display: flex; align-items: center; gap: 8px; }
+        .cart-item-controls { display: flex; align-items: center; gap: 8px; user-select: none; }
         .cart-item-quantity { font-weight: 700; min-width: 20px; text-align: center; }
         .cart-item-price { font-weight: 700; color: #007bff; min-width: 60px; text-align: right; }
         .quantity-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ccc; background: #f0f0f0; color: #333; font-weight: bold; cursor: pointer; }
         body.dark-mode .quantity-btn { background: #333; border-color: #555; color: #fff; }
-
+ 
         #table-selector-container { margin-top: 20px; }
         #table-selector-container label { font-weight: 600; font-size: 0.9em; color: #6c757d; }
         body.dark-mode #table-selector-container label { color: #a0a0a5; }
@@ -566,13 +566,13 @@
     <div class="modal-content">
         <button class="modal-close" onclick="app.closeCart(event, true)">✖</button>
         <div class="modal-body" style="text-align: left;">
-            <h3 id="cart-modal-title" class="modal-title" style="text-align: center;">Tu Pedido</h3>
+            <h3 id="cart-modal-title" class="modal-title" style="text-align: center;"></h3>
             <div id="cart-items-container"></div>
             <div id="cart-total-container" style="text-align: right; font-size: 1.4em; font-weight: 800; margin: 20px 0;">
-                Total: <span id="cart-total-price">0,00 €</span>
+                <span id="cart-total-label"></span> <span id="cart-total-price">0,00 €</span>
             </div>
             <div id="table-selector-container">
-                <label for="table-selector">Selecciona tu mesa:</label>
+                <label id="cart-table-label" for="table-selector"></label>
                 <select id="table-selector" class="search-input" style="width: 100%; margin-top: 5px;"></select>
             </div>
             <button id="send-order-btn" class="btn-cookie" style="width: 100%; margin-top: 20px;" onclick="app.sendOrder()"></button>
@@ -582,18 +582,18 @@
 
 <script>
 const I18N = {
-    es: { search: "Buscar platos en todas las cartas...", back: "Volver", normal: "CARTA", diario: "MENÚ DEL DÍA", especial: "MENÚ ESPECIAL", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", results: "Resultados de búsqueda", cookieMsg: "Utilizamos cookies para mejorar su experiencia. Al continuar, acepta su uso.", cookieBtn: "Aceptar" },
-    en: { search: "Search dishes in all menus...", back: "Back", normal: "MENU", diario: "DAILY MENU", especial: "SPECIAL MENU", emptyMenu: "This menu is empty.", emptySearch: "No results found for", results: "Search Results", cookieMsg: "We use cookies to improve your experience. By continuing, you accept their use.", cookieBtn: "Accept" },
-    fr: { search: "Rechercher des plats...", back: "Retour", normal: "CARTE", diario: "MENU DU JOUR", especial: "MENU SPÉCIAL", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", results: "Résultats de recherche", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez leur utilisation.", cookieBtn: "Accepter" },
-    it: { search: "Cerca piatti...", back: "Indietro", normal: "MENU", diario: "MENU DEL GIORNO", especial: "MENU SPECIALE", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", results: "Risultati della ricerca", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza. Continuando, accetti il loro utilizzo.", cookieBtn: "Accetta" },
-    de: { search: "Gerichte suchen...", back: "Zurück", normal: "SPEISEKARTE", diario: "TAGESMENÜ", especial: "SPEZIALMENÜ", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", results: "Suchergebnisse", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern. Wenn Sie fortfahren, stimmen Sie zu.", cookieBtn: "Akzeptieren" },
-    pt: { search: "Pesquisar pratos...", back: "Voltar", normal: "MENU", diario: "MENU DO DIA", especial: "MENU ESPECIAL", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", results: "Resultados da pesquisa", cookieMsg: "Usamos cookies para melhorar sua experiência. Ao continuar, você aceita o uso.", cookieBtn: "Aceitar" },
-    cn: { search: "搜索菜品...", back: "返回", normal: "菜单", diario: "每日菜单", especial: "特别菜单", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", results: "搜索结果", cookieMsg: "我们使用 cookie 来改善您的体验。继续浏览即表示您同意使用。", cookieBtn: "接受" },
-    sa: { search: "البحث عن الأطباق...", back: "عودة", normal: "قائمة طعام", diario: "القائمة اليومية", especial: "قائمة خاصة", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", results: "نتائج البحث", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك. بالاستمرار، فإنك توافق على استخدامها.", cookieBtn: "قبول" }
+    es: { search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar" },
+    en: { search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select" },
+    fr: { search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner" },
+    it: { search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona" },
+    de: { search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen" },
+    pt: { search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar" },
+    cn: { search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择" },
+    sa: { search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر" }
 };
 
 const I18N_WHATSAPP = {
-    es: { header: "Hola, soy de la mesa *{table}* y quisiera pedir:", footer: "¡Gracias!", item: "{quantity}x {name}", noTable: "Por favor, selecciona una mesa antes de enviar el pedido.", orderBtn: "Enviar Pedido por WhatsApp" },
+    es: { header: "Hola, soy de la mesa *{table}* y quisiera pedir:", footer: "¡Gracias!", item: "{quantity}x {name}", noTable: "Por favor, selecciona una mesa.", orderBtn: "Enviar Pedido por WhatsApp" },
     en: { header: "Hello, I'm at table *{table}* and I'd like to order:", footer: "Thank you!", item: "{quantity}x {name}", noTable: "Please select a table before sending the order.", orderBtn: "Send Order via WhatsApp" },
     fr: { header: "Bonjour, je suis à la table *{table}* et j'aimerais commander :", footer: "Merci !", item: "{quantity}x {name}", noTable: "Veuillez sélectionner une table avant d'envoyer la commande.", orderBtn: "Envoyer la commande via WhatsApp" },
     it: { header: "Salve, sono al tavolo *{table}* e vorrei ordinare:", footer: "Grazie!", item: "{quantity}x {name}", noTable: "Seleziona un tavolo prima di inviare l'ordine.", orderBtn: "Invia Ordine via WhatsApp" },
@@ -651,6 +651,8 @@ const app = {
         cartBadge: document.getElementById('cart-badge'),
         cartModal: document.getElementById('cart-modal'),
         cartModalTitle: document.getElementById('cart-modal-title'),
+        cartTotalLabel: document.getElementById('cart-total-label'),
+        cartTableLabel: document.getElementById('cart-table-label'),
         cartItemsContainer: document.getElementById('cart-items-container'),
         cartTotalPrice: document.getElementById('cart-total-price'),
         tableSelector: document.getElementById('table-selector'),
@@ -786,6 +788,10 @@ const app = {
         const t_wa = I18N_WHATSAPP[this.whatsapp.msgLang] || I18N_WHATSAPP['es'];
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
+
+        this.dom.cartModalTitle.textContent = t.cartTitle;
+        this.dom.cartTotalLabel.textContent = t.cartTotal;
+        this.dom.cartTableLabel.textContent = t.cartTableLabel;
         this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
         
         this.dom.cookieText.textContent = t.cookieMsg;
@@ -899,17 +905,21 @@ const app = {
         let tabsHtml = '';
 
         // Generar pestañas y contenido de categorías
-        trans.categorias.forEach(cat => {
+        for (let catIndex = 0; catIndex < trans.categorias.length; catIndex++) {
+            const cat = trans.categorias[catIndex];
             const categorySlug = this.slugify(cat.nombre);
             tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(cat.nombre)}</div>`;
 
             html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(cat.nombre)}</h2>`;
-            cat.platos?.forEach(dish => {
-                html += this.generateDishCardHTML(dish, images, null);
-            });
+            if (cat.platos) {
+                for (let dishIndex = 0; dishIndex < cat.platos.length; dishIndex++) {
+                    const dish = cat.platos[dishIndex];
+                    html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, dishIndex);
+                }
+            }
             html += `</div>`;
-        });
+        }
 
         this.dom.categoryTabs.innerHTML = tabsHtml;
         
@@ -958,7 +968,7 @@ const app = {
 
     renderSearch() {
         let resultsHTML = '';
-        let matchCount = 0;
+        const foundKeys = new Set();
         const t = I18N[this.currentLang] || I18N['es'];
 
         this.dom.btnBack.style.display = 'flex';
@@ -966,36 +976,44 @@ const app = {
         if (this.categoryTabsObserver) this.categoryTabsObserver.disconnect();
 
         this.data.menus.forEach(menu => {
-            // Fallback de seguridad
-            let trans = menu.traducciones?.[this.currentLang];
-            if (!trans && menu.traducciones) {
-                trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
-            }
-            
+            if (!menu.traducciones) return;
             const images = menu.recursos?.imagenes || {};
-            const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
+            const displayMenuName = menu.traducciones[this.currentLang]?.nombreCarta || menu.nombreCarta || 'Carta';
 
-            if (trans && trans.categorias) {
-                trans.categorias.forEach(cat => {
-                    cat.platos?.forEach(dish => {
-                        const name = (dish.nombre || '').toLowerCase();
-                        const desc = (dish.descripcion || '').toLowerCase();
-                        
-                        if (name.includes(this.searchQuery) || desc.includes(this.searchQuery)) {
-                            resultsHTML += this.generateDishCardHTML(dish, images, menuName);
-                            matchCount++;
+            for (const lang in menu.traducciones) {
+                const trans = menu.traducciones[lang];
+                if (trans && trans.categorias) {
+                    for (let catIndex = 0; catIndex < trans.categorias.length; catIndex++) {
+                        const cat = trans.categorias[catIndex];
+                        if (cat.platos) {
+                            for (let dishIndex = 0; dishIndex < cat.platos.length; dishIndex++) {
+                                const dish = cat.platos[dishIndex];
+                                const name = (dish.nombre || '').toLowerCase();
+                                const desc = (dish.descripcion || '').toLowerCase();
+                                
+                                if (name.includes(this.searchQuery) || desc.includes(this.searchQuery)) {
+                                    const key = `${menu.id}-${catIndex}-${dishIndex}`;
+                                    if (!foundKeys.has(key)) {
+                                        foundKeys.add(key);
+                                        const displayDish = menu.traducciones[this.currentLang]?.categorias[catIndex]?.platos[dishIndex];
+                                        if (displayDish) {
+                                            resultsHTML += this.generateDishCardHTML(displayDish, images, displayMenuName, menu.id, catIndex, dishIndex);
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    });
-                });
+                    }
+                }
             }
         });
 
-        if (matchCount === 0) {
+        if (foundKeys.size === 0) {
             this.dom.content.innerHTML = `<div id="loader">${t.emptySearch} "${this.escapeHTML(this.searchQuery)}"</div>`;
         } else {
             this.dom.content.innerHTML = `
                 <div class="category fade-in-slide">
-                    <h2 class="category-title">${t.results} (${matchCount})</h2>
+                    <h2 class="category-title">${t.results} (${foundKeys.size})</h2>
                     ${resultsHTML}
                 </div>
             `;
@@ -1003,7 +1021,7 @@ const app = {
         }
     },
 
-    generateDishCardHTML(dish, images, sourceMenuName) {
+    generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex) {
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
         const safeName = this.escapeHTML(dish.nombre);
         const safeDesc = this.escapeHTML(dish.descripcion);
@@ -1011,7 +1029,21 @@ const app = {
 
         const modalData = { name: safeName, desc: safeDesc, price: safePrice, imgUrl };
         const safeModalData = encodeURIComponent(JSON.stringify(modalData));
-        const safeCartData = encodeURIComponent(JSON.stringify(dish));
+
+        let cartDishData = dish;
+        if (this.whatsapp.enabled && menuId !== undefined) {
+            const menu = this.data.menus.find(m => m.id === menuId);
+            const waDish = menu?.traducciones[this.whatsapp.msgLang]?.categorias[catIndex]?.platos[dishIndex];
+            if (waDish) {
+                cartDishData = {
+                    ...dish,
+                    nombre_display: dish.nombre,
+                    nombre_wa: waDish.nombre,
+                    cart_id: `${menuId}-${catIndex}-${dishIndex}`
+                };
+            }
+        }
+        const safeCartData = encodeURIComponent(JSON.stringify(cartDishData));
 
         const actionButton = this.whatsapp.enabled
             ? `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}');">+</button>`
@@ -1059,7 +1091,8 @@ const app = {
 
     addToCart(safeCartData) {
         const dish = JSON.parse(decodeURIComponent(safeCartData));
-        const existingItem = this.cart.find(item => item.nombre === dish.nombre);
+        const uniqueId = dish.cart_id || dish.nombre;
+        const existingItem = this.cart.find(item => (item.cart_id || item.nombre) === uniqueId);
 
         if (existingItem) {
             existingItem.quantity++;
@@ -1094,29 +1127,36 @@ const app = {
     },
 
     renderCartModal() {
-        let tableOptions = '<option value="">-- Seleccionar --</option>';
-        const tableLang = this.whatsapp.msgLang;
+        const t = I18N[this.currentLang] || I18N['es'];
+        let tableOptions = `<option value="">-- ${t.tableSelectDefault} --</option>`;
+        const displayLang = this.currentLang;
+        const valueLang = this.whatsapp.msgLang;
+
         this.tables.forEach(table => {
-            const tableName = table.traducciones?.[tableLang] || table.name;
-            tableOptions += `<option value="${this.escapeHTML(tableName)}">${this.escapeHTML(tableName)}</option>`;
+            const displayTableName = table.traducciones?.[displayLang] || table.name;
+            const valueTableName = table.traducciones?.[valueLang] || table.name;
+            tableOptions += `<option value="${this.escapeHTML(valueTableName)}">${this.escapeHTML(displayTableName)}</option>`;
         });
         this.dom.tableSelector.innerHTML = tableOptions;
 
         if (this.cart.length === 0) {
-            this.dom.cartItemsContainer.innerHTML = `<div style="text-align:center; padding: 20px 0;">Tu pedido está vacío.</div>`;
+            this.dom.cartItemsContainer.innerHTML = `<div style="text-align:center; padding: 20px 0;">${t.cartEmpty}</div>`;
             this.updateCartTotal();
             return;
         }
 
         let itemsHtml = '';
         this.cart.forEach(item => {
+            const uniqueId = this.escapeHTML(item.cart_id || item.nombre);
+            const displayName = this.escapeHTML(item.nombre_display || item.nombre);
+
             itemsHtml += `
                 <div class="cart-item">
-                    <div class="cart-item-name">${this.escapeHTML(item.nombre)}</div>
+                    <div class="cart-item-name">${displayName}</div>
                     <div class="cart-item-controls">
-                        <button class="quantity-btn" onclick="app.adjustCartQuantity('${this.escapeHTML(item.nombre)}', -1)">-</button>
+                        <button class="quantity-btn" onclick="app.adjustCartQuantity('${uniqueId}', -1)">-</button>
                         <span class="cart-item-quantity">${item.quantity}</span>
-                        <button class="quantity-btn" onclick="app.adjustCartQuantity('${this.escapeHTML(item.nombre)}', 1)">+</button>
+                        <button class="quantity-btn" onclick="app.adjustCartQuantity('${uniqueId}', 1)">+</button>
                     </div>
                     <div class="cart-item-price">${this.formatPrice(item.precio * item.quantity)}</div>
                 </div>
@@ -1126,12 +1166,12 @@ const app = {
         this.updateCartTotal();
     },
 
-    adjustCartQuantity(itemName, change) {
-        const item = this.cart.find(i => this.escapeHTML(i.nombre) === itemName);
+    adjustCartQuantity(itemId, change) {
+        const item = this.cart.find(i => (this.escapeHTML(i.cart_id || i.nombre)) === itemId);
         if (item) {
             item.quantity += change;
             if (item.quantity <= 0) {
-                this.cart = this.cart.filter(i => this.escapeHTML(i.nombre) !== itemName);
+                this.cart = this.cart.filter(i => (this.escapeHTML(i.cart_id || i.nombre)) !== itemId);
             }
         }
         this.renderCartModal();
@@ -1148,7 +1188,12 @@ const app = {
         const t_wa = I18N_WHATSAPP[this.whatsapp.msgLang] || I18N_WHATSAPP['es'];
         if (!selectedTable) { alert(t_wa.noTable); return; }
         if (this.cart.length === 0) return;
-        let message = t_wa.header.replace('{table}', selectedTable) + '\n\n' + this.cart.map(item => t_wa.item.replace('{quantity}', item.quantity).replace('{name}', item.nombre)).join('\n') + '\n\n' + t_wa.footer;
+
+        const orderItems = this.cart.map(item => {
+            const nameForWhatsapp = item.nombre_wa || item.nombre;
+            return t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
+        }).join('\n');
+        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n${orderItems}\n\n${t_wa.footer}`;
         window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
     },
 
