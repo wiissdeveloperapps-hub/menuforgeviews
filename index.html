@@ -941,10 +941,10 @@ const app = {
         const observerOptions = {
             root: null,
             rootMargin: `-${this.dom.header.offsetHeight + 20}px 0px 0px 0px`,
-            // Umbral (threshold) más alto para que el observador se dispare con menos frecuencia.
-            // Esto reduce la carga de trabajo durante el scroll rápido, mejorando la fluidez
-            // y evitando la sensación de "lentitud" o "jank" en dispositivos móviles.
-            threshold: 0.4
+            // Umbral (threshold) más alto. Un valor de 0.6 significa que el 60% de la categoría
+            // debe estar visible para activar el cambio. Esto reduce drásticamente la carga
+            // en el navegador durante el scroll, mejorando la fluidez.
+            threshold: 0.6
         };
         this.categoryTabsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1233,10 +1233,10 @@ const app = {
         // Se elimina un bucle manual con setTimeout que recorría todos los elementos,
         // ya que el propio IntersectionObserver es más eficiente para detectar elementos visibles.
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Se mantiene un pequeño delay escalonado para un efecto visual más agradable.
-                    setTimeout(() => entry.target.classList.add('visible'), index * 70);
+                    // Se elimina el setTimeout para una activación más rápida y menos costosa.
+                    entry.target.classList.add('visible');
                     observer.unobserve(entry.target);
                 }
             });
