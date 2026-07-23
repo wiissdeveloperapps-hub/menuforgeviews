@@ -544,17 +544,16 @@
         </div>
     </div>
 </div>
-
 <script>
 const I18N = {
-    es: { search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar" },
-    en: { search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select" },
-    fr: { search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner" },
-    it: { search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona" },
-    de: { search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen" },
-    pt: { search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar" },
-    cn: { search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择" },
-    sa: { search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر" }
+    es: { search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra." },
+    en: { search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found." },
+    fr: { search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable." },
+    it: { search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato." },
+    de: { search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden." },
+    pt: { search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado." },
+    cn: { search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。" },
+    sa: { search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها." }
 };
 
 const I18N_WHATSAPP = {
@@ -625,9 +624,10 @@ const app = {
     },
 
     async init() {
+        const t = I18N[this.currentLang] || I18N['es'];
         try {
             const hash = window.location.hash.substring(1);
-            if (!hash) throw new Error("Escanea un código QR válido para ver el menú.");
+            if (!hash) throw new Error(t.invalidQR);
 
             let jsonData;
 
@@ -646,11 +646,12 @@ const app = {
             if (!jsonData.menus) {
                 this.data = {
                     restaurantInfo: {
-                        nombre: jsonData.nombreRestaurante || 'Restaurante',
+                        nombre: jsonData.nombreRestaurante || '',
                         logoBase64: jsonData.logoRestaurante || '',
                         telefono: jsonData.telefonoRestaurante,
                         direccion: jsonData.direccionRestaurante,
-                        email: jsonData.emailRestaurante
+                        email: jsonData.emailRestaurante,
+                        currency: jsonData.currency || 'EUR' // Fallback si no viene moneda
                     },
                     menus: [jsonData] 
                 };
@@ -662,7 +663,8 @@ const app = {
             
         } catch (error) {
             console.error(error);
-            this.dom.content.innerHTML = `<div style="text-align:center; padding: 50px; color: red;"><h3>Error</h3><p>${error.message}</p></div>`;
+            const tErr = I18N[this.currentLang] || I18N['es'];
+            this.dom.content.innerHTML = `<div style="text-align:center; padding: 50px; color: red;"><h3>${tErr.errorTitle}</h3><p>${error.message}</p></div>`;
         }
     },
 
@@ -670,7 +672,6 @@ const app = {
         this.dom.header.style.display = 'block';
 
         const rInfo = this.data.restaurantInfo || {};
-        this.dom.name.textContent = rInfo.nombre || 'Restaurante';
         
         if (rInfo.logoBase64) {
             this.dom.logo.src = rInfo.logoBase64;
@@ -730,14 +731,7 @@ const app = {
             this.updateFlag();
         }
 
-        this.dom.langSelect.addEventListener('change', (e) => {
-            this.currentLang = e.target.value;
-            this.updateFlag();
-            this.updateUITexts();
-            this.refreshCurrentView();
-        });
-
-        this.updateUITexts();
+        this.updateUITexts(); // Ahora se actualizan textos dinámicos con el idioma correcto
         this.initCookies();
         this.navigateHome();
     },
@@ -745,6 +739,7 @@ const app = {
     updateUITexts() {
         const t = I18N[this.currentLang] || I18N['es'];
         const t_wa = I18N_WHATSAPP[this.whatsapp.msgLang] || I18N_WHATSAPP['es'];
+        
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
 
@@ -755,6 +750,10 @@ const app = {
         
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
+        
+        // Traducción de Restaurante por defecto si viene vacío
+        const rInfo = this.data?.restaurantInfo || {};
+        this.dom.name.textContent = rInfo.nombre || t.defaultRestaurant;
     },
 
     initCookies() {
@@ -821,7 +820,8 @@ const app = {
             if (!trans && menu.traducciones) {
                 trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
             }
-            const menuName = trans?.nombreCarta || menu.nombreCarta || 'Carta';
+            // Fallback a "Carta" traducido en el idioma actual
+            const menuName = trans?.nombreCarta || menu.nombreCarta || t.defaultMenu;
 
             html += `
                 <div class="menu-card fade-in-slide" onclick="app.navigateToMenu('${menu.id}')">
@@ -931,7 +931,8 @@ const app = {
         this.data.menus.forEach(menu => {
             if (!menu.traducciones) return;
             const images = menu.recursos?.imagenes || {};
-            const displayMenuName = menu.traducciones[this.currentLang]?.nombreCarta || menu.nombreCarta || 'Carta';
+            // Fallback dinámico
+            const displayMenuName = menu.traducciones[this.currentLang]?.nombreCarta || menu.nombreCarta || t.defaultMenu;
 
             for (const lang in menu.traducciones) {
                 const trans = menu.traducciones[lang];
@@ -1019,9 +1020,12 @@ const app = {
 
     openModal(safeDataStr) {
         const data = JSON.parse(decodeURIComponent(safeDataStr));
+        const t = I18N[this.currentLang] || I18N['es'];
+        
         this.dom.mTitle.innerHTML = data.name;
         this.dom.mPrice.innerHTML = data.price;
-        this.dom.mDesc.innerHTML = data.desc || '<i>Sin descripción.</i>';
+        // Textos dinámicos en base al diccionario actual
+        this.dom.mDesc.innerHTML = data.desc || `<i>${t.noDescription}</i>`;
         
         if (data.imgUrl) {
             this.dom.mImg.src = data.imgUrl;
@@ -1159,7 +1163,24 @@ const app = {
     
     formatPrice(price) {
         if (typeof price !== 'number') return '';
-        return price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+        // Obtenemos la moneda del JSON si existe, o ponemos EUR como predeterminado
+        const currencyCode = (this.data && this.data.restaurantInfo && this.data.restaurantInfo.currency) 
+                                ? this.data.restaurantInfo.currency 
+                                : 'EUR';
+        
+        let locale = this.currentLang;
+        // Ajustamos la variante regional (para que funcione correctamente la función toLocaleString)
+        if (locale === 'cn') locale = 'zh-CN';
+        else if (locale === 'sa') locale = 'ar-SA';
+        else if (locale === 'en') locale = 'en-US';
+        else if (locale === 'pt') locale = 'pt-BR';
+
+        try {
+            return price.toLocaleString(locale, { style: 'currency', currency: currencyCode });
+        } catch(e) {
+            // Fallback de seguridad
+            return price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+        }
     },
     
     escapeHTML(str) {
@@ -1196,7 +1217,6 @@ const app = {
     },
 
     async fetchRemote(id, folder) {
-        // Resolución dinámica del repositorio según el nodo actual en el subdominio (ej: n2.wiissdeveloperapps.dpdns.org -> menuforgeviewsN2)
         let repoName = this.REPO_NAME;
         const hostname = window.location.hostname;
         const match = hostname.match(/^n(\d+)\./i);
@@ -1209,7 +1229,8 @@ const app = {
 
         const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${repoName}/main/contents/${folder}/${id}.json`;
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`El menú no está disponible o no se encuentra.`);
+        const t = I18N[this.currentLang] || I18N['es'];
+        if (!response.ok) throw new Error(t.fetchError);
         
         const rawText = await response.text();
         const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
@@ -1219,5 +1240,3 @@ const app = {
 
 document.addEventListener('DOMContentLoaded', () => app.init());
 </script>
-</body>
-</html>
