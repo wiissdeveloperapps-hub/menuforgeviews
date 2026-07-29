@@ -1,0 +1,71 @@
+name: Cleanup old menus
+on:
+  # Cron original (cada 5 minutos) - comentado para pruebas mensuales
+  # schedule:
+  #   - cron: '*/5 * * * *'
+
+  # Ejecutar el workflow el primer día de cada mes a las 00:00 UTC
+  schedule:
+    - cron: '0 0 1 * *'
+
+  # Permite ejecución manual desde la UI de Actions
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install octokit
+        run: npm install @octokit/rest
+
+      - name: Run cleanup script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository.split('/')[1] }}
+          BRANCH: ${{ github.ref_name }}
+          TTL_MINUTES: '5'
+        run: |
+          node -e "
+          const { Octokit } = require('@octokit/rest');
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+          (async () => {
+            const owner = process.env.OWNER;
+            const repo = process.env.REPO;
+            const branch = process.env.BRANCH || 'main';
+            const ttl = parseInt(process.env.TTL_MINUTES || '5', 10);
+            const cutoff = Date.now() - ttl * 60 * 1000;
+            try {
+              const list = await octokit.repos.getContent({ owner, repo, path: 'menus' }).catch(e => null);
+              if (!list || !Array.isArray(list.data)) { console.log('No menus dir or empty'); return; }
+              for (const item of list.data) {
+                if (item.type !== 'file') continue;
+                const path = item.path;
+                const commits = await octokit.repos.listCommits({ owner, repo, path, per_page: 1 });
+                const lastCommitDate = new Date(commits.data[0].commit.committer.date).getTime();
+                if (lastCommitDate < cutoff) {
+                  console.log('Deleting', path, 'lastCommit', commits.data[0].commit.committer.date);
+                  const file = await octokit.repos.getContent({ owner, repo, path });
+                  const sha = file.data.sha;
+                  await octokit.repos.deleteFile({ owner, repo, path, message: `Auto-delete old menu ${path}`, sha, branch });
+                  console.log('Deleted', path);
+                } else {
+                  console.log('Keep', path);
+                }
+              }
+            } catch (e) { console.error('Cleanup error', e); process.exit(1); }
+          })().catch(e => { console.error(e); process.exit(1); });
+          "
