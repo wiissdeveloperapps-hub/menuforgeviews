@@ -614,8 +614,6 @@ const DEFAULT_COVERS = {
 };
 
 const app = {
-    REPO_OWNER: 'wiissdeveloperapps-hub',
-    REPO_NAME: 'menuforgeviews',
     
     data: null,
     currentLang: 'es',
@@ -1281,23 +1279,21 @@ const app = {
         return JSON.parse(pako.inflate(new Uint8Array(compressed), { to: 'string' }));
     },
 
-    async fetchRemote(id, folder) {
-        let repoName = this.REPO_NAME;
-        const hostname = window.location.hostname;
-        const match = hostname.match(/^n(\d+)\./i);
-        if (match && match[1]) {
-            const nodeNum = match[1];
-            if (nodeNum !== '1' && nodeNum !== '0') {
-                repoName = `${this.REPO_NAME}N${nodeNum}`;
-            }
-        }
+async fetchRemote(id, folder) {
+        // Apuntamos directamente a tu Worker. Él se encarga de saber a qué repo ir (CASO 2).
+        // Si el visor ya está en el worker, usa path relativo. Si no, usa la URL absoluta.
+        const workerUrl = window.location.hostname.includes('github.io') || window.location.hostname === 'localhost' 
+            ? 'https://wiissdeveloperapps.dpdns.org' 
+            : ''; 
 
-        const url = `https://raw.githubusercontent.com/${this.REPO_OWNER}/${repoName}/main/contents/${folder}/${id}.json?t=${Date.now()}`;
+        // Endpoint limpio que no expone el nombre del repo (ej: /restaurants/ID.json)
+        const url = `${workerUrl}/${folder}/${id}.json?t=${Date.now()}`;
 
         const response = await fetch(url);
         const t = I18N[this.currentLang] || I18N['es'];
         if (!response.ok) throw new Error(t.fetchError);
         
+        // El worker decodifica el Base64 de GitHub y nos entrega el contenido puro del archivo (el texto comprimido)
         const rawText = await response.text();
         const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
         return JSON.parse(decompressed || rawText);
