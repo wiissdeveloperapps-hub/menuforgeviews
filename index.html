@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Menú Digital</title>
     
     <!-- Librerías de descompresión -->
@@ -13,16 +13,30 @@
 
     <style>
         :root {
-            --bg-light: #f8fafc;
+            /* Variables Premium Light */
+            --bg-light: #f3f4f6;
             --card-light: #ffffff;
-            --text-light: #0f172a;
-            --text-muted-light: #64748b;
-            --border-light: #e2e8f0;
+            --text-light: #111827;
+            --text-muted-light: #6b7280;
+            --border-light: #e5e7eb;
             --accent: #4f46e5;
             --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --shadow-subtle: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-            --shadow-card: 0 20px 40px -15px rgba(79, 70, 229, 0.12);
-            --radius-main: 22px;
+            --shadow-subtle: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 12px 24px -8px rgba(79, 70, 229, 0.15);
+            --pill-bg: #f3f4f6;
+            --radius-main: 20px;
+        }
+
+        body.dark-mode {
+            /* Variables Premium Dark */
+            --bg-light: #09090b;
+            --card-light: #18181b;
+            --text-light: #f9fafb;
+            --text-muted-light: #9ca3af;
+            --border-light: #27272a;
+            --shadow-subtle: 0 4px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow-card: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
+            --pill-bg: #27272a;
         }
 
         body {
@@ -30,56 +44,49 @@
             margin: 0;
             background-color: var(--bg-light);
             color: var(--text-light);
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
             -webkit-font-smoothing: antialiased;
         }
 
-        body.dark-mode {
-            --bg-light: #09090b;
-            --card-light: #121215;
-            --text-light: #f4f4f5;
-            --text-muted-light: #a1a1aa;
-            --border-light: #27272a;
-            --shadow-subtle: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
-            --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
-        }
-
-        /* --- CABECERA PRINCIPAL ULTRA COMPACTA E INFORMATIVA --- */
+        /* --- CABECERA PRINCIPAL ULTRA COMPACTA (GLASSMORPHISM) --- */
         header {
-            background-color: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 12px 18px;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 12px 16px 8px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border-light);
             transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
+        body.dark-mode header { background-color: rgba(18, 18, 21, 0.85); }
 
         .header-main-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 8px;
+            gap: 10px;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             min-width: 0;
+            flex-grow: 1;
         }
 
         #btn-back {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--accent);
+            background: var(--pill-bg);
+            color: var(--text-light);
             border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -91,106 +98,103 @@
         #btn-back:hover { background: var(--accent); color: white; transform: scale(1.05); }
 
         #restaurant-logo {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--accent);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            border: 2px solid var(--card-light);
+            box-shadow: var(--shadow-subtle);
             flex-shrink: 0;
-        }
-
-        .restaurant-titles {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
         }
 
         #restaurant-name {
             font-size: 1.25em;
             margin: 0;
             font-weight: 800;
-            letter-spacing: -0.02em;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-light);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* --- BARRA DE CONTACTO DIRECTO EN CABECERA --- */
-        .restaurant-meta-header {
+        /* --- PÍLDORAS DESLIZABLES PARA CONTACTO (AHORRO MÁXIMO DE ESPACIO) --- */
+        .info-scroll-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            font-size: 0.8em;
-            color: var(--text-muted-light);
-            font-weight: 500;
-            margin-top: 2px;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 4px;
+            -ms-overflow-style: none; 
+            scrollbar-width: none;
         }
-        .meta-link {
-            display: flex;
+        .info-scroll-container::-webkit-scrollbar { display: none; }
+        
+        .info-pill {
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            color: inherit;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--pill-bg);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted-light);
             text-decoration: none;
-            transition: color 0.2s;
+            white-space: nowrap;
+            border: 1px solid transparent;
+            transition: all 0.2s;
         }
-        .meta-link:hover { color: var(--accent); }
-        .meta-link svg { width: 13px; height: 13px; fill: currentColor; opacity: 0.8; }
+        .info-pill:hover { background: var(--card-light); border-color: var(--accent); color: var(--accent); }
+        .info-pill svg { width: 12px; height: 12px; fill: currentColor; }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
         }
 
         .lang-selector-wrap {
-            display: flex; align-items: center; gap: 6px; padding: 6px 10px;
-            border-radius: 12px; background: var(--card-light); border: 1px solid var(--border-light);
+            display: flex; align-items: center; gap: 4px; padding: 4px 8px;
+            border-radius: 10px; background: var(--card-light); border: 1px solid var(--border-light);
             cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle);
         }
-        .lang-flag { width: 20px; height: 14px; border-radius: 3px; object-fit: cover; }
+        .lang-flag { width: 18px; height: 14px; border-radius: 3px; object-fit: cover; }
         #language-selector {
-            border: none; background: transparent; font-size: 0.85em; font-weight: 600;
+            border: none; background: transparent; font-size: 0.8rem; font-weight: 700;
             color: var(--text-light); font-family: inherit; cursor: pointer; outline: none; appearance: none;
         }
 
         .btn-action {
-            background: var(--card-light); color: var(--text-light); border: 1px solid var(--border-light);
-            padding: 7px 12px; border-radius: 12px; display: flex; align-items: center; gap: 5px;
-            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); font-size: 0.85em; font-weight: 700;
+            display: flex; align-items: center; gap: 5px; background: var(--card-light);
+            border: 1px solid var(--border-light); color: var(--text-light);
+            padding: 6px 10px; border-radius: 10px; font-weight: 700; font-size: 0.8rem;
+            cursor: pointer; box-shadow: var(--shadow-subtle); transition: transform 0.2s;
         }
         .btn-action:hover { border-color: var(--accent); transform: translateY(-1px); }
-        .btn-pdf-header { background: #ef4444; color: white; border: none; }
-        .btn-pdf-header:hover { background: #dc2626; color: white; }
+        .btn-pdf-header { color: #ef4444; }
 
         .btn-icon-only {
             background: var(--card-light); color: var(--text-light); border: 1px solid var(--border-light);
-            width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); font-size: 1.1em;
+            width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); font-size: 1rem;
         }
-        .btn-icon-only:hover { border-color: var(--accent); transform: translateY(-1px); }
 
         .search-and-tabs {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 10px;
         }
 
         .search-container { position: relative; width: 100%; }
         .search-input {
             width: 100%;
-            padding: 9px 16px 9px 38px;
+            padding: 10px 16px 10px 38px;
             border-radius: 12px;
             border: 1px solid var(--border-light);
             background-color: var(--card-light);
             color: var(--text-light);
             font-family: inherit;
-            font-size: 0.9em;
+            font-size: 0.9rem;
             outline: none;
             transition: all 0.3s ease;
             box-sizing: border-box;
@@ -204,39 +208,24 @@
 
         .category-tabs-container { width: 100%; display: none; }
         .category-tabs {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
             -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth;
         }
         .category-tabs::-webkit-scrollbar { display: none; }
         .category-tab {
-            padding: 6px 14px; border-radius: 12px; background-color: var(--card-light);
-            color: var(--text-muted-light); font-weight: 600; font-size: 0.85em; cursor: pointer;
+            padding: 8px 16px; border-radius: 12px; background-color: var(--card-light);
+            color: var(--text-muted-light); font-weight: 600; font-size: 0.85rem; cursor: pointer;
             white-space: nowrap; transition: all 0.3s ease; border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-subtle);
         }
-        .category-tab:hover { color: var(--accent); border-color: rgba(79, 70, 229, 0.3); }
+        .category-tab:hover { color: var(--text-light); }
         .category-tab.active {
-            background: var(--accent-gradient); color: #ffffff; border-color: transparent;
-            box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transform: translateY(-1px);
+            background: var(--text-light); color: var(--bg-light); border-color: transparent;
+            box-shadow: var(--shadow-subtle); transform: translateY(-1px);
         }
 
-        /* --- EFECTOS VISUALES NEXT-GEN --- */
-        .menu-card, .dish {
-            background-color: var(--card-light);
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-subtle);
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .menu-card:hover, .dish:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-card);
-            border-color: rgba(79, 70, 229, 0.35);
-        }
-
+        /* --- CONTENIDO BENTO GRID --- */
         #main-content {
-            padding: 24px 16px;
+            padding: 20px 16px;
             max-width: 850px;
             margin: 0 auto;
             min-height: 70vh;
@@ -246,118 +235,139 @@
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
             margin-top: 10px;
         }
         .menu-card {
             border-radius: var(--radius-main);
             cursor: pointer;
-            height: 220px; 
+            height: 180px; 
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
         }
+        .menu-card:active { transform: scale(0.97); }
         .menu-card-img {
             width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .menu-card-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
             z-index: 2; display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box;
         }
-        .menu-card:hover .menu-card-img { transform: scale(1.08); }
+        .menu-card:hover .menu-card-img { transform: scale(1.05); }
         .menu-card-title {
-            color: #ffffff; font-size: 1.6em; font-weight: 800; margin: 0; letter-spacing: -0.02em;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            color: #ffffff; font-size: 1.5em; font-weight: 800; margin: 0; letter-spacing: -0.02em;
         }
 
         .category { margin-bottom: 40px; }
         .category-title {
-            font-size: 1.5em; font-weight: 800; color: var(--text-light);
-            display: inline-block; position: relative; margin-bottom: 20px; letter-spacing: -0.02em;
-        }
-        .category-title::after {
-            content: ''; position: absolute; left: 0; bottom: -6px; width: 40px; height: 3px;
-            background: var(--accent-gradient); border-radius: 4px;
+            font-size: 1.4em; font-weight: 800; color: var(--text-light);
+            display: inline-block; position: relative; margin-bottom: 16px;
         }
 
+        /* --- PLATOS ESTILO BENTO (LIMPIO, IMAGEN CUADRADA, SEPARADO) --- */
         .dish {
-            display: flex; gap: 16px; border-radius: var(--radius-main);
-            margin-bottom: 16px; cursor: pointer; padding: 0;
+            display: flex; gap: 14px; background: var(--card-light); border-radius: 16px;
+            padding: 10px; margin-bottom: 14px; cursor: pointer; border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle); transition: transform 0.3s, border-color 0.3s;
         }
-        .dish-img { width: 125px; height: 125px; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-main) 0 0 var(--radius-main); }
-        .dish-details { padding: 16px 16px 16px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .dish:not(:has(.dish-img)) .dish-details { padding-left: 18px; }
-        .dish-name { font-size: 1.15em; font-weight: 700; margin: 0 0 5px; color: var(--text-light); letter-spacing: -0.01em; }
+        .dish:active { transform: scale(0.98); }
+        .dish:hover { border-color: rgba(79, 70, 229, 0.3); }
+
+        .dish-img { 
+            width: 100px; height: 100px; object-fit: cover; flex-shrink: 0; 
+            border-radius: 12px; background: var(--pill-bg);
+        }
+        .dish-details { 
+            flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; 
+            padding: 4px 0; min-width: 0;
+        }
+        .dish:not(:has(.dish-img)) .dish-details { padding-left: 8px; }
+        .dish-name { 
+            font-size: 1.05em; font-weight: 700; margin: 0 0 4px; color: var(--text-light); 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
         .dish-desc {
-            color: var(--text-muted-light); margin: 0 0 10px; font-size: 0.9em; line-height: 1.45;
+            color: var(--text-muted-light); margin: 0; font-size: 0.85em; line-height: 1.4;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
-        .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .dish-price { font-size: 1.3em; font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; }
+        .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+        .dish-price { font-size: 1.15em; font-weight: 800; color: var(--text-light); }
         
         .dish-add-btn {
-            background: var(--accent-gradient); color: white; border: none; width: 38px; height: 38px;
-            border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-            box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4);
+            background: var(--text-light); color: var(--bg-light); border: none; width: 32px; height: 32px;
+            border-radius: 10px; font-size: 18px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            transition: all 0.2s;
         }
-        .dish-add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.6); }
+        .dish-add-btn:active { transform: scale(0.9); background: var(--accent); color: white; }
 
         .dish-action-icon {
-            background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 12px;
-            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+            background: var(--pill-bg); color: var(--text-light); border-radius: 10px;
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
         }
-        .dish:hover .dish-action-icon { background: var(--accent); color: #ffffff; transform: translateX(3px); }
-        .dish-source-badge { font-size: 0.7em; background: rgba(0,0,0,0.05); padding: 3px 6px; border-radius: 6px; color: var(--text-muted-light); font-weight: 600; margin-left: 6px; }
-        body.dark-mode .dish-source-badge { background: rgba(255,255,255,0.08); }
+        .dish-source-badge { font-size: 0.7em; background: var(--pill-bg); padding: 3px 6px; border-radius: 6px; color: var(--text-muted-light); font-weight: 600; margin-left: 6px; }
 
         .fade-in-slide {
             opacity: 0; transform: translateY(15px);
-            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .fade-in-slide.visible { opacity: 1; transform: translateY(0); }
 
-        /* --- MODALES Y CARRITO --- */
+        /* --- MODAL PLATO (EFECTO 3D POP-OUT) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-            opacity: 0; visibility: hidden; transition: all 0.35s ease;
+            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; align-items: flex-end; justify-content: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        @media (min-width: 500px) {
+            .modal-overlay { align-items: center; }
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: var(--card-light); border-radius: 28px; width: 90%; max-width: 420px; max-height: 85vh;
-            overflow-y: auto; position: relative; transform: translateY(20px) scale(0.96);
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            border: 1px solid var(--border-light);
-        }
-        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-        .modal-close {
-            position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.05); color: var(--text-light);
-            border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 0.95em;
-            cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
-        }
-        body.dark-mode .modal-close { background: rgba(255, 255, 255, 0.08); }
-        .modal-close:hover { background: #ef4444; color: white; transform: scale(1.1); }
         
-        .modal-img-wrapper { text-align: center; padding-top: 28px; }
-        .modal-img {
-            width: 150px; height: 150px; object-fit: cover; border-radius: 24px;
-            box-shadow: var(--shadow-card); display: inline-block; border: 3px solid var(--card-light);
+        .modal-content {
+            background: var(--card-light); width: 100%; max-width: 450px;
+            border-radius: 32px 32px 0 0; position: relative; padding: 30px 24px; box-sizing: border-box;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .modal-body { padding: 22px 28px 28px; text-align: center; }
-        .modal-title { font-size: 1.6em; font-weight: 800; margin: 0 0 10px; line-height: 1.15; color: var(--text-light); }
-        .modal-price {
-            font-size: 1.5em; font-weight: 800; color: var(--accent); display: inline-block;
-            padding: 6px 20px; background: rgba(79, 70, 229, 0.08); border-radius: 12px; margin-bottom: 18px;
+        @media (min-width: 500px) {
+            .modal-content { border-radius: 24px; transform: scale(0.9) translateY(20px); }
+            .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
         }
-        .modal-desc { color: var(--text-muted-light); font-size: 1em; line-height: 1.5; margin: 0; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-close {
+            position: absolute; top: 20px; right: 20px; background: var(--pill-bg); color: var(--text-light);
+            border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 14px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;
+        }
 
+        /* Contenedor que sale por encima del modal */
+        .modal-img-wrapper {
+            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 120px; border-radius: 50%; padding: 4px;
+            background: var(--card-light); box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none;
+        }
+        .modal-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        
+        .modal-body { text-align: center; margin-top: 45px; }
+        .modal-body.no-img { margin-top: 0; }
+        .modal-title { font-size: 1.5em; font-weight: 800; margin: 0 0 8px; color: var(--text-light); }
+        .modal-price { font-size: 1.4em; font-weight: 800; color: var(--accent); margin-bottom: 16px; }
+        .modal-desc { color: var(--text-muted-light); font-size: 0.95em; line-height: 1.5; margin: 0; }
+
+        /* --- CARRITO, COOKIES Y TABLAS --- */
         .cart-fab {
             position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
-            background: var(--accent-gradient); color: white; border-radius: 20px;
+            background: var(--text-light); color: var(--bg-light); border-radius: 20px;
             display: flex; align-items: center; justify-content: center; font-size: 24px;
-            box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.5); cursor: pointer; z-index: 999;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3); cursor: pointer; z-index: 999;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none;
         }
         .cart-fab:hover { transform: scale(1.1) rotate(5deg); }
@@ -377,7 +387,7 @@
         .cart-item-quantity { font-weight: 700; min-width: 20px; text-align: center; }
         .cart-item-price { font-weight: 700; color: var(--accent); min-width: 65px; text-align: right; }
         .quantity-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--card-light); color: var(--text-light); font-weight: bold; cursor: pointer; transition: all 0.2s; }
-        .quantity-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .quantity-btn:active { background: var(--text-light); color: var(--bg-light); }
 
         #cookie-banner {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -390,20 +400,39 @@
         body.dark-mode #cookie-banner { background: rgba(18, 18, 21, 0.9); }
         .cookie-text { font-size: 0.85em; margin-right: 15px; color: var(--text-muted-light); }
         .btn-cookie {
-            background: var(--accent-gradient); color: #fff; border: none; padding: 10px 20px;
+            background: var(--text-light); color: var(--bg-light); border: none; padding: 10px 20px;
             border-radius: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap;
-            box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transition: transform 0.2s;
+            transition: transform 0.2s;
         }
-        .btn-cookie:hover { transform: scale(1.03); }
+        .btn-cookie:active { transform: scale(0.95); }
 
-        /* Oculto en pantalla normal, visible al exportar PDF completo */
+        /* --- PDF PRINT PERFECTO TIPO CARTA DE LUJO --- */
         #print-container { display: none; }
 
         @media print {
             body * { visibility: hidden; }
             #print-container, #print-container * { visibility: visible; }
-            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; background: white; color: black; padding: 30px; }
+            body { background: white !important; color: black !important; }
+            
+            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; padding: 20px; }
             header, #main-content, .modal-overlay, #cookie-banner, .cart-fab { display: none !important; }
+            
+            .pdf-header { text-align: center; margin-bottom: 20px; }
+            .pdf-header img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid #000; }
+            .pdf-header h1 { margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+            .pdf-header p { margin: 5px 0 0 0; font-size: 13px; color: #444; }
+            
+            .pdf-menu-title { font-size: 20px; border-bottom: 2px solid #000; padding-bottom: 6px; margin-top: 35px; color: #000; font-weight: 800; }
+            .pdf-cat-title { font-size: 16px; font-weight: bold; margin: 20px 0 12px 0; text-transform: uppercase; color: #333; }
+            
+            .pdf-dish-row { display: flex; align-items: flex-end; margin-bottom: 14px; page-break-inside: avoid; }
+            .pdf-dish-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; margin-right: 12px; flex-shrink: 0; border: 1px solid #ddd; }
+            .pdf-dish-info { flex-shrink: 0; max-width: 65%; }
+            .pdf-dish-name { font-weight: bold; font-size: 14px; margin: 0; color: #000; }
+            .pdf-dish-desc { font-size: 11px; color: #555; margin: 2px 0 0 0; line-height: 1.2; }
+            
+            .pdf-dish-dots { flex-grow: 1; border-bottom: 2px dotted #aaa; margin: 0 12px; position: relative; top: -6px; }
+            .pdf-dish-price { font-weight: bold; font-size: 15px; flex-shrink: 0; color: #000; }
         }
     </style>
 </head>
@@ -419,7 +448,6 @@
             <img id="restaurant-logo" src="" alt="Logo" style="display:none;">
             <div class="restaurant-titles">
                 <h1 id="restaurant-name">Cargando...</h1>
-                <div id="restaurant-meta-header" class="restaurant-meta-header"></div>
             </div>
         </div>
 
@@ -432,6 +460,9 @@
             <button id="btn-theme" class="btn-icon-only" onclick="app.toggleTheme()">🌙</button>
         </div>
     </div>
+    
+    <!-- Píldoras horizontales de información de contacto -->
+    <div id="restaurant-meta-header" class="info-scroll-container"></div>
 
     <div class="search-and-tabs">
         <div class="search-container">
@@ -457,7 +488,7 @@
         <div id="modal-img-wrapper" class="modal-img-wrapper">
             <img id="modal-img" class="modal-img" src="" alt="">
         </div>
-        <div class="modal-body">
+        <div id="modal-body" class="modal-body">
             <h3 id="modal-title" class="modal-title"></h3>
             <div id="modal-price" class="modal-price"></div>
             <p id="modal-desc" class="modal-desc"></p>
@@ -476,9 +507,9 @@
 </div>
 
 <div id="cart-modal" class="modal-overlay" onclick="app.closeCart(event)">
-    <div class="modal-content">
+    <div class="modal-content" style="max-height:85vh; display:flex; flex-direction:column; padding: 24px; transform: scale(0.96) translateY(0);">
         <button class="modal-close" onclick="app.closeCart(event, true)">✕</button>
-        <div class="modal-body" style="text-align: left;">
+        <div class="modal-body no-img" style="text-align: left; overflow-y:auto; padding-bottom:20px;">
             <h3 id="cart-modal-title" class="modal-title" style="text-align: center;"></h3>
             <div id="cart-items-container"></div>
             <div id="cart-total-container" style="text-align: right; font-size: 1.3em; font-weight: 800; margin: 16px 0; color: var(--text-light);">
@@ -488,12 +519,13 @@
                 <label id="cart-table-label" for="table-selector" style="font-size:0.85em; font-weight:600; color:var(--text-muted-light);"></label>
                 <select id="table-selector" class="search-input" style="width: 100%; margin-top: 5px;"></select>
             </div>
-            <button id="send-order-btn" class="btn-cookie" style="width: 100%; margin-top: 20px;" onclick="app.sendOrder()"></button>
+            <button id="send-order-btn" class="btn-cookie" style="width: 100%; margin-top: 20px; font-size: 1.1em; padding: 14px;" onclick="app.sendOrder()"></button>
         </div>
     </div>
 </div>
 
 <script>
+// DICCIONARIOS ÍNTEGROS MANTENIDOS AL 100%
 const I18N = {
     es: { 
         search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.",
@@ -589,6 +621,7 @@ const app = {
         modal: document.getElementById('dish-modal'),
         mImgWrapper: document.getElementById('modal-img-wrapper'),
         mImg: document.getElementById('modal-img'),
+        mBody: document.getElementById('modal-body'),
         mTitle: document.getElementById('modal-title'),
         mPrice: document.getElementById('modal-price'),
         mDesc: document.getElementById('modal-desc'),
@@ -651,7 +684,7 @@ const app = {
     },
 
     setupUI() {
-        this.dom.header.style.display = 'block';
+        this.dom.header.style.display = 'flex';
         const rInfo = this.data.restaurantInfo || {};
         
         if (rInfo.logoBase64) {
@@ -661,21 +694,23 @@ const app = {
             this.dom.logo.style.display = 'none';
         }
 
+        // --- ACTUALIZADO: Píldoras Deslizables (Ahorro de espacio) ---
         let metaHtml = '';
         if (rInfo.telefono) {
             const safePhone = this.escapeHTML(rInfo.telefono);
-            metaHtml += `<a href="tel:${safePhone}" class="meta-link"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${safePhone}</a>`;
+            metaHtml += `<a href="tel:${safePhone}" class="info-pill"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${safePhone}</a>`;
         }
         if (rInfo.email) {
             const safeEmail = this.escapeHTML(rInfo.email);
-            metaHtml += `<a href="mailto:${safeEmail}" class="meta-link"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${safeEmail}</a>`;
+            metaHtml += `<a href="mailto:${safeEmail}" class="info-pill"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${safeEmail}</a>`;
         }
         if (rInfo.direccion) {
             const safeDir = this.escapeHTML(rInfo.direccion);
             const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
-            metaHtml += `<a href="${mapsUrl}" target="_blank" class="meta-link"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${safeDir}</a>`;
+            metaHtml += `<a href="${mapsUrl}" target="_blank" class="info-pill"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${safeDir}</a>`;
         }
         this.dom.metaHeader.innerHTML = metaHtml;
+        this.dom.metaHeader.style.display = metaHtml ? 'flex' : 'none';
 
         if (rInfo.whatsappEnabled && rInfo.whatsappPhone && rInfo.tables?.length > 0) {
             this.whatsapp.enabled = true;
@@ -977,6 +1012,7 @@ const app = {
         }
     },
 
+    // --- ACTUALIZADO: BENTO STYLE DISH CARD ---
     generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex) {
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
         const safeName = this.escapeHTML(dish.nombre);
@@ -1009,8 +1045,10 @@ const app = {
             <div class="dish" onclick="app.openModal('${safeModalData}')">
                 ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy">` : ''}
                 <div class="dish-details">
-                    <div class="dish-name">${safeName}</div>
-                    ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
+                    <div>
+                        <div class="dish-name">${safeName}</div>
+                        ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
+                    </div>
                     <div class="dish-bottom-row">
                         <div class="dish-price">${safePrice} ${sourceMenuName ? `<span class="dish-source-badge">${this.escapeHTML(sourceMenuName)}</span>` : ''}</div>
                         ${actionButton}
@@ -1020,22 +1058,22 @@ const app = {
         `;
     },
 
+    // --- ACTUALIZADO: PDF PERFECTO DE LUJO ---
     printFullMenu() {
         const rInfo = this.data?.restaurantInfo || {};
         const menus = this.data?.menus || [];
         
         let printHTML = `
-            <div style="text-align:center; margin-bottom:25px;">
-                ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}" style="width:70px; height:70px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #4f46e5;">` : ''}
-                <h1 style="margin:0; font-size:24px; color:#0f172a;">${this.escapeHTML(rInfo.nombre || 'Restaurante')}</h1>
-                <p style="margin:5px 0 0; color:#64748b; font-size:13px;">${this.escapeHTML(rInfo.direccion || '')} | ${this.escapeHTML(rInfo.telefono || '')}</p>
+            <div class="pdf-header">
+                ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}">` : ''}
+                <h1>${this.escapeHTML(rInfo.nombre || 'Restaurante')}</h1>
+                <p>${this.escapeHTML(rInfo.direccion || '')} | ${this.escapeHTML(rInfo.telefono || '')}</p>
             </div>
-            <hr style="border:none; border-top:1px solid #e2e8f0; margin:20px 0;">
         `;
 
         menus.forEach(menu => {
             const menuName = this.getMenuTitle(menu);
-            printHTML += `<h2 style="color:#4f46e5; border-bottom:2px solid #4f46e5; padding-bottom:6px; margin-top:25px; font-size:18px;">${this.escapeHTML(menuName)}</h2>`;
+            printHTML += `<div class="pdf-menu-title">${this.escapeHTML(menuName)}</div>`;
             
             let trans = menu.traducciones?.[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
             const images = menu.recursos?.imagenes || {};
@@ -1043,7 +1081,7 @@ const app = {
             if (trans && trans.categorias) {
                 trans.categorias.forEach(cat => {
                     const catName = this.getCategoryName(cat.key, cat.nombre);
-                    printHTML += `<h3 style="margin-top:15px; margin-bottom:10px; color:#1e293b; font-size:15px; border-left:3px solid #7c3aed; padding-left:8px;">${this.escapeHTML(catName)}</h3>`;
+                    printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
                     
                     if (cat.platos) {
                         cat.platos.forEach(dish => {
@@ -1051,15 +1089,14 @@ const app = {
                             const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
                             
                             printHTML += `
-                                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; border-bottom:1px dashed #f1f5f9; padding-bottom:10px; gap:12px;">
-                                    <div style="display:flex; align-items:center; gap:12px; flex-grow:1; min-width:0;">
-                                        ${imgUrl ? `<img src="${imgUrl}" style="width:45px; height:45px; object-fit:cover; border-radius:8px; flex-shrink:0;">` : ''}
-                                        <div style="min-width:0;">
-                                            <div style="font-weight:700; font-size:14px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${this.escapeHTML(dish.nombre)}</div>
-                                            <div style="color:#64748b; font-size:11.5px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${this.escapeHTML(dish.descripcion || '')}</div>
-                                        </div>
+                                <div class="pdf-dish-row">
+                                    ${imgUrl ? `<img src="${imgUrl}" class="pdf-dish-thumb">` : ''}
+                                    <div class="pdf-dish-info">
+                                        <p class="pdf-dish-name">${this.escapeHTML(dish.nombre)}</p>
+                                        <p class="pdf-dish-desc">${this.escapeHTML(dish.descripcion || '')}</p>
                                     </div>
-                                    <div style="font-weight:800; font-size:14px; color:#4f46e5; white-space:nowrap; margin-left:10px;">${priceFormatted}</div>
+                                    <div class="pdf-dish-dots"></div>
+                                    <div class="pdf-dish-price">${priceFormatted}</div>
                                 </div>
                             `;
                         });
@@ -1072,6 +1109,7 @@ const app = {
         window.print();
     },
 
+    // --- ACTUALIZADO: MODAL 3D POP-OUT ---
     openModal(safeDataStr) {
         const data = JSON.parse(decodeURIComponent(safeDataStr));
         const t = I18N[this.currentLang] || I18N['es'];
@@ -1083,9 +1121,11 @@ const app = {
         if (data.imgUrl) {
             this.dom.mImg.src = data.imgUrl;
             this.dom.mImgWrapper.style.display = 'block';
+            this.dom.mBody.classList.remove('no-img');
         } else {
             this.dom.mImg.src = '';
             this.dom.mImgWrapper.style.display = 'none';
+            this.dom.mBody.classList.add('no-img');
         }
 
         this.dom.modal.classList.add('active');
