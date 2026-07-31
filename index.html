@@ -13,30 +13,17 @@
 
     <style>
         :root {
-            /* Variables Premium Light */
-            --bg-light: #f3f4f6;
+            --bg-light: #f8fafc;
             --card-light: #ffffff;
-            --text-light: #111827;
-            --text-muted-light: #6b7280;
-            --border-light: #e5e7eb;
+            --text-light: #0f172a;
+            --text-muted-light: #64748b;
+            --border-light: #e2e8f0;
             --accent: #4f46e5;
             --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --shadow-subtle: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
-            --shadow-card: 0 12px 24px -8px rgba(79, 70, 229, 0.15);
-            --pill-bg: #f3f4f6;
-            --radius-main: 20px;
-        }
-
-        body.dark-mode {
-            /* Variables Premium Dark */
-            --bg-light: #09090b;
-            --card-light: #18181b;
-            --text-light: #f9fafb;
-            --text-muted-light: #9ca3af;
-            --border-light: #27272a;
-            --shadow-subtle: 0 4px 15px -3px rgba(0, 0, 0, 0.4);
-            --shadow-card: 0 12px 24px -8px rgba(0, 0, 0, 0.7);
-            --pill-bg: #27272a;
+            --shadow-subtle: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 20px 40px -15px rgba(79, 70, 229, 0.12);
+            --radius-main: 22px;
+            --pill-bg: #f1f5f9;
         }
 
         body {
@@ -44,16 +31,27 @@
             margin: 0;
             background-color: var(--bg-light);
             color: var(--text-light);
-            transition: background-color 0.4s ease, color 0.4s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- CABECERA PRINCIPAL ULTRA COMPACTA (GLASSMORPHISM) --- */
+        body.dark-mode {
+            --bg-light: #09090b;
+            --card-light: #121215;
+            --text-light: #f4f4f5;
+            --text-muted-light: #a1a1aa;
+            --border-light: #27272a;
+            --shadow-subtle: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+            --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
+            --pill-bg: #27272a;
+        }
+
+        /* --- CABECERA PRINCIPAL REDISEÑADA PARA DAR ESPACIO AL NOMBRE --- */
         header {
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 12px 16px 8px 16px;
+            background-color: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 12px 18px 8px 18px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -61,322 +59,166 @@
             transition: all 0.4s ease;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
-        body.dark-mode header { background-color: rgba(18, 18, 21, 0.85); }
+        body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
 
-        .header-main-row {
+        .header-top-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-            flex-grow: 1;
+            gap: 12px;
+            width: 100%;
         }
 
         #btn-back {
-            background: var(--pill-bg);
-            color: var(--text-light);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            display: none;
+            background: rgba(79, 70, 229, 0.1); color: var(--accent); border: none;
+            width: 38px; height: 38px; border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            transition: all 0.3s ease; flex-shrink: 0; display: none;
         }
         #btn-back:hover { background: var(--accent); color: white; transform: scale(1.05); }
 
         #restaurant-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--card-light);
-            box-shadow: var(--shadow-subtle);
-            flex-shrink: 0;
+            width: 45px; height: 45px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--accent); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); flex-shrink: 0;
         }
 
         #restaurant-name {
-            font-size: 1.25em;
-            margin: 0;
-            font-weight: 800;
-            color: var(--text-light);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 1.35em; margin: 0; font-weight: 800; letter-spacing: -0.02em;
+            background: var(--accent-gradient); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; white-space: normal; line-height: 1.1;
+            flex-grow: 1; /* Permite que el nombre ocupe todo el espacio disponible */
         }
 
-        /* --- PÍLDORAS DESLIZABLES PARA CONTACTO (AHORRO MÁXIMO DE ESPACIO) --- */
-        .info-scroll-container {
+        .btn-theme-header {
+            background: var(--card-light); color: var(--text-light); border: 1px solid var(--border-light);
+            width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); flex-shrink: 0; margin-left: auto;
+        }
+
+        /* --- BARRA DE ACCIONES Y CONTACTO SCROLLABLE (Iconos molongos + Textos traducidos) --- */
+        .action-scroll-bar {
             display: flex;
-            overflow-x: auto;
+            align-items: center;
             gap: 8px;
+            overflow-x: auto;
             padding-bottom: 4px;
-            -ms-overflow-style: none; 
-            scrollbar-width: none;
+            -ms-overflow-style: none; scrollbar-width: none;
         }
-        .info-scroll-container::-webkit-scrollbar { display: none; }
-        
-        .info-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            background: var(--pill-bg);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted-light);
-            text-decoration: none;
-            white-space: nowrap;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-        .info-pill:hover { background: var(--card-light); border-color: var(--accent); color: var(--accent); }
-        .info-pill svg { width: 12px; height: 12px; fill: currentColor; }
+        .action-scroll-bar::-webkit-scrollbar { display: none; }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
+        .action-pill {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+            background: var(--card-light); border: 1px solid var(--border-light);
+            border-radius: 12px; font-size: 0.85em; font-weight: 700;
+            color: var(--text-light); text-decoration: none; white-space: nowrap;
+            box-shadow: var(--shadow-subtle); transition: all 0.2s; cursor: pointer;
         }
+        .action-pill:hover { border-color: var(--accent); transform: translateY(-1px); }
+        .action-pill svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+        .action-pill b { color: var(--accent); } /* Destaca el prefijo (Tel:, Email:) */
+        
+        .action-pill.pdf-btn { color: #ef4444; }
+        .action-pill.pdf-btn:hover { background: #fee2e2; border-color: #ef4444; }
 
         .lang-selector-wrap {
-            display: flex; align-items: center; gap: 4px; padding: 4px 8px;
-            border-radius: 10px; background: var(--card-light); border: 1px solid var(--border-light);
-            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle);
+            display: flex; align-items: center; gap: 4px; padding: 6px 10px;
+            border-radius: 12px; background: var(--card-light); border: 1px solid var(--border-light);
+            cursor: pointer; box-shadow: var(--shadow-subtle); flex-shrink: 0;
         }
-        .lang-flag { width: 18px; height: 14px; border-radius: 3px; object-fit: cover; }
+        .lang-flag { width: 18px; height: 13px; border-radius: 2px; object-fit: cover; }
         #language-selector {
-            border: none; background: transparent; font-size: 0.8rem; font-weight: 700;
+            border: none; background: transparent; font-size: 0.85em; font-weight: 700;
             color: var(--text-light); font-family: inherit; cursor: pointer; outline: none; appearance: none;
         }
 
-        .btn-action {
-            display: flex; align-items: center; gap: 5px; background: var(--card-light);
-            border: 1px solid var(--border-light); color: var(--text-light);
-            padding: 6px 10px; border-radius: 10px; font-weight: 700; font-size: 0.8rem;
-            cursor: pointer; box-shadow: var(--shadow-subtle); transition: transform 0.2s;
-        }
-        .btn-action:hover { border-color: var(--accent); transform: translateY(-1px); }
-        .btn-pdf-header { color: #ef4444; }
-
-        .btn-icon-only {
-            background: var(--card-light); color: var(--text-light); border: 1px solid var(--border-light);
-            width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); font-size: 1rem;
-        }
-
-        .search-and-tabs {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        /* --- BUSCADOR Y TABS --- */
+        .search-and-tabs { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
         .search-container { position: relative; width: 100%; }
         .search-input {
-            width: 100%;
-            padding: 10px 16px 10px 38px;
-            border-radius: 12px;
-            border: 1px solid var(--border-light);
-            background-color: var(--card-light);
-            color: var(--text-light);
-            font-family: inherit;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-            box-shadow: var(--shadow-subtle);
+            width: 100%; padding: 10px 16px 10px 38px; border-radius: 12px;
+            border: 1px solid var(--border-light); background-color: var(--card-light);
+            color: var(--text-light); font-family: inherit; font-size: 0.9em;
+            outline: none; transition: all 0.3s ease; box-sizing: border-box; box-shadow: var(--shadow-subtle);
         }
         .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
-        .search-icon {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted-light); width: 16px; height: 16px;
-        }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted-light); width: 16px; height: 16px; }
 
         .category-tabs-container { width: 100%; display: none; }
         .category-tabs {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;
             -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth;
         }
         .category-tabs::-webkit-scrollbar { display: none; }
         .category-tab {
-            padding: 8px 16px; border-radius: 12px; background-color: var(--card-light);
-            color: var(--text-muted-light); font-weight: 600; font-size: 0.85rem; cursor: pointer;
-            white-space: nowrap; transition: all 0.3s ease; border: 1px solid var(--border-light);
+            padding: 6px 14px; border-radius: 12px; background-color: var(--card-light);
+            color: var(--text-muted-light); font-weight: 600; font-size: 0.85em; cursor: pointer;
+            white-space: nowrap; transition: all 0.3s ease; border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle);
         }
-        .category-tab:hover { color: var(--text-light); }
-        .category-tab.active {
-            background: var(--text-light); color: var(--bg-light); border-color: transparent;
-            box-shadow: var(--shadow-subtle); transform: translateY(-1px);
-        }
+        .category-tab:hover { color: var(--accent); border-color: rgba(79, 70, 229, 0.3); }
+        .category-tab.active { background: var(--accent-gradient); color: #ffffff; border-color: transparent; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transform: translateY(-1px); }
 
-        /* --- CONTENIDO BENTO GRID --- */
-        #main-content {
-            padding: 20px 16px;
-            max-width: 850px;
-            margin: 0 auto;
-            min-height: 70vh;
-            padding-bottom: 90px;
+        /* --- EFECTOS VISUALES Y GRID PRINCIPAL --- */
+        .menu-card, .dish {
+            background-color: var(--card-light); border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+            position: relative; overflow: hidden;
         }
+        .menu-card:hover, .dish:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); border-color: rgba(79, 70, 229, 0.35); }
+
+        #main-content { padding: 24px 16px; max-width: 850px; margin: 0 auto; min-height: 70vh; padding-bottom: 90px; }
         #loader { text-align: center; padding: 50px; font-size: 1.1em; color: var(--text-muted-light); font-weight: 600; }
 
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            margin-top: 10px;
-        }
-        .menu-card {
-            border-radius: var(--radius-main);
-            cursor: pointer;
-            height: 180px; 
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-subtle);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-        .menu-card:active { transform: scale(0.97); }
-        .menu-card-img {
-            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .menu-card-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
-            z-index: 2; display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box;
-        }
-        .menu-card:hover .menu-card-img { transform: scale(1.05); }
-        .menu-card-title {
-            color: #ffffff; font-size: 1.5em; font-weight: 800; margin: 0; letter-spacing: -0.02em;
-        }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 10px; }
+        .menu-card { border-radius: var(--radius-main); cursor: pointer; height: 220px; }
+        .menu-card-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .menu-card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%); z-index: 2; display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box; }
+        .menu-card:hover .menu-card-img { transform: scale(1.08); }
+        .menu-card-title { color: #ffffff; font-size: 1.6em; font-weight: 800; margin: 0; letter-spacing: -0.02em; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
 
         .category { margin-bottom: 40px; }
-        .category-title {
-            font-size: 1.4em; font-weight: 800; color: var(--text-light);
-            display: inline-block; position: relative; margin-bottom: 16px;
-        }
+        .category-title { font-size: 1.5em; font-weight: 800; color: var(--text-light); display: inline-block; position: relative; margin-bottom: 20px; letter-spacing: -0.02em; }
+        .category-title::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 40px; height: 3px; background: var(--accent-gradient); border-radius: 4px; }
 
-        /* --- PLATOS ESTILO BENTO (LIMPIO, IMAGEN CUADRADA, SEPARADO) --- */
-        .dish {
-            display: flex; gap: 14px; background: var(--card-light); border-radius: 16px;
-            padding: 10px; margin-bottom: 14px; cursor: pointer; border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-subtle); transition: transform 0.3s, border-color 0.3s;
-        }
-        .dish:active { transform: scale(0.98); }
-        .dish:hover { border-color: rgba(79, 70, 229, 0.3); }
-
-        .dish-img { 
-            width: 100px; height: 100px; object-fit: cover; flex-shrink: 0; 
-            border-radius: 12px; background: var(--pill-bg);
-        }
-        .dish-details { 
-            flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; 
-            padding: 4px 0; min-width: 0;
-        }
-        .dish:not(:has(.dish-img)) .dish-details { padding-left: 8px; }
-        .dish-name { 
-            font-size: 1.05em; font-weight: 700; margin: 0 0 4px; color: var(--text-light); 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
-        .dish-desc {
-            color: var(--text-muted-light); margin: 0; font-size: 0.85em; line-height: 1.4;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
-        .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-        .dish-price { font-size: 1.15em; font-weight: 800; color: var(--text-light); }
+        .dish { display: flex; gap: 16px; border-radius: var(--radius-main); margin-bottom: 16px; cursor: pointer; padding: 0; }
+        .dish-img { width: 125px; height: 125px; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-main) 0 0 var(--radius-main); }
+        .dish-details { padding: 16px 16px 16px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .dish:not(:has(.dish-img)) .dish-details { padding-left: 18px; }
+        .dish-name { font-size: 1.15em; font-weight: 700; margin: 0 0 5px; color: var(--text-light); letter-spacing: -0.01em; }
+        .dish-desc { color: var(--text-muted-light); margin: 0 0 10px; font-size: 0.9em; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .dish-price { font-size: 1.3em; font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; }
         
-        .dish-add-btn {
-            background: var(--text-light); color: var(--bg-light); border: none; width: 32px; height: 32px;
-            border-radius: 10px; font-size: 18px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .dish-add-btn:active { transform: scale(0.9); background: var(--accent); color: white; }
+        .dish-add-btn { background: var(--accent-gradient); color: white; border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); }
+        .dish-add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.6); }
 
-        .dish-action-icon {
-            background: var(--pill-bg); color: var(--text-light); border-radius: 10px;
-            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-        }
-        .dish-source-badge { font-size: 0.7em; background: var(--pill-bg); padding: 3px 6px; border-radius: 6px; color: var(--text-muted-light); font-weight: 600; margin-left: 6px; }
+        .dish-action-icon { background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 12px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .dish:hover .dish-action-icon { background: var(--accent); color: #ffffff; transform: translateX(3px); }
+        .dish-source-badge { font-size: 0.7em; background: rgba(0,0,0,0.05); padding: 3px 6px; border-radius: 6px; color: var(--text-muted-light); font-weight: 600; margin-left: 6px; }
+        body.dark-mode .dish-source-badge { background: rgba(255,255,255,0.08); }
 
-        .fade-in-slide {
-            opacity: 0; transform: translateY(15px);
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .fade-in-slide { opacity: 0; transform: translateY(15px); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in-slide.visible { opacity: 1; transform: translateY(0); }
 
-        /* --- MODAL PLATO (EFECTO 3D POP-OUT) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            display: flex; align-items: flex-end; justify-content: center; z-index: 1000;
-            opacity: 0; visibility: hidden; transition: all 0.3s ease;
-        }
-        @media (min-width: 500px) {
-            .modal-overlay { align-items: center; }
-        }
+        /* --- MODALES Y CARRITO --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.35s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--card-light); border-radius: 28px; width: 90%; max-width: 420px; max-height: 85vh; overflow-y: auto; position: relative; transform: translateY(20px) scale(0.96); transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 30px 60px rgba(0,0,0,0.3); border: 1px solid var(--border-light); }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(0, 0, 0, 0.05); color: var(--text-light); border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 0.95em; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        body.dark-mode .modal-close { background: rgba(255, 255, 255, 0.08); }
+        .modal-close:hover { background: #ef4444; color: white; transform: scale(1.1); }
         
-        .modal-content {
-            background: var(--card-light); width: 100%; max-width: 450px;
-            border-radius: 32px 32px 0 0; position: relative; padding: 30px 24px; box-sizing: border-box;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        @media (min-width: 500px) {
-            .modal-content { border-radius: 24px; transform: scale(0.9) translateY(20px); }
-            .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-        }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        
-        .modal-close {
-            position: absolute; top: 20px; right: 20px; background: var(--pill-bg); color: var(--text-light);
-            border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 14px; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;
-        }
+        .modal-img-wrapper { text-align: center; padding-top: 28px; }
+        .modal-img { width: 150px; height: 150px; object-fit: cover; border-radius: 24px; box-shadow: var(--shadow-card); display: inline-block; border: 3px solid var(--card-light); }
+        .modal-body { padding: 22px 28px 28px; text-align: center; }
+        .modal-title { font-size: 1.6em; font-weight: 800; margin: 0 0 10px; line-height: 1.15; color: var(--text-light); }
+        .modal-price { font-size: 1.5em; font-weight: 800; color: var(--accent); display: inline-block; padding: 6px 20px; background: rgba(79, 70, 229, 0.08); border-radius: 12px; margin-bottom: 18px; }
+        .modal-desc { color: var(--text-muted-light); font-size: 1em; line-height: 1.5; margin: 0; }
 
-        /* Contenedor que sale por encima del modal */
-        .modal-img-wrapper {
-            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
-            width: 120px; height: 120px; border-radius: 50%; padding: 4px;
-            background: var(--card-light); box-shadow: 0 -10px 25px rgba(0,0,0,0.1); display: none;
-        }
-        .modal-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
-        .modal-body { text-align: center; margin-top: 45px; }
-        .modal-body.no-img { margin-top: 0; }
-        .modal-title { font-size: 1.5em; font-weight: 800; margin: 0 0 8px; color: var(--text-light); }
-        .modal-price { font-size: 1.4em; font-weight: 800; color: var(--accent); margin-bottom: 16px; }
-        .modal-desc { color: var(--text-muted-light); font-size: 0.95em; line-height: 1.5; margin: 0; }
-
-        /* --- CARRITO, COOKIES Y TABLAS --- */
-        .cart-fab {
-            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px;
-            background: var(--text-light); color: var(--bg-light); border-radius: 20px;
-            display: flex; align-items: center; justify-content: center; font-size: 24px;
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3); cursor: pointer; z-index: 999;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none;
-        }
+        .cart-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--accent-gradient); color: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.5); cursor: pointer; z-index: 999; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none; }
         .cart-fab:hover { transform: scale(1.1) rotate(5deg); }
-        .cart-badge {
-            position: absolute; top: -5px; right: -5px; background-color: #ef4444; color: white;
-            border-radius: 50%; width: 24px; height: 24px; font-size: 11px; font-weight: 800;
-            display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-light);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0);
-        }
+        .cart-badge { position: absolute; top: -5px; right: -5px; background-color: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-light); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); }
         .cart-badge.visible { transform: scale(1); }
 
         #cart-items-container { max-height: 40vh; overflow-y: auto; margin: 14px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 10px 0; }
@@ -387,52 +229,50 @@
         .cart-item-quantity { font-weight: 700; min-width: 20px; text-align: center; }
         .cart-item-price { font-weight: 700; color: var(--accent); min-width: 65px; text-align: right; }
         .quantity-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--card-light); color: var(--text-light); font-weight: bold; cursor: pointer; transition: all 0.2s; }
-        .quantity-btn:active { background: var(--text-light); color: var(--bg-light); }
+        .quantity-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
 
-        #cookie-banner {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.08); padding: 16px 20px; box-sizing: border-box;
-            display: flex; align-items: center; justify-content: space-between; z-index: 9999;
-            border-top: 1px solid var(--border-light); transform: translateY(100%); transition: transform 0.4s ease;
-        }
+        #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 -10px 30px rgba(0,0,0,0.08); padding: 16px 20px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; z-index: 9999; border-top: 1px solid var(--border-light); transform: translateY(100%); transition: transform 0.4s ease; }
         #cookie-banner.show { transform: translateY(0); }
         body.dark-mode #cookie-banner { background: rgba(18, 18, 21, 0.9); }
         .cookie-text { font-size: 0.85em; margin-right: 15px; color: var(--text-muted-light); }
-        .btn-cookie {
-            background: var(--text-light); color: var(--bg-light); border: none; padding: 10px 20px;
-            border-radius: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap;
-            transition: transform 0.2s;
-        }
-        .btn-cookie:active { transform: scale(0.95); }
+        .btn-cookie { background: var(--accent-gradient); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transition: transform 0.2s; }
+        .btn-cookie:hover { transform: scale(1.03); }
 
-        /* --- PDF PRINT PERFECTO TIPO CARTA DE LUJO --- */
+        /* --- PDF PRINT (MEJORADO: EFECTOS Y SALTOS DE PÁGINA) --- */
         #print-container { display: none; }
 
         @media print {
             body * { visibility: hidden; }
+            body { background: white !important; }
             #print-container, #print-container * { visibility: visible; }
-            body { background: white !important; color: black !important; }
-            
-            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; padding: 20px; }
+            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; color: black; }
             header, #main-content, .modal-overlay, #cookie-banner, .cart-fab { display: none !important; }
             
-            .pdf-header { text-align: center; margin-bottom: 20px; }
-            .pdf-header img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid #000; }
-            .pdf-header h1 { margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
-            .pdf-header p { margin: 5px 0 0 0; font-size: 13px; color: #444; }
+            /* Clases especiales para el diseño del PDF */
+            .pdf-page-section { position: relative; width: 100%; min-height: 90vh; padding: 30px 40px; box-sizing: border-box; }
+            .pdf-page-break { page-break-before: always; break-before: page; }
             
-            .pdf-menu-title { font-size: 20px; border-bottom: 2px solid #000; padding-bottom: 6px; margin-top: 35px; color: #000; font-weight: 800; }
-            .pdf-cat-title { font-size: 16px; font-weight: bold; margin: 20px 0 12px 0; text-transform: uppercase; color: #333; }
+            /* Marca de agua gigante y elegante de fondo */
+            .pdf-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; max-width: 450px; opacity: 0.04; filter: grayscale(100%); z-index: -1; pointer-events: none; }
+            
+            .pdf-header-top { text-align: center; margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px solid #000; padding-bottom: 15px; }
+            .pdf-header-top img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #000; }
+            .pdf-header-top h1 { margin: 0; font-size: 26px; text-transform: uppercase; letter-spacing: 2px; color: #000; }
+            .pdf-header-top p { margin: 5px 0 0 0; font-size: 13px; color: #444; }
+            
+            .pdf-menu-title-box { text-align: center; margin: 30px 0 20px; }
+            .pdf-menu-title-box span { display: inline-block; padding: 6px 20px; border: 2px solid #4f46e5; color: #4f46e5; font-size: 18px; font-weight: 800; text-transform: uppercase; border-radius: 8px; }
+            
+            .pdf-cat-title { font-size: 16px; font-weight: bold; margin: 25px 0 10px 0; text-transform: uppercase; color: #222; }
             
             .pdf-dish-row { display: flex; align-items: flex-end; margin-bottom: 14px; page-break-inside: avoid; }
-            .pdf-dish-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; margin-right: 12px; flex-shrink: 0; border: 1px solid #ddd; }
+            .pdf-dish-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; margin-right: 12px; flex-shrink: 0; border: 1px solid #ddd; }
             .pdf-dish-info { flex-shrink: 0; max-width: 65%; }
             .pdf-dish-name { font-weight: bold; font-size: 14px; margin: 0; color: #000; }
-            .pdf-dish-desc { font-size: 11px; color: #555; margin: 2px 0 0 0; line-height: 1.2; }
+            .pdf-dish-desc { font-size: 11px; color: #555; margin: 2px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             
-            .pdf-dish-dots { flex-grow: 1; border-bottom: 2px dotted #aaa; margin: 0 12px; position: relative; top: -6px; }
-            .pdf-dish-price { font-weight: bold; font-size: 15px; flex-shrink: 0; color: #000; }
+            .pdf-dish-dots { flex-grow: 1; border-bottom: 2px dotted #ccc; margin: 0 10px; position: relative; top: -6px; }
+            .pdf-dish-price { font-weight: bold; font-size: 14px; flex-shrink: 0; color: #000; }
         }
     </style>
 </head>
@@ -440,30 +280,30 @@
 <body>
 
 <header id="header-container" style="display:none;">
-    <div class="header-main-row">
-        <div class="header-brand">
-            <button id="btn-back" onclick="app.navigateHome()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <img id="restaurant-logo" src="" alt="Logo" style="display:none;">
-            <div class="restaurant-titles">
-                <h1 id="restaurant-name">Cargando...</h1>
-            </div>
-        </div>
-
-        <div class="header-actions">
-            <div class="lang-selector-wrap">
-                <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-                <select id="language-selector" aria-label="Selector de idioma"></select>
-            </div>
-            <button class="btn-action btn-pdf-header" onclick="app.printFullMenu()">📄 PDF</button>
-            <button id="btn-theme" class="btn-icon-only" onclick="app.toggleTheme()">🌙</button>
-        </div>
+    <!-- FILA 1: Logo, Nombre Libre y Botón Tema -->
+    <div class="header-top-row">
+        <button id="btn-back" onclick="app.navigateHome()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <img id="restaurant-logo" src="" alt="Logo" style="display:none;">
+        <h1 id="restaurant-name">Cargando...</h1>
+        <button id="btn-theme" class="btn-theme-header" onclick="app.toggleTheme()">🌙</button>
     </div>
-    
-    <!-- Píldoras horizontales de información de contacto -->
-    <div id="restaurant-meta-header" class="info-scroll-container"></div>
 
+    <!-- FILA 2: Barra de acciones horizontales (Idioma, PDF, y Contacto con Iconos Molongos) -->
+    <div class="action-scroll-bar">
+        <div class="lang-selector-wrap">
+            <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+            <select id="language-selector" aria-label="Selector de idioma"></select>
+        </div>
+        <a class="action-pill pdf-btn" onclick="app.printFullMenu()">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            PDF
+        </a>
+        <div id="contact-pills-container" style="display:contents;"></div>
+    </div>
+
+    <!-- FILA 3: Buscador y Pestañas -->
     <div class="search-and-tabs">
         <div class="search-container">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -479,7 +319,7 @@
     <div id="loader">Preparando experiencia gastronómica...</div>
 </div>
 
-<!-- Contenedor optimizado para exportar PDF completo con miniaturas -->
+<!-- Contenedor PDF -->
 <div id="print-container"></div>
 
 <div id="dish-modal" class="modal-overlay" onclick="app.closeModal(event)">
@@ -488,7 +328,7 @@
         <div id="modal-img-wrapper" class="modal-img-wrapper">
             <img id="modal-img" class="modal-img" src="" alt="">
         </div>
-        <div id="modal-body" class="modal-body">
+        <div class="modal-body">
             <h3 id="modal-title" class="modal-title"></h3>
             <div id="modal-price" class="modal-price"></div>
             <p id="modal-desc" class="modal-desc"></p>
@@ -507,9 +347,9 @@
 </div>
 
 <div id="cart-modal" class="modal-overlay" onclick="app.closeCart(event)">
-    <div class="modal-content" style="max-height:85vh; display:flex; flex-direction:column; padding: 24px; transform: scale(0.96) translateY(0);">
+    <div class="modal-content">
         <button class="modal-close" onclick="app.closeCart(event, true)">✕</button>
-        <div class="modal-body no-img" style="text-align: left; overflow-y:auto; padding-bottom:20px;">
+        <div class="modal-body" style="text-align: left;">
             <h3 id="cart-modal-title" class="modal-title" style="text-align: center;"></h3>
             <div id="cart-items-container"></div>
             <div id="cart-total-container" style="text-align: right; font-size: 1.3em; font-weight: 800; margin: 16px 0; color: var(--text-light);">
@@ -519,61 +359,69 @@
                 <label id="cart-table-label" for="table-selector" style="font-size:0.85em; font-weight:600; color:var(--text-muted-light);"></label>
                 <select id="table-selector" class="search-input" style="width: 100%; margin-top: 5px;"></select>
             </div>
-            <button id="send-order-btn" class="btn-cookie" style="width: 100%; margin-top: 20px; font-size: 1.1em; padding: 14px;" onclick="app.sendOrder()"></button>
+            <button id="send-order-btn" class="btn-cookie" style="width: 100%; margin-top: 20px;" onclick="app.sendOrder()"></button>
         </div>
     </div>
 </div>
 
 <script>
-// DICCIONARIOS ÍNTEGROS MANTENIDOS AL 100%
+// --- EL DICCIONARIO SE MANTIENE INTACTO Y AÑADIMOS LAS TRADUCCIONES DE CONTACTO ---
 const I18N = {
     es: { 
         search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.",
         "menu_diario": "📅 Menú del Día", "menu_especial": "⭐ Cartas Especiales",
         "diario::primeros": "🍝 Primeros Platos", "diario::segundos": "🍖 Segundos Platos", "diario::postres": "🍰 Postres Caseros", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés e Infusiones",
-        "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas"
+        "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas",
+        contactTel: "Tel:", contactEmail: "Email:", contactDir: "Dirección:"
     },
     en: { 
         search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.",
         "menu_diario": "📅 Daily Menu", "menu_especial": "⭐ Special Menus",
         "diario::primeros": "🍝 First Courses", "diario::segundos": "🍖 Main Courses", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Drinks", "diario::cafes": "☕ Coffees",
-        "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners"
+        "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners",
+        contactTel: "Tel:", contactEmail: "Email:", contactDir: "Address:"
     },
     fr: { 
         search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.",
         "menu_diario": "📅 Menu du Jour", "menu_especial": "⭐ Menus Spéciaux",
         "diario::primeros": "🍝 Entrées", "diario::segundos": "🍖 Plats", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Boissons", "diario::cafes": "☕ Cafés",
-        "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners"
+        "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners",
+        contactTel: "Tél:", contactEmail: "Email:", contactDir: "Adresse:"
     },
     it: { 
         search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.",
         "menu_diario": "📅 Menu del Giorno", "menu_especial": "⭐ Menu Speciali",
         "diario::primeros": "🍝 Primi Piatti", "diario::segundos": "🍖 Secondi Piatti", "diario::postres": "🍰 Dolci", "diario::bebidas": "🍷 Bevande", "diario::cafes": "☕ Caffè",
-        "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene"
+        "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene",
+        contactTel: "Tel:", contactEmail: "Email:", contactDir: "Indirizzo:"
     },
     de: { 
         search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.",
         "menu_diario": "📅 Tagesmenü", "menu_especial": "⭐ Spezialkarten",
         "diario::primeros": "🍝 Vorspeisen", "diario::segundos": "🍖 Hauptgerichte", "diario::postres": "🍰 Nachspeisen", "diario::bebidas": "🍷 Getränke", "diario::cafes": "☕ Kaffee",
-        "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen"
+        "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen",
+        contactTel: "Tel:", contactEmail: "E-Mail:", contactDir: "Adresse:"
     },
     pt: { 
         search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.",
         "menu_diario": "📅 Menu do Dia", "menu_especial": "⭐ Menus Especiais",
         "diario::primeros": "🍝 Primeiros Pratos", "diario::segundos": "🍖 Pratos Principais", "diario::postres": "🍰 Sobremesas", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés",
-        "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares"
+        "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares",
+        contactTel: "Tel:", contactEmail: "Email:", contactDir: "Endereço:"
     },
     cn: { 
         search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。",
         "menu_diario": "📅 每日精选套餐", "menu_especial": "⭐ 特色菜单",
         "diario::primeros": "🍝 头盘", "diario::segundos": "🍖 主菜", "diario::postres": "🍰 甜点", "diario::bebidas": "🍷 酒水饮料", "diario::cafes": "☕ 咖啡",
-        "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐"
+        "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐",
+        contactTel: "电话:", contactEmail: "邮箱:", contactDir: "地址:"
     },
     sa: { 
         search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.",
         "menu_diario": "📅 قائمة اليوم", "menu_especial": "⭐ القوائم الخاصة",
         "diario::primeros": "🍝 المقبلات", "diario::segundos": "🍖 الأطباق الرئيسية", "diario::postres": "🍰 الحلويات", "diario::bebidas": "🍷 المشروبات", "diario::cafes": "☕ القهوة",
-        "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء"
+        "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء",
+        contactTel: "هاتف:", contactEmail: "بريد:", contactDir: "عنوان:"
     }
 };
 
@@ -612,7 +460,7 @@ const app = {
         btnBack: document.getElementById('btn-back'),
         logo: document.getElementById('restaurant-logo'),
         name: document.getElementById('restaurant-name'),
-        metaHeader: document.getElementById('restaurant-meta-header'),
+        contactPillsContainer: document.getElementById('contact-pills-container'),
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         searchInput: document.getElementById('search-input'),
@@ -621,7 +469,6 @@ const app = {
         modal: document.getElementById('dish-modal'),
         mImgWrapper: document.getElementById('modal-img-wrapper'),
         mImg: document.getElementById('modal-img'),
-        mBody: document.getElementById('modal-body'),
         mTitle: document.getElementById('modal-title'),
         mPrice: document.getElementById('modal-price'),
         mDesc: document.getElementById('modal-desc'),
@@ -694,24 +541,6 @@ const app = {
             this.dom.logo.style.display = 'none';
         }
 
-        // --- ACTUALIZADO: Píldoras Deslizables (Ahorro de espacio) ---
-        let metaHtml = '';
-        if (rInfo.telefono) {
-            const safePhone = this.escapeHTML(rInfo.telefono);
-            metaHtml += `<a href="tel:${safePhone}" class="info-pill"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${safePhone}</a>`;
-        }
-        if (rInfo.email) {
-            const safeEmail = this.escapeHTML(rInfo.email);
-            metaHtml += `<a href="mailto:${safeEmail}" class="info-pill"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${safeEmail}</a>`;
-        }
-        if (rInfo.direccion) {
-            const safeDir = this.escapeHTML(rInfo.direccion);
-            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
-            metaHtml += `<a href="${mapsUrl}" target="_blank" class="info-pill"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${safeDir}</a>`;
-        }
-        this.dom.metaHeader.innerHTML = metaHtml;
-        this.dom.metaHeader.style.display = metaHtml ? 'flex' : 'none';
-
         if (rInfo.whatsappEnabled && rInfo.whatsappPhone && rInfo.tables?.length > 0) {
             this.whatsapp.enabled = true;
             this.whatsapp.phone = rInfo.whatsappPhone;
@@ -761,6 +590,7 @@ const app = {
     updateUITexts() {
         const t = I18N[this.currentLang] || I18N['es'];
         const t_wa = I18N_WHATSAPP[this.whatsapp.msgLang] || I18N_WHATSAPP['es'];
+        const rInfo = this.data?.restaurantInfo || {};
         
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
@@ -770,9 +600,21 @@ const app = {
         this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
-        
-        const rInfo = this.data?.restaurantInfo || {};
         this.dom.name.textContent = rInfo.nombre || t.defaultRestaurant;
+
+        // Renderizado dinámico de Píldoras de contacto con Iconos SVG molongos y traducción
+        let contactHtml = '';
+        if (rInfo.telefono) {
+            contactHtml += `<a href="tel:${this.escapeHTML(rInfo.telefono)}" class="action-pill"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <b>${t.contactTel || 'Tel:'}</b> ${this.escapeHTML(rInfo.telefono)}</a>`;
+        }
+        if (rInfo.email) {
+            contactHtml += `<a href="mailto:${this.escapeHTML(rInfo.email)}" class="action-pill"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> <b>${t.contactEmail || 'Email:'}</b> ${this.escapeHTML(rInfo.email)}</a>`;
+        }
+        if (rInfo.direccion) {
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
+            contactHtml += `<a href="${mapsUrl}" target="_blank" class="action-pill"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> <b>${t.contactDir || 'Dir:'}</b> ${this.escapeHTML(rInfo.direccion)}</a>`;
+        }
+        this.dom.contactPillsContainer.innerHTML = contactHtml;
     },
 
     initCookies() {
@@ -1012,7 +854,6 @@ const app = {
         }
     },
 
-    // --- ACTUALIZADO: BENTO STYLE DISH CARD ---
     generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex) {
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
         const safeName = this.escapeHTML(dish.nombre);
@@ -1045,10 +886,8 @@ const app = {
             <div class="dish" onclick="app.openModal('${safeModalData}')">
                 ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy">` : ''}
                 <div class="dish-details">
-                    <div>
-                        <div class="dish-name">${safeName}</div>
-                        ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
-                    </div>
+                    <div class="dish-name">${safeName}</div>
+                    ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
                     <div class="dish-bottom-row">
                         <div class="dish-price">${safePrice} ${sourceMenuName ? `<span class="dish-source-badge">${this.escapeHTML(sourceMenuName)}</span>` : ''}</div>
                         ${actionButton}
@@ -1058,22 +897,35 @@ const app = {
         `;
     },
 
-    // --- ACTUALIZADO: PDF PERFECTO DE LUJO ---
+    // --- PDF CON SALTOS DE PÁGINA Y MARCA DE AGUA (EFECTILLO MOLÓN) ---
     printFullMenu() {
         const rInfo = this.data?.restaurantInfo || {};
         const menus = this.data?.menus || [];
-        
-        let printHTML = `
-            <div class="pdf-header">
-                ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}">` : ''}
-                <h1>${this.escapeHTML(rInfo.nombre || 'Restaurante')}</h1>
-                <p>${this.escapeHTML(rInfo.direccion || '')} | ${this.escapeHTML(rInfo.telefono || '')}</p>
-            </div>
-        `;
+        let printHTML = '';
 
-        menus.forEach(menu => {
+        menus.forEach((menu, index) => {
             const menuName = this.getMenuTitle(menu);
-            printHTML += `<div class="pdf-menu-title">${this.escapeHTML(menuName)}</div>`;
+            
+            // Cada menú en una página nueva
+            const breakClass = index > 0 ? 'pdf-page-break' : '';
+            printHTML += `<div class="pdf-page-section ${breakClass}">`;
+            
+            // Efecto Marca de agua gigante
+            if (rInfo.logoBase64) {
+                printHTML += `<img src="${rInfo.logoBase64}" class="pdf-watermark-bg">`;
+            }
+
+            // Cabecera elegante
+            printHTML += `
+                <div class="pdf-header-top">
+                    ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}">` : ''}
+                    <h1>${this.escapeHTML(rInfo.nombre || 'Restaurante')}</h1>
+                    <p>${this.escapeHTML(rInfo.direccion || '')} &bull; ${this.escapeHTML(rInfo.telefono || '')}</p>
+                </div>
+                <div class="pdf-menu-title-box">
+                    <span>${this.escapeHTML(menuName)}</span>
+                </div>
+            `;
             
             let trans = menu.traducciones?.[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
             const images = menu.recursos?.imagenes || {};
@@ -1093,7 +945,7 @@ const app = {
                                     ${imgUrl ? `<img src="${imgUrl}" class="pdf-dish-thumb">` : ''}
                                     <div class="pdf-dish-info">
                                         <p class="pdf-dish-name">${this.escapeHTML(dish.nombre)}</p>
-                                        <p class="pdf-dish-desc">${this.escapeHTML(dish.descripcion || '')}</p>
+                                        ${dish.descripcion ? `<p class="pdf-dish-desc">${this.escapeHTML(dish.descripcion)}</p>` : ''}
                                     </div>
                                     <div class="pdf-dish-dots"></div>
                                     <div class="pdf-dish-price">${priceFormatted}</div>
@@ -1103,13 +955,18 @@ const app = {
                     }
                 });
             }
+            
+            printHTML += `</div>`; // Cierra la sección/página
         });
 
         this.dom.printContainer.innerHTML = printHTML;
-        window.print();
+        
+        // Pequeño timeout para asegurar que el DOM ha pintado las imágenes base64 y marca de agua
+        setTimeout(() => {
+            window.print();
+        }, 100);
     },
 
-    // --- ACTUALIZADO: MODAL 3D POP-OUT ---
     openModal(safeDataStr) {
         const data = JSON.parse(decodeURIComponent(safeDataStr));
         const t = I18N[this.currentLang] || I18N['es'];
@@ -1121,11 +978,9 @@ const app = {
         if (data.imgUrl) {
             this.dom.mImg.src = data.imgUrl;
             this.dom.mImgWrapper.style.display = 'block';
-            this.dom.mBody.classList.remove('no-img');
         } else {
             this.dom.mImg.src = '';
             this.dom.mImgWrapper.style.display = 'none';
-            this.dom.mBody.classList.add('no-img');
         }
 
         this.dom.modal.classList.add('active');
