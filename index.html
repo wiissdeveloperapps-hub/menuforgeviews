@@ -44,26 +44,26 @@
             --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
         }
 
-        /* --- CABECERA COMPACTA ULTRA MODERNA --- */
+        /* --- CABECERA PRINCIPAL ULTRA COMPACTA E INFORMATIVA --- */
         header {
-            background-color: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 12px 16px;
+            background-color: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 12px 18px;
             position: sticky;
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border-light);
             transition: all 0.4s ease;
         }
-        body.dark-mode header { background-color: rgba(18, 18, 21, 0.82); }
+        body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
 
-        .header-top-row {
+        .header-main-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .header-brand {
@@ -91,8 +91,8 @@
         #btn-back:hover { background: var(--accent); color: white; transform: scale(1.05); }
 
         #restaurant-logo {
-            width: 44px;
-            height: 44px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
@@ -100,8 +100,14 @@
             flex-shrink: 0;
         }
 
+        .restaurant-titles {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
         #restaurant-name {
-            font-size: 1.35em;
+            font-size: 1.25em;
             margin: 0;
             font-weight: 800;
             letter-spacing: -0.02em;
@@ -112,6 +118,27 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        /* --- BARRA DE CONTACTO DIRECTO EN CABECERA --- */
+        .restaurant-meta-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.8em;
+            color: var(--text-muted-light);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .meta-link {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .meta-link:hover { color: var(--accent); }
+        .meta-link svg { width: 13px; height: 13px; fill: currentColor; opacity: 0.8; }
 
         .header-actions {
             display: flex;
@@ -131,26 +158,34 @@
             color: var(--text-light); font-family: inherit; cursor: pointer; outline: none; appearance: none;
         }
 
+        .btn-action {
+            background: var(--card-light); color: var(--text-light); border: 1px solid var(--border-light);
+            padding: 7px 12px; border-radius: 12px; display: flex; align-items: center; gap: 5px;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); font-size: 0.85em; font-weight: 700;
+        }
+        .btn-action:hover { border-color: var(--accent); transform: translateY(-1px); }
+        .btn-pdf-header { background: #ef4444; color: white; border: none; }
+        .btn-pdf-header:hover { background: #dc2626; color: white; }
+
         .btn-icon-only {
             background: var(--card-light); color: var(--text-light); border: 1px solid var(--border-light);
             width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); font-size: 1.1em;
         }
-        .btn-icon-only:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .btn-pdf-header { background: #ef4444; color: white; border: none; }
-        .btn-pdf-header:hover { background: #dc2626; color: white; }
+        .btn-icon-only:hover { border-color: var(--accent); transform: translateY(-1px); }
 
         .search-and-tabs {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            margin-top: 8px;
         }
 
         .search-container { position: relative; width: 100%; }
         .search-input {
             width: 100%;
-            padding: 10px 16px 10px 38px;
-            border-radius: 14px;
+            padding: 9px 16px 9px 38px;
+            border-radius: 12px;
             border: 1px solid var(--border-light);
             background-color: var(--card-light);
             color: var(--text-light);
@@ -185,7 +220,7 @@
             box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transform: translateY(-1px);
         }
 
-        /* --- EFECTOS HOLOGRÁFICOS 3D EN TARJETAS --- */
+        /* --- EFECTOS VISUALES NEXT-GEN --- */
         .menu-card, .dish {
             background-color: var(--card-light);
             border: 1px solid var(--border-light);
@@ -193,23 +228,12 @@
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
             position: relative;
             overflow: hidden;
-            transform-style: preserve-style;
         }
         .menu-card:hover, .dish:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: var(--shadow-card);
             border-color: rgba(79, 70, 229, 0.35);
         }
-
-        /* Reflejo de luz interactivo */
-        .dish::after, .menu-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-            transition: 0.5s;
-        }
-        .dish:hover::after, .menu-card:hover::after { left: 150%; }
 
         #main-content {
             padding: 24px 16px;
@@ -372,13 +396,13 @@
         }
         .btn-cookie:hover { transform: scale(1.03); }
 
-        /* Oculto en pantalla normal, visible solo al imprimir PDF de carta completa */
+        /* Oculto en pantalla normal, visible al exportar PDF completo */
         #print-container { display: none; }
 
         @media print {
             body * { visibility: hidden; }
             #print-container, #print-container * { visibility: visible; }
-            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; background: white; color: black; padding: 20px; }
+            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; background: white; color: black; padding: 30px; }
             header, #main-content, .modal-overlay, #cookie-banner, .cart-fab { display: none !important; }
         }
     </style>
@@ -387,13 +411,16 @@
 <body>
 
 <header id="header-container" style="display:none;">
-    <div class="header-top-row">
+    <div class="header-main-row">
         <div class="header-brand">
             <button id="btn-back" onclick="app.navigateHome()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
             <img id="restaurant-logo" src="" alt="Logo" style="display:none;">
-            <h1 id="restaurant-name">Cargando...</h1>
+            <div class="restaurant-titles">
+                <h1 id="restaurant-name">Cargando...</h1>
+                <div id="restaurant-meta-header" class="restaurant-meta-header"></div>
+            </div>
         </div>
 
         <div class="header-actions">
@@ -401,8 +428,7 @@
                 <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                 <select id="language-selector" aria-label="Selector de idioma"></select>
             </div>
-            <button class="btn-icon-only btn-pdf-header" onclick="app.printFullMenu()" title="Descargar PDF Completo">📄</button>
-            <button class="btn-icon-only" onclick="app.openInfoModal()" title="Info">ℹ️</button>
+            <button class="btn-action btn-pdf-header" onclick="app.printFullMenu()">📄 PDF</button>
             <button id="btn-theme" class="btn-icon-only" onclick="app.toggleTheme()">🌙</button>
         </div>
     </div>
@@ -422,19 +448,8 @@
     <div id="loader">Preparando experiencia gastronómica...</div>
 </div>
 
-<!-- Contenedor dedicado exclusivamente a la impresión del PDF completo -->
+<!-- Contenedor optimizado para exportar PDF completo con miniaturas -->
 <div id="print-container"></div>
-
-<!-- Modal Info Restaurante -->
-<div id="info-modal" class="modal-overlay" onclick="app.closeInfoModal(event)">
-    <div class="modal-content">
-        <button class="modal-close" onclick="app.closeInfoModal(event, true)">✕</button>
-        <div class="modal-body" style="text-align: left;">
-            <h3 id="info-modal-title" class="modal-title" style="text-align: center; margin-bottom: 20px;"></h3>
-            <div id="restaurant-meta" class="restaurant-meta-modal" style="display: flex; flex-direction: column; gap: 14px;"></div>
-        </div>
-    </div>
-</div>
 
 <div id="dish-modal" class="modal-overlay" onclick="app.closeModal(event)">
     <div class="modal-content">
@@ -481,49 +496,49 @@
 <script>
 const I18N = {
     es: { 
-        search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.", infoTitle: "Información del Local",
+        search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.",
         "menu_diario": "📅 Menú del Día", "menu_especial": "⭐ Cartas Especiales",
         "diario::primeros": "🍝 Primeros Platos", "diario::segundos": "🍖 Segundos Platos", "diario::postres": "🍰 Postres Caseros", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés e Infusiones",
         "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas"
     },
     en: { 
-        search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", infoTitle: "Restaurant Info",
+        search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.",
         "menu_diario": "📅 Daily Menu", "menu_especial": "⭐ Special Menus",
         "diario::primeros": "🍝 First Courses", "diario::segundos": "🍖 Main Courses", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Drinks", "diario::cafes": "☕ Coffees",
         "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners"
     },
     fr: { 
-        search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", infoTitle: "Informations",
+        search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.",
         "menu_diario": "📅 Menu du Jour", "menu_especial": "⭐ Menus Spéciaux",
         "diario::primeros": "🍝 Entrées", "diario::segundos": "🍖 Plats", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Boissons", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners"
     },
     it: { 
-        search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", infoTitle: "Informazioni",
+        search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.",
         "menu_diario": "📅 Menu del Giorno", "menu_especial": "⭐ Menu Speciali",
         "diario::primeros": "🍝 Primi Piatti", "diario::segundos": "🍖 Secondi Piatti", "diario::postres": "🍰 Dolci", "diario::bebidas": "🍷 Bevande", "diario::cafes": "☕ Caffè",
         "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene"
     },
     de: { 
-        search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", infoTitle: "Restaurant-Info",
+        search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.",
         "menu_diario": "📅 Tagesmenü", "menu_especial": "⭐ Spezialkarten",
         "diario::primeros": "🍝 Vorspeisen", "diario::segundos": "🍖 Hauptgerichte", "diario::postres": "🍰 Nachspeisen", "diario::bebidas": "🍷 Getränke", "diario::cafes": "☕ Kaffee",
         "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen"
     },
     pt: { 
-        search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", infoTitle: "Informações",
+        search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.",
         "menu_diario": "📅 Menu do Dia", "menu_especial": "⭐ Menus Especiais",
         "diario::primeros": "🍝 Primeiros Pratos", "diario::segundos": "🍖 Pratos Principais", "diario::postres": "🍰 Sobremesas", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares"
     },
     cn: { 
-        search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", infoTitle: "餐厅信息",
+        search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。",
         "menu_diario": "📅 每日精选套餐", "menu_especial": "⭐ 特色菜单",
         "diario::primeros": "🍝 头盘", "diario::segundos": "🍖 主菜", "diario::postres": "🍰 甜点", "diario::bebidas": "🍷 酒水饮料", "diario::cafes": "☕ 咖啡",
         "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐"
     },
     sa: { 
-        search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", infoTitle: "معلومات المطعم",
+        search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.",
         "menu_diario": "📅 قائمة اليوم", "menu_especial": "⭐ القوائم الخاصة",
         "diario::primeros": "🍝 المقبلات", "diario::segundos": "🍖 الأطباق الرئيسية", "diario::postres": "🍰 الحلويات", "diario::bebidas": "🍷 المشروبات", "diario::cafes": "☕ القهوة",
         "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء"
@@ -565,9 +580,7 @@ const app = {
         btnBack: document.getElementById('btn-back'),
         logo: document.getElementById('restaurant-logo'),
         name: document.getElementById('restaurant-name'),
-        metaModal: document.getElementById('restaurant-meta'),
-        infoModal: document.getElementById('info-modal'),
-        infoModalTitle: document.getElementById('info-modal-title'),
+        metaHeader: document.getElementById('restaurant-meta-header'),
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         searchInput: document.getElementById('search-input'),
@@ -651,18 +664,18 @@ const app = {
         let metaHtml = '';
         if (rInfo.telefono) {
             const safePhone = this.escapeHTML(rInfo.telefono);
-            metaHtml += `<div style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><a href="tel:${safePhone}" style="color:var(--accent); text-decoration:none; font-weight:600;">${safePhone}</a></div>`;
+            metaHtml += `<a href="tel:${safePhone}" class="meta-link"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${safePhone}</a>`;
         }
         if (rInfo.email) {
             const safeEmail = this.escapeHTML(rInfo.email);
-            metaHtml += `<div style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:${safeEmail}" style="color:var(--accent); text-decoration:none; font-weight:600;">${safeEmail}</a></div>`;
+            metaHtml += `<a href="mailto:${safeEmail}" class="meta-link"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${safeEmail}</a>`;
         }
         if (rInfo.direccion) {
             const safeDir = this.escapeHTML(rInfo.direccion);
             const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
-            metaHtml += `<div style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><a href="${mapsUrl}" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600;">${safeDir}</a></div>`;
+            metaHtml += `<a href="${mapsUrl}" target="_blank" class="meta-link"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${safeDir}</a>`;
         }
-        this.dom.metaModal.innerHTML = metaHtml || '<p style="text-align:center;">No hay información disponible.</p>';
+        this.dom.metaHeader.innerHTML = metaHtml;
 
         if (rInfo.whatsappEnabled && rInfo.whatsappPhone && rInfo.tables?.length > 0) {
             this.whatsapp.enabled = true;
@@ -722,7 +735,6 @@ const app = {
         this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
-        this.dom.infoModalTitle.textContent = t.infoTitle;
         
         const rInfo = this.data?.restaurantInfo || {};
         this.dom.name.textContent = rInfo.nombre || t.defaultRestaurant;
@@ -737,18 +749,6 @@ const app = {
     acceptCookies() {
         localStorage.setItem('cookiesAccepted_MenuForge', 'true');
         this.dom.cookieBanner.classList.remove('show');
-    },
-
-    openInfoModal() {
-        this.dom.infoModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    },
-
-    closeInfoModal(event, force = false) {
-        if (force || event.target === this.dom.infoModal) {
-            this.dom.infoModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
     },
 
     navigateHome() {
@@ -1023,25 +1023,45 @@ const app = {
     printFullMenu() {
         const rInfo = this.data?.restaurantInfo || {};
         const menus = this.data?.menus || [];
-        let printHTML = `<h1 style="text-align:center; margin-bottom:5px;">${this.escapeHTML(rInfo.nombre || 'Restaurante')}</h1>`;
-        printHTML += `<p style="text-align:center; color:#666; margin-top:0;">${this.escapeHTML(rInfo.direccion || '')} | ${this.escapeHTML(rInfo.telefono || '')}</p><hr style="border:1px solid #ddd; margin: 20px 0;">`;
+        
+        let printHTML = `
+            <div style="text-align:center; margin-bottom:25px;">
+                ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}" style="width:70px; height:70px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #4f46e5;">` : ''}
+                <h1 style="margin:0; font-size:24px; color:#0f172a;">${this.escapeHTML(rInfo.nombre || 'Restaurante')}</h1>
+                <p style="margin:5px 0 0; color:#64748b; font-size:13px;">${this.escapeHTML(rInfo.direccion || '')} | ${this.escapeHTML(rInfo.telefono || '')}</p>
+            </div>
+            <hr style="border:none; border-top:1px solid #e2e8f0; margin:20px 0;">
+        `;
 
         menus.forEach(menu => {
             const menuName = this.getMenuTitle(menu);
-            printHTML += `<h2 style="color:#4f46e5; border-bottom:2px solid #4f46e5; padding-bottom:5px; margin-top:30px;">${this.escapeHTML(menuName)}</h2>`;
+            printHTML += `<h2 style="color:#4f46e5; border-bottom:2px solid #4f46e5; padding-bottom:6px; margin-top:25px; font-size:18px;">${this.escapeHTML(menuName)}</h2>`;
             
             let trans = menu.traducciones?.[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
+            const images = menu.recursos?.imagenes || {};
+
             if (trans && trans.categorias) {
                 trans.categorias.forEach(cat => {
                     const catName = this.getCategoryName(cat.key, cat.nombre);
-                    printHTML += `<h3 style="margin-top:20px; color:#333;">${this.escapeHTML(catName)}</h3>`;
+                    printHTML += `<h3 style="margin-top:15px; margin-bottom:10px; color:#1e293b; font-size:15px; border-left:3px solid #7c3aed; padding-left:8px;">${this.escapeHTML(catName)}</h3>`;
+                    
                     if (cat.platos) {
                         cat.platos.forEach(dish => {
                             const priceFormatted = this.formatPrice(dish.precio);
-                            printHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px dotted #eee; padding-bottom:5px;">
-                                <div><strong>${this.escapeHTML(dish.nombre)}</strong><br><small style="color:#666;">${this.escapeHTML(dish.descripcion || '')}</small></div>
-                                <div style="font-weight:bold; white-space:nowrap; margin-left:15px;">${priceFormatted}</div>
-                            </div>`;
+                            const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
+                            
+                            printHTML += `
+                                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; border-bottom:1px dashed #f1f5f9; padding-bottom:10px; gap:12px;">
+                                    <div style="display:flex; align-items:center; gap:12px; flex-grow:1; min-width:0;">
+                                        ${imgUrl ? `<img src="${imgUrl}" style="width:45px; height:45px; object-fit:cover; border-radius:8px; flex-shrink:0;">` : ''}
+                                        <div style="min-width:0;">
+                                            <div style="font-weight:700; font-size:14px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${this.escapeHTML(dish.nombre)}</div>
+                                            <div style="color:#64748b; font-size:11.5px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${this.escapeHTML(dish.descripcion || '')}</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-weight:800; font-size:14px; color:#4f46e5; white-space:nowrap; margin-left:10px;">${priceFormatted}</div>
+                                </div>
+                            `;
                         });
                     }
                 });
