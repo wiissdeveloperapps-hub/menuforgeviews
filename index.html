@@ -96,29 +96,43 @@
             cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-subtle); flex-shrink: 0; margin-left: auto;
         }
 
-        /* --- BARRA DE ACCIONES CON ICONOS MOLONGOS --- */
+        /* --- BARRA DE ACCIONES LIMPIA --- */
         .action-bar {
             display: flex;
             align-items: center;
             gap: 8px;
             width: 100%;
             flex-wrap: nowrap;
+            overflow-x: auto; /* Por si acaso en pantallas extremadamente pequeñas */
+            -ms-overflow-style: none; scrollbar-width: none;
         }
+        .action-bar::-webkit-scrollbar { display: none; }
 
         .action-icon-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 7px 12px; background: var(--card-light); border: 1px solid var(--border-light);
-            border-radius: 12px; font-size: 0.85em; font-weight: 700; color: var(--text-light);
-            cursor: pointer; box-shadow: var(--shadow-subtle); transition: all 0.2s; white-space: nowrap;
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 8px 12px; background: var(--card-light); border: 1px solid var(--border-light);
+            border-radius: 12px; font-weight: 700; color: var(--text-light);
+            cursor: pointer; box-shadow: var(--shadow-subtle); transition: all 0.2s; flex-shrink: 0;
         }
         .action-icon-btn:hover { border-color: var(--accent); transform: translateY(-1px); color: var(--accent); }
-        .action-icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .action-icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
         
-        .action-icon-btn.pdf-btn { color: #ef4444; }
-        .action-icon-btn.pdf-btn:hover { background: #fee2e2; border-color: #ef4444; }
+        /* Estilo específico y llamativo para el PDF */
+        .action-icon-btn.pdf-btn { 
+            background: #ef4444; 
+            color: #ffffff; 
+            border: none; 
+            font-size: 0.9em;
+            padding: 8px 16px;
+        }
+        .action-icon-btn.pdf-btn:hover { 
+            background: #dc2626; 
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
 
         .lang-selector-wrap {
-            display: flex; align-items: center; gap: 4px; padding: 6px 10px;
+            display: flex; align-items: center; gap: 4px; padding: 7px 10px;
             border-radius: 12px; background: var(--card-light); border: 1px solid var(--border-light);
             cursor: pointer; box-shadow: var(--shadow-subtle); flex-shrink: 0;
         }
@@ -300,17 +314,14 @@
         <button id="btn-theme" class="btn-theme-header" onclick="app.toggleTheme()">🌙</button>
     </div>
 
-    <!-- FILA 2: Barra de acciones con Selector, PDF limpio y solo Iconos Molongos de Contacto -->
+    <!-- FILA 2: Barra de acciones -->
     <div class="action-bar">
         <div class="lang-selector-wrap">
             <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
             <select id="language-selector" aria-label="Selector de idioma"></select>
         </div>
         
-        <button class="action-icon-btn pdf-btn" onclick="app.printFullMenu()">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-            PDF
-        </button>
+        <button class="action-icon-btn pdf-btn" onclick="app.printFullMenu()">PDF</button>
 
         <div id="contact-icons-container" style="display:contents;"></div>
     </div>
@@ -383,56 +394,56 @@ const I18N = {
         "menu_diario": "📅 Menú del Día", "menu_especial": "⭐ Cartas Especiales",
         "diario::primeros": "🍝 Primeros Platos", "diario::segundos": "🍖 Segundos Platos", "diario::postres": "🍰 Postres Caseros", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés e Infusiones",
         "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas",
-        toastTel: "📞 Abriendo llamada al teléfono:", toastEmail: "✉️ Abriendo correo para:", toastDir: "📍 Abriendo dirección en el mapa:"
+        toastTel: "📞 Llamando al teléfono:", toastEmail: "✉️ Abriendo correo para:", toastDir: "📍 Abriendo mapa en:"
     },
     en: { 
         search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.",
         "menu_diario": "📅 Daily Menu", "menu_especial": "⭐ Special Menus",
         "diario::primeros": "🍝 First Courses", "diario::segundos": "🍖 Main Courses", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Drinks", "diario::cafes": "☕ Coffees",
         "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners",
-        toastTel: "📞 Calling phone number:", toastEmail: "✉️ Opening email to:", toastDir: "📍 Opening address on map:"
+        toastTel: "📞 Calling phone number:", toastEmail: "✉️ Opening email to:", toastDir: "📍 Opening map at:"
     },
     fr: { 
         search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.",
         "menu_diario": "📅 Menu du Jour", "menu_especial": "⭐ Menus Spéciaux",
         "diario::primeros": "🍝 Entrées", "diario::segundos": "🍖 Plats", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Boissons", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners",
-        toastTel: "📞 Appel au numéro:", toastEmail: "✉️ Envoi d'un e-mail à:", toastDir: "📍 Ouverture de l'adresse sur la carte:"
+        toastTel: "📞 Appel au numéro:", toastEmail: "✉️ Envoi d'un e-mail à:", toastDir: "📍 Ouverture de la carte sur:"
     },
     it: { 
         search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.",
         "menu_diario": "📅 Menu del Giorno", "menu_especial": "⭐ Menu Speciali",
         "diario::primeros": "🍝 Primi Piatti", "diario::segundos": "🍖 Secondi Piatti", "diario::postres": "🍰 Dolci", "diario::bebidas": "🍷 Bevande", "diario::cafes": "☕ Caffè",
         "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene",
-        toastTel: "📞 Chiamata al numero:", toastEmail: "✉️ Apertura email per:", toastDir: "📍 Apertura indirizzo sulla mappa:"
+        toastTel: "📞 Chiamata al numero:", toastEmail: "✉️ Apertura email per:", toastDir: "📍 Apertura mappa su:"
     },
     de: { 
         search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.",
         "menu_diario": "📅 Tagesmenü", "menu_especial": "⭐ Spezialkarten",
         "diario::primeros": "🍝 Vorspeisen", "diario::segundos": "🍖 Hauptgerichte", "diario::postres": "🍰 Nachspeisen", "diario::bebidas": "🍷 Getränke", "diario::cafes": "☕ Kaffee",
         "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen",
-        toastTel: "📞 Anruf unter:", toastEmail: "✉️ E-Mail öffnen an:", toastDir: "📍 Adresse auf der Karte öffnen:"
+        toastTel: "📞 Anruf unter:", toastEmail: "✉️ E-Mail öffnen an:", toastDir: "📍 Karte öffnen bei:"
     },
     pt: { 
         search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.",
         "menu_diario": "📅 Menu do Dia", "menu_especial": "⭐ Menus Especiais",
         "diario::primeros": "🍝 Primeiros Pratos", "diario::segundos": "🍖 Pratos Principais", "diario::postres": "🍰 Sobremesas", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares",
-        toastTel: "📞 Ligando para:", toastEmail: "✉️ Abrindo e-mail para:", toastDir: "📍 Abrindo endereço no mapa:"
+        toastTel: "📞 Ligando para:", toastEmail: "✉️ Abrindo e-mail para:", toastDir: "📍 Abrindo mapa em:"
     },
     cn: { 
         search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。",
         "menu_diario": "📅 每日精选套餐", "menu_especial": "⭐ 特色菜单",
         "diario::primeros": "🍝 头盘", "diario::segundos": "🍖 主菜", "diario::postres": "🍰 甜点", "diario::bebidas": "🍷 酒水饮料", "diario::cafes": "☕ 咖啡",
         "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐",
-        toastTel: "📞 正在呼叫:", toastEmail: "✉️ 正在发送邮件至:", toastDir: "📍 正在地图中打开地址:"
+        toastTel: "📞 正在呼叫:", toastEmail: "✉️ 正在发送邮件至:", toastDir: "📍 正在地图中打开:"
     },
     sa: { 
         search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.",
         "menu_diario": "📅 قائمة اليوم", "menu_especial": "⭐ القوائم الخاصة",
         "diario::primeros": "🍝 المقبلات", "diario::segundos": "🍖 الأطباق الرئيسية", "diario::postres": "🍰 الحلويات", "diario::bebidas": "🍷 المشروبات", "diario::cafes": "☕ القهوة",
         "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء",
-        toastTel: "📞 جاري الاتصال بـ:", toastEmail: "✉️ فتح البريد الإلكتروني إلى:", toastDir: "📍 فتح العنوان على الخريطة:"
+        toastTel: "📞 جاري الاتصال بـ:", toastEmail: "✉️ فتح البريد الإلكتروني إلى:", toastDir: "📍 فتح الخريطة على:"
     }
 };
 
@@ -616,20 +627,20 @@ const app = {
         this.dom.cookieBtn.textContent = t.cookieBtn;
         this.dom.name.textContent = rInfo.nombre || t.defaultRestaurant;
 
-        // Renderizado de iconos molongos con evento de aviso friendly traducido
+        // Renderizado de iconos de contacto SIN emoji duplicado
         let iconsHtml = '';
         if (rInfo.telefono) {
             const cleanTel = this.escapeHTML(rInfo.telefono);
-            iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('tel', '${cleanTel}', '${t.toastTel}')" title="Teléfono"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>📞</button>`;
+            iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('tel', '${cleanTel}', '${t.toastTel}')" title="Teléfono"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>`;
         }
         if (rInfo.email) {
             const cleanEmail = this.escapeHTML(rInfo.email);
-            iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('email', '${cleanEmail}', '${t.toastEmail}')" title="Email"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>✉️</button>`;
+            iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('email', '${cleanEmail}', '${t.toastEmail}')" title="Email"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button>`;
         }
         if (rInfo.direccion) {
             const cleanDir = this.escapeHTML(rInfo.direccion);
             const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
-            iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('map', '${mapsUrl}', '${t.toastDir}')" title="Dirección"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>📍</button>`;
+            iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('map', '${mapsUrl}', '${t.toastDir}')" title="Dirección"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>`;
         }
         this.dom.contactIconsContainer.innerHTML = iconsHtml;
     },
