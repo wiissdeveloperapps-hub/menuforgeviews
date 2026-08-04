@@ -185,6 +185,43 @@
             background: var(--accent-gradient); color: white; border-color: transparent;
         }
         .filter-pill .filter-pill-icon { font-size: 0.95em; }
+        .filter-pill:disabled {
+            opacity: 0.45; cursor: not-allowed; box-shadow: none;
+        }
+        .filter-option-btn {
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            border: 1px solid var(--border-light); background: var(--card-light); color: var(--text-light);
+            padding: 12px 14px; border-radius: 14px; font-weight: 700; cursor: pointer;
+            box-shadow: var(--shadow-subtle);
+        }
+        .filter-option-btn.active {
+            background: rgba(79, 70, 229, 0.12); color: var(--accent); border-color: rgba(79, 70, 229, 0.28);
+        }
+        .filter-price-row {
+            display: flex; align-items: center; gap: 10px; margin-top: 6px;
+        }
+        .filter-price-input {
+            flex: 1; border: 1px solid var(--border-light); border-radius: 12px; padding: 10px 12px; background: var(--card-light); color: var(--text-light); font: inherit;
+        }
+        .filter-price-reset {
+            border: 1px solid var(--border-light); background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 12px; padding: 10px 12px; font-weight: 700; cursor: pointer;
+        }
+        .filter-option-btn:disabled {
+            opacity: 0.5; cursor: not-allowed; box-shadow: none;
+        }
+        .filter-option-label { display: flex; align-items: center; gap: 8px; }
+        .filter-option-icon { font-size: 1em; }
+        .filter-option-state { font-size: 0.8em; color: var(--text-muted-light); }
+        .search-controls-shell { display: none; }
+        .search-controls-shell.visible { display: flex; flex-direction: column; gap: 10px; }
+        .filter-modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); display: flex; align-items: flex-end; justify-content: center; z-index: 1100; padding: 16px; opacity: 0; visibility: hidden; transition: all 0.25s ease; }
+        .filter-modal-overlay.active { opacity: 1; visibility: visible; }
+        .filter-modal-content { width: min(100%, 520px); background: var(--card-light); border-radius: 24px 24px 18px 18px; border: 1px solid var(--border-light); box-shadow: var(--shadow-card); padding: 18px 18px 22px; transform: translateY(20px); transition: transform 0.25s ease; }
+        .filter-modal-overlay.active .filter-modal-content { transform: translateY(0); }
+        .filter-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .filter-modal-title { font-size: 1.05em; font-weight: 800; margin: 0; color: var(--text-light); }
+        .filter-modal-close { border: none; background: rgba(79, 70, 229, 0.1); color: var(--accent); border-radius: 10px; width: 34px; height: 34px; cursor: pointer; }
+        .filter-modal-list { display: grid; gap: 10px; max-height: 60vh; overflow-y: auto; }
         .quick-note-chip {
             padding: 7px 10px; font-size: 0.78em; border-radius: 999px; background: rgba(79, 70, 229, 0.08);
             color: var(--accent); border-color: rgba(79, 70, 229, 0.16);
@@ -361,15 +398,19 @@
     </div>
 
     <!-- FILA 3: Buscador y Pestañas -->
-    <div class="search-and-tabs">
-        <div class="search-container">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" class="search-input" oninput="app.handleSearch(this.value)">
-            <button type="button" id="filter-toggle-btn" class="filter-toggle-btn" onclick="app.toggleFilterPanel()" aria-label="Filtrar platos">🔎</button>
-        </div>
-        <div id="filter-bar-container" class="filter-bar-container"></div>
-        <div id="category-tabs-container" class="category-tabs-container">
-            <div id="category-tabs" class="category-tabs"></div>
+    <div id="search-controls-shell" class="search-controls-shell">
+        <div class="search-and-tabs">
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="search-input" class="search-input" oninput="app.handleSearch(this.value)">
+                <button type="button" id="filter-toggle-btn" class="filter-toggle-btn" onclick="app.toggleFilterPanel()" aria-label="Filtrar platos">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M7 12h10"/><path d="M10 19h4"/></svg>
+                </button>
+            </div>
+            <div id="filter-bar-container" class="filter-bar-container"></div>
+            <div id="category-tabs-container" class="category-tabs-container">
+                <div id="category-tabs" class="category-tabs"></div>
+            </div>
         </div>
     </div>
 </header>
@@ -397,6 +438,23 @@
 <div id="cookie-banner">
     <div id="cookie-text" class="cookie-text"></div>
     <button id="cookie-btn" class="btn-cookie" onclick="app.acceptCookies()"></button>
+</div>
+
+<div id="filter-modal" class="filter-modal-overlay" onclick="app.closeFilterModal(event)">
+    <div class="filter-modal-content" onclick="event.stopPropagation()">
+        <div class="filter-modal-header">
+            <h3 class="filter-modal-title" id="filter-modal-title"></h3>
+            <button type="button" class="filter-modal-close" onclick="app.closeFilterModal(event, true)">✕</button>
+        </div>
+        <div id="filter-modal-options" class="filter-modal-list"></div>
+        <div style="margin-top: 14px; border-top: 1px solid var(--border-light); padding-top: 14px;">
+            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">Precio máximo</div>
+            <div class="filter-price-row">
+                <input id="filter-price-input" class="filter-price-input" type="number" min="0" step="1" placeholder="Ej. 15">
+                <button type="button" id="filter-price-reset" class="filter-price-reset" onclick="app.resetPriceFilter()">Limpiar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="cart-fab" class="cart-fab" onclick="app.openCart()">
@@ -532,10 +590,28 @@ const DEFAULT_COVERS = {
     especial: "assets/principal/especial.jpg"
 };
 
+const FILTER_DICTIONARY = {
+    'sin-gluten': { es: 'Sin gluten', en: 'Gluten-free', fr: 'Sans gluten', it: 'Senza glutine', de: 'Glutenfrei', pt: 'Sem glúten', cn: '无麸质', sa: 'خالي من الغلوتين' },
+    'sin-lactosa': { es: 'Sin lactosa', en: 'Lactose-free', fr: 'Sans lactose', it: 'Senza lattosio', de: 'Laktosefrei', pt: 'Sem lactose', cn: '无乳糖', sa: 'خالي من اللاكتوز' },
+    'vegano': { es: 'Vegano', en: 'Vegan', fr: 'Végétalien', it: 'Vegano', de: 'Vegan', pt: 'Vegano', cn: '纯素', sa: 'نباتي' },
+    'vegetariano': { es: 'Vegetariano', en: 'Vegetarian', fr: 'Végétarien', it: 'Vegetariano', de: 'Vegetarisch', pt: 'Vegetariano', cn: '素食', sa: 'نباتي' },
+    'picante': { es: 'Picante', en: 'Spicy', fr: 'Épicé', it: 'Piccante', de: 'Scharf', pt: 'Picante', cn: '辛辣', sa: 'حار' },
+    'sin-frutos-secos': { es: 'Sin frutos secos', en: 'Nut-free', fr: 'Sans fruits à coque', it: 'Senza frutta a guscio', de: 'Nussfrei', pt: 'Sem nozes', cn: '无坚果', sa: 'خالي من المكسرات' },
+    'sin-soja': { es: 'Sin soja', en: 'Soy-free', fr: 'Sans soja', it: 'Senza soia', de: 'Sojafrei', pt: 'Sem soja', cn: '无大豆', sa: 'خالي من الصويا' },
+    'sin-huevo': { es: 'Sin huevo', en: 'Egg-free', fr: 'Sans œufs', it: 'Senza uova', de: 'Eierfrei', pt: 'Sem ovo', cn: '无鸡蛋', sa: 'خالي من البيض' },
+    'pescado': { es: 'Pescado', en: 'Fish', fr: 'Poisson', it: 'Pesce', de: 'Fisch', pt: 'Peixe', cn: '鱼类', sa: 'سمك' },
+    'marisco': { es: 'Marisco', en: 'Seafood', fr: 'Fruits de mer', it: 'Frutti di mare', de: 'Meeresfrüchte', pt: 'Frutos do mar', cn: '海鲜', sa: 'مأكولات بحرية' },
+    'carnes': { es: 'Carnes', en: 'Meat', fr: 'Viandes', it: 'Carni', de: 'Fleisch', pt: 'Carnes', cn: '肉类', sa: 'لحوم' },
+    'cafe': { es: 'Café', en: 'Coffee', fr: 'Café', it: 'Caffè', de: 'Kaffee', pt: 'Café', cn: '咖啡', sa: 'قهوة' },
+    'bebida': { es: 'Bebida', en: 'Drink', fr: 'Boisson', it: 'Bevanda', de: 'Getränk', pt: 'Bebida', cn: '饮料', sa: 'مشروب' }
+};
+
 const app = {
     data: null,
     currentLang: 'es',
     currentView: 'home', 
+    selectedCategory: null,
+    maxPrice: null,
     currentMenuId: null,
     searchQuery: '',
     categoryTabsObserver: null,
@@ -561,6 +637,7 @@ const app = {
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         searchInput: document.getElementById('search-input'),
+        searchControlsShell: document.getElementById('search-controls-shell'),
         categoryTabsContainer: document.getElementById('category-tabs-container'),
         categoryTabs: document.getElementById('category-tabs'),
         modal: document.getElementById('dish-modal'),
@@ -587,6 +664,11 @@ const app = {
         orderNotesLabel: document.getElementById('order-notes-label'),
         filterBarContainer: document.getElementById('filter-bar-container'),
         filterToggleBtn: document.getElementById('filter-toggle-btn'),
+        filterModal: document.getElementById('filter-modal'),
+        filterModalTitle: document.getElementById('filter-modal-title'),
+        filterModalOptions: document.getElementById('filter-modal-options'),
+        filterPriceInput: document.getElementById('filter-price-input'),
+        filterPriceReset: document.getElementById('filter-price-reset'),
         wifiFooter: document.getElementById('wifi-footer'),
         sendOrderBtn: document.getElementById('send-order-btn')
     },
@@ -696,6 +778,7 @@ const app = {
         this.updateUITexts();
         this.renderFilterBar();
         this.renderWifiBlock();
+        this.updateSearchVisibility();
         this.initCookies();
         this.navigateHome();
     },
@@ -708,6 +791,10 @@ const app = {
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
         this.dom.filterToggleBtn.title = t.filterButtonTitle || 'Filtrar platos';
+        this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
+        if (this.dom.filterPriceInput) {
+            this.dom.filterPriceInput.value = this.maxPrice != null ? this.maxPrice : '';
+        }
         this.dom.cartModalTitle.textContent = t.cartTitle;
         this.dom.orderNotesLabel.textContent = t.notesLabel || 'Observaciones';
         this.dom.orderNotesInput.placeholder = t.notesPlaceholder || 'Añade detalles para la cocina';
@@ -763,14 +850,118 @@ const app = {
     },
 
     toggleFilterPanel() {
-        this.showFilterBar = !this.showFilterBar;
-        this.renderFilterBar();
+        const options = this.getAvailableFilterOptions();
+        if (!options.length && !this.getAvailableCategories().length) return;
+        this.renderFilterModal();
+        this.dom.filterModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    },
+
+    closeFilterModal(event, force = false) {
+        if (force || event.target === this.dom.filterModal) {
+            this.dom.filterModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     },
 
     setActiveFilter(filter) {
         this.selectedFilter = this.selectedFilter === filter ? null : filter;
+        this.closeFilterModal({ target: this.dom.filterModal }, true);
         this.refreshCurrentView();
         this.renderFilterBar();
+    },
+
+    setCategoryFilter(category) {
+        this.selectedCategory = this.selectedCategory === category ? null : category;
+        this.refreshCurrentView();
+        this.renderFilterModal();
+    },
+
+    applyPriceFilter() {
+        const rawValue = this.dom.filterPriceInput?.value;
+        const parsed = rawValue === '' ? null : Number(rawValue);
+        this.maxPrice = Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+        this.refreshCurrentView();
+        this.renderFilterModal();
+    },
+
+    resetPriceFilter() {
+        this.maxPrice = null;
+        if (this.dom.filterPriceInput) this.dom.filterPriceInput.value = '';
+        this.refreshCurrentView();
+        this.renderFilterModal();
+    },
+
+    normalizeFilterValue(value) {
+        if (!value) return '';
+        const normalized = String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const map = {
+            'sin gluten': 'sin-gluten',
+            'gluten': 'sin-gluten',
+            'gluten free': 'sin-gluten',
+            'sin lactosa': 'sin-lactosa',
+            'lactosa': 'sin-lactosa',
+            'lacteos': 'sin-lactosa',
+            'dairy': 'sin-lactosa',
+            'milk': 'sin-lactosa',
+            'vegano': 'vegano',
+            'vegan': 'vegano',
+            'vegetariano': 'vegetariano',
+            'vegetarian': 'vegetariano',
+            'picante': 'picante',
+            'spicy': 'picante',
+            'sin frutos secos': 'sin-frutos-secos',
+            'frutos secos': 'sin-frutos-secos',
+            'nuts': 'sin-frutos-secos',
+            'sin soja': 'sin-soja',
+            'soja': 'sin-soja',
+            'soy': 'sin-soja',
+            'sin huevo': 'sin-huevo',
+            'huevo': 'sin-huevo',
+            'egg': 'sin-huevo',
+            'pescado': 'pescado',
+            'fish': 'pescado',
+            'marisco': 'marisco',
+            'seafood': 'marisco',
+            'carnes': 'carnes',
+            'meat': 'carnes',
+            'cafe': 'cafe',
+            'coffee': 'cafe',
+            'bebida': 'bebida',
+            'drink': 'bebida'
+        };
+        return map[normalized] || normalized.replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    },
+
+    getFilterLabel(value) {
+        const key = this.normalizeFilterValue(value);
+        const t = FILTER_DICTIONARY[key] || {};
+        return t[this.currentLang] || t.es || value || 'Etiqueta';
+    },
+
+    getFilterIcon(value) {
+        const key = this.normalizeFilterValue(value);
+        const map = {
+            'sin-gluten': '🌾',
+            'sin-lactosa': '🥛',
+            'vegano': '🌱',
+            'vegetariano': '🥕',
+            'picante': '🌶️',
+            'sin-frutos-secos': '🥜',
+            'sin-soja': '🌱',
+            'sin-huevo': '🥚',
+            'pescado': '🐟',
+            'marisco': '🦐',
+            'carnes': '🥩',
+            'cafe': '☕',
+            'bebida': '🥤'
+        };
+        return map[key] || '🏷️';
+    },
+
+    getDishFilterValues(dish) {
+        const values = [...(dish.etiquetas || []), ...(dish.alergenos || [])];
+        return values.map(value => this.normalizeFilterValue(value)).filter(Boolean);
     },
 
     getAvailableFilterOptions() {
@@ -781,61 +972,120 @@ const app = {
             const cats = trans?.categorias || [];
             cats.forEach(cat => {
                 (cat.platos || []).forEach(dish => {
-                    [...(dish.etiquetas || []), ...(dish.alergenos || [])].forEach(tag => tag && options.add(tag));
+                    this.getDishFilterValues(dish).forEach(tag => tag && options.add(tag));
                 });
             });
         });
         return [...options].filter(Boolean).sort();
     },
 
+    getAvailableCategories() {
+        const categories = new Set();
+        const menus = this.data?.menus || [];
+        menus.forEach(menu => {
+            const trans = menu.traducciones?.[this.currentLang] || menu.traducciones?.[Object.keys(menu.traducciones || {})[0]];
+            (trans?.categorias || []).forEach(cat => {
+                if (cat?.nombre) categories.add(String(cat.nombre));
+            });
+        });
+        return [...categories].sort();
+    },
+
     renderFilterBar() {
         const options = this.getAvailableFilterOptions();
         this.filterOptions = options;
-        if (!options.length) {
-            this.dom.filterBarContainer.innerHTML = '';
-            this.dom.filterBarContainer.style.display = 'none';
-            return;
-        }
-        this.dom.filterBarContainer.style.display = this.showFilterBar ? 'flex' : 'none';
-        this.dom.filterBarContainer.innerHTML = options.map(option => `
-            <button type="button" class="filter-pill ${this.selectedFilter === option ? 'active' : ''}" onclick="app.setActiveFilter('${this.escapeHTML(option)}')">
-                <span class="filter-pill-icon">${this.getFilterIcon(option)}</span>
-                <span>${this.escapeHTML(option)}</span>
-            </button>
-        `).join('');
+        this.dom.filterBarContainer.innerHTML = '';
+        this.dom.filterBarContainer.style.display = 'none';
+        if (!options.length) return;
     },
 
-    getFilterIcon(option) {
-        const map = {
-            'Sin gluten': '🌾',
-            'Vegano': '🌱',
-            'Vegetariano': '🥕',
-            'Picante': '🌶️',
-            'Gluten': '🌾',
-            'Lácteos': '🥛',
-            'Frutos secos': '🥜',
-            'Soja': '🌱',
-            'Huevo': '🥚',
-            'Pescado': '🐟',
-            'Marisco': '🦐'
-        };
-        return map[option] || '🏷️';
+    renderFilterModal() {
+        const options = this.getAvailableFilterOptions();
+        const categories = this.getAvailableCategories();
+        const catalog = [
+            'sin-gluten', 'sin-lactosa', 'vegano', 'vegetariano', 'picante', 'sin-frutos-secos', 'sin-soja', 'sin-huevo', 'pescado', 'marisco', 'carnes', 'cafe', 'bebida'
+        ].map(value => ({
+            value,
+            label: this.getFilterLabel(value),
+            icon: this.getFilterIcon(value),
+            available: options.includes(value)
+        }));
+        const categoryHtml = categories.length ? `
+            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">Categorías</div>
+            <div style="display:grid; gap:8px; margin-bottom: 12px;">
+                ${categories.map(category => `
+                    <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick="app.setCategoryFilter('${this.escapeHTML(category)}')">
+                        <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
+                        <span class="filter-option-state">${this.selectedCategory === category ? 'Activo' : 'Disponible'}</span>
+                    </button>
+                `).join('')}
+            </div>
+        ` : '';
+        const tagsHtml = catalog.length ? `
+            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">Etiquetas y alergias</div>
+            <div style="display:grid; gap:8px;">
+                ${catalog.map(option => `
+                    <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
+                        <span class="filter-option-label">
+                            <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
+                            <span>${this.escapeHTML(option.label)}</span>
+                        </span>
+                        <span class="filter-option-state">${option.available ? (this.selectedFilter === option.value ? 'Activo' : 'Disponible') : 'No disponible'}</span>
+                    </button>
+                `).join('')}
+            </div>
+        ` : '';
+        this.dom.filterModalOptions.innerHTML = `${categoryHtml}${tagsHtml}`;
+        if (this.dom.filterPriceInput) {
+            this.dom.filterPriceInput.value = this.maxPrice != null ? this.maxPrice : '';
+        }
     },
 
     shouldShowDish(dish) {
-        if (!this.selectedFilter) return true;
-        const values = [...(dish.etiquetas || []), ...(dish.alergenos || [])];
-        return values.some(value => value === this.selectedFilter);
+        if (this.selectedCategory) {
+            const categoryName = this.getCurrentCategoryNameForDish(dish);
+            if (categoryName !== this.selectedCategory) return false;
+        }
+        if (this.selectedFilter) {
+            if (!this.getDishFilterValues(dish).includes(this.selectedFilter)) return false;
+        }
+        if (this.maxPrice != null && typeof dish.precio === 'number' && dish.precio > this.maxPrice) return false;
+        return true;
+    },
+
+    getCurrentCategoryNameForDish(dish) {
+        const menus = this.data?.menus || [];
+        for (const menu of menus) {
+            const trans = menu.traducciones?.[this.currentLang] || menu.traducciones?.[Object.keys(menu.traducciones || {})[0]];
+            const cats = trans?.categorias || [];
+            for (const cat of cats) {
+                if ((cat.platos || []).includes(dish)) {
+                    return cat.nombre || '';
+                }
+            }
+        }
+        return '';
     },
 
     getDishBadgesHTML(dish) {
         const badges = [];
-        const values = [...(dish.etiquetas || []), ...(dish.alergenos || [])];
+        const values = this.getDishFilterValues(dish);
         values.forEach(value => {
             const icon = this.getFilterIcon(value);
-            badges.push(`<span class="filter-pill" style="padding: 4px 8px; font-size: 0.72em; margin-top: 6px;">${icon} ${this.escapeHTML(value)}</span>`);
+            badges.push(`<span class="filter-pill" style="padding: 4px 8px; font-size: 0.72em; margin-top: 6px;">${icon} ${this.escapeHTML(this.getFilterLabel(value))}</span>`);
         });
         return badges.length ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top: 6px;">${badges.join('')}</div>` : '';
+    },
+
+    updateSearchVisibility() {
+        const shouldShowSearch = this.currentView === 'menu' || this.currentView === 'search';
+        if (this.dom.searchControlsShell) {
+            this.dom.searchControlsShell.classList.toggle('visible', shouldShowSearch);
+        }
+        if (!shouldShowSearch) {
+            this.dom.filterBarContainer.innerHTML = '';
+            this.dom.filterBarContainer.style.display = 'none';
+        }
     },
 
     renderWifiBlock() {
@@ -911,6 +1161,7 @@ const app = {
         this.currentMenuId = null;
         this.dom.btnBack.style.display = 'none';
         this.dom.categoryTabsContainer.style.display = 'none';
+        this.updateSearchVisibility();
         if (this.categoryTabsObserver) this.categoryTabsObserver.disconnect();
         
         if (this.searchQuery) {
@@ -925,6 +1176,7 @@ const app = {
         this.currentMenuId = menuId;
         this.dom.btnBack.style.display = 'flex';
         this.dom.searchInput.value = ''; 
+        this.updateSearchVisibility();
         this.renderMenu(menuId);
     },
 
@@ -1021,17 +1273,16 @@ const app = {
             const translatedCatName = this.getCategoryName(catKey, cat.nombre);
             
             const categorySlug = this.slugify(translatedCatName || cat.nombre);
+            const visibleDishes = (cat.platos || []).filter((dish, dishIndex) => this.shouldShowDish(dish));
+            if (!visibleDishes.length) continue;
             tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}</div>`;
 
             html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(translatedCatName)}</h2>`;
-            if (cat.platos) {
-                for (let dishIndex = 0; dishIndex < cat.platos.length; dishIndex++) {
-                    const dish = cat.platos[dishIndex];
-                    if (!this.shouldShowDish(dish)) continue;
-                    html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, dishIndex);
-                }
-            }
+            visibleDishes.forEach((dish, dishIndex) => {
+                const originalIndex = (cat.platos || []).findIndex(item => item === dish);
+                html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, originalIndex >= 0 ? originalIndex : dishIndex);
+            });
             html += `</div>`;
         }
 
