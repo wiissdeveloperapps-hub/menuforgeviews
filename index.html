@@ -161,9 +161,43 @@
             border: 1px solid var(--border-light); background-color: var(--card-light);
             color: var(--text-light); font-family: inherit; font-size: 0.9em;
             outline: none; transition: all 0.3s ease; box-sizing: border-box; box-shadow: var(--shadow-subtle);
+            padding-right: 46px;
         }
         .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
         .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted-light); width: 16px; height: 16px; }
+
+        .filter-toggle-btn {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            border: none; background: rgba(79, 70, 229, 0.1); color: var(--accent);
+            width: 32px; height: 32px; border-radius: 10px; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; font-size: 0.95em;
+        }
+        .filter-bar-container {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
+        }
+        .filter-pill {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
+            border-radius: 999px; border: 1px solid var(--border-light); background: var(--card-light);
+            color: var(--text-muted-light); font-size: 0.8em; font-weight: 700; cursor: pointer;
+            box-shadow: var(--shadow-subtle);
+        }
+        .filter-pill.active {
+            background: var(--accent-gradient); color: white; border-color: transparent;
+        }
+        .filter-pill .filter-pill-icon { font-size: 0.95em; }
+        .quick-note-chip {
+            padding: 7px 10px; font-size: 0.78em; border-radius: 999px; background: rgba(79, 70, 229, 0.08);
+            color: var(--accent); border-color: rgba(79, 70, 229, 0.16);
+        }
+        .wifi-footer {
+            margin: 0 16px 24px; padding-bottom: 8px;
+        }
+        .wifi-card {
+            border: 1px solid var(--border-light); background: var(--card-light); border-radius: 16px;
+            padding: 14px 16px; box-shadow: var(--shadow-subtle);
+        }
+        .wifi-title { font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+        .wifi-line { font-size: 0.9em; color: var(--text-muted-light); margin-top: 2px; word-break: break-all; }
 
         .category-tabs-container { width: 100%; display: none; }
         .category-tabs {
@@ -331,7 +365,9 @@
         <div class="search-container">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="text" id="search-input" class="search-input" oninput="app.handleSearch(this.value)">
+            <button type="button" id="filter-toggle-btn" class="filter-toggle-btn" onclick="app.toggleFilterPanel()" aria-label="Filtrar platos">🔎</button>
         </div>
+        <div id="filter-bar-container" class="filter-bar-container"></div>
         <div id="category-tabs-container" class="category-tabs-container">
             <div id="category-tabs" class="category-tabs"></div>
         </div>
@@ -368,6 +404,8 @@
     <span id="cart-badge" class="cart-badge">0</span>
 </div>
 
+<div id="wifi-footer" class="wifi-footer" style="display:none;"></div>
+
 <div id="cart-modal" class="modal-overlay" onclick="app.closeCart(event)">
     <div class="modal-content">
         <button class="modal-close" onclick="app.closeCart(event, true)">✕</button>
@@ -381,6 +419,12 @@
                 <label id="cart-table-label" for="table-selector" style="font-size:0.85em; font-weight:600; color:var(--text-muted-light);"></label>
                 <select id="table-selector" class="search-input" style="width: 100%; margin-top: 5px;"></select>
             </div>
+            <div class="notes-section" style="margin-top: 16px;">
+                <label id="order-notes-label" style="font-size:0.85em; font-weight:600; color:var(--text-muted-light);"></label>
+                <textarea id="order-notes-input" class="search-input" rows="3" maxlength="140" style="margin-top: 6px; resize: vertical;" oninput="app.updateOrderNotes(this.value)"></textarea>
+                <div id="order-notes-counter" style="font-size: 0.75em; color: var(--text-muted-light); text-align: right; margin-top: 4px;"></div>
+                <div id="quick-notes-container" style="display:flex; flex-wrap:wrap; gap:8px; margin-top: 10px;"></div>
+            </div>
             <button id="send-order-btn" class="btn-cookie" style="width: 100%; margin-top: 20px;" onclick="app.sendOrder()"></button>
         </div>
     </div>
@@ -390,7 +434,7 @@
 // --- DICCIONARIOS ÍNTEGROS CON MENSAJES FRIENDLY TRADUCIDOS Y NUEVAS CLAVES ---
 const I18N = {
     es: { 
-        search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.",
+        search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.", notesLabel: "Observaciones", notesPlaceholder: "Añade detalles para la cocina", filterButtonTitle: "Filtrar platos",
         "menu_diario": "📅 Menú del Día", "menu_especial": "⭐ Cartas Especiales",
         "diario::primeros": "🍝 Primeros Platos", "diario::segundos": "🍖 Segundos Platos", "diario::postres": "🍰 Postres Caseros", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés e Infusiones",
         "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas",
@@ -400,7 +444,7 @@ const I18N = {
         langSelect: "Selector de idioma"
     },
     en: { 
-        search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.",
+        search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", notesLabel: "Notes", notesPlaceholder: "Add details for the kitchen", filterButtonTitle: "Filter dishes",
         "menu_diario": "📅 Daily Menu", "menu_especial": "⭐ Special Menus",
         "diario::primeros": "🍝 First Courses", "diario::segundos": "🍖 Main Courses", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Drinks", "diario::cafes": "☕ Coffees",
         "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners",
@@ -410,7 +454,7 @@ const I18N = {
         langSelect: "Language selector"
     },
     fr: { 
-        search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.",
+        search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", notesLabel: "Observations", notesPlaceholder: "Ajoutez des détails pour la cuisine", filterButtonTitle: "Filtrer les plats",
         "menu_diario": "📅 Menu du Jour", "menu_especial": "⭐ Menus Spéciaux",
         "diario::primeros": "🍝 Entrées", "diario::segundos": "🍖 Plats", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Boissons", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners",
@@ -420,7 +464,7 @@ const I18N = {
         langSelect: "Sélecteur de langue"
     },
     it: { 
-        search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.",
+        search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", notesLabel: "Osservazioni", notesPlaceholder: "Aggiungi dettagli per la cucina", filterButtonTitle: "Filtra i piatti",
         "menu_diario": "📅 Menu del Giorno", "menu_especial": "⭐ Menu Speciali",
         "diario::primeros": "🍝 Primi Piatti", "diario::segundos": "🍖 Secondi Piatti", "diario::postres": "🍰 Dolci", "diario::bebidas": "🍷 Bevande", "diario::cafes": "☕ Caffè",
         "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene",
@@ -430,7 +474,7 @@ const I18N = {
         langSelect: "Selettore di lingua"
     },
     de: { 
-        search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.",
+        search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", notesLabel: "Anmerkungen", notesPlaceholder: "Fügen Sie Details für die Küche hinzu", filterButtonTitle: "Gerichte filtern",
         "menu_diario": "📅 Tagesmenü", "menu_especial": "⭐ Spezialkarten",
         "diario::primeros": "🍝 Vorspeisen", "diario::segundos": "🍖 Hauptgerichte", "diario::postres": "🍰 Nachspeisen", "diario::bebidas": "🍷 Getränke", "diario::cafes": "☕ Kaffee",
         "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen",
@@ -440,7 +484,7 @@ const I18N = {
         langSelect: "Sprachauswahl"
     },
     pt: { 
-        search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.",
+        search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", notesLabel: "Observações", notesPlaceholder: "Adicione detalhes para a cozinha", filterButtonTitle: "Filtrar pratos",
         "menu_diario": "📅 Menu do Dia", "menu_especial": "⭐ Menus Especiais",
         "diario::primeros": "🍝 Primeiros Pratos", "diario::segundos": "🍖 Pratos Principais", "diario::postres": "🍰 Sobremesas", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares",
@@ -450,7 +494,7 @@ const I18N = {
         langSelect: "Seletor de idioma"
     },
     cn: { 
-        search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。",
+        search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", notesLabel: "备注", notesPlaceholder: "为厨房添加详细说明", filterButtonTitle: "筛选菜品",
         "menu_diario": "📅 每日精选套餐", "menu_especial": "⭐ 特色菜单",
         "diario::primeros": "🍝 头盘", "diario::segundos": "🍖 主菜", "diario::postres": "🍰 甜点", "diario::bebidas": "🍷 酒水饮料", "diario::cafes": "☕ 咖啡",
         "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐",
@@ -460,7 +504,7 @@ const I18N = {
         langSelect: "语言选择器"
     },
     sa: { 
-        search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.",
+        search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", notesLabel: "ملاحظات", notesPlaceholder: "أضف تفاصيل للمطبخ", filterButtonTitle: "تصفية الأطباق",
         "menu_diario": "📅 قائمة اليوم", "menu_especial": "⭐ القوائم الخاصة",
         "diario::primeros": "🍝 المقبلات", "diario::segundos": "🍖 الأطباق الرئيسية", "diario::postres": "🍰 الحلويات", "diario::bebidas": "🍷 المشروبات", "diario::cafes": "☕ القهوة",
         "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء",
@@ -498,6 +542,10 @@ const app = {
     cart: [],
     whatsapp: { enabled: false, phone: '', msgLang: 'es' },
     tables: [],
+    selectedFilter: null,
+    showFilterBar: false,
+    filterOptions: [],
+    orderNotes: '',
     toastTimer: null,
 
     dom: {
@@ -533,6 +581,13 @@ const app = {
         cartItemsContainer: document.getElementById('cart-items-container'),
         cartTotalPrice: document.getElementById('cart-total-price'),
         tableSelector: document.getElementById('table-selector'),
+        orderNotesInput: document.getElementById('order-notes-input'),
+        orderNotesCounter: document.getElementById('order-notes-counter'),
+        quickNotesContainer: document.getElementById('quick-notes-container'),
+        orderNotesLabel: document.getElementById('order-notes-label'),
+        filterBarContainer: document.getElementById('filter-bar-container'),
+        filterToggleBtn: document.getElementById('filter-toggle-btn'),
+        wifiFooter: document.getElementById('wifi-footer'),
         sendOrderBtn: document.getElementById('send-order-btn')
     },
 
@@ -638,7 +693,9 @@ const app = {
             this.refreshCurrentView();
         });
 
-        this.updateUITexts(); 
+        this.updateUITexts();
+        this.renderFilterBar();
+        this.renderWifiBlock();
         this.initCookies();
         this.navigateHome();
     },
@@ -650,7 +707,12 @@ const app = {
         
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
+        this.dom.filterToggleBtn.title = t.filterButtonTitle || 'Filtrar platos';
         this.dom.cartModalTitle.textContent = t.cartTitle;
+        this.dom.orderNotesLabel.textContent = t.notesLabel || 'Observaciones';
+        this.dom.orderNotesInput.placeholder = t.notesPlaceholder || 'Añade detalles para la cocina';
+        this.dom.orderNotesInput.maxLength = 140;
+        this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
         this.dom.cartTotalLabel.textContent = t.cartTotal;
         this.dom.cartTableLabel.textContent = t.cartTableLabel;
         this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
@@ -698,6 +760,145 @@ const app = {
         if (!localStorage.getItem('cookiesAccepted_MenuForge')) {
             setTimeout(() => this.dom.cookieBanner.classList.add('show'), 800);
         }
+    },
+
+    toggleFilterPanel() {
+        this.showFilterBar = !this.showFilterBar;
+        this.renderFilterBar();
+    },
+
+    setActiveFilter(filter) {
+        this.selectedFilter = this.selectedFilter === filter ? null : filter;
+        this.refreshCurrentView();
+        this.renderFilterBar();
+    },
+
+    getAvailableFilterOptions() {
+        const options = new Set();
+        const menus = this.data?.menus || [];
+        menus.forEach(menu => {
+            const trans = menu.traducciones?.[this.currentLang] || menu.traducciones?.[Object.keys(menu.traducciones || {})[0]];
+            const cats = trans?.categorias || [];
+            cats.forEach(cat => {
+                (cat.platos || []).forEach(dish => {
+                    [...(dish.etiquetas || []), ...(dish.alergenos || [])].forEach(tag => tag && options.add(tag));
+                });
+            });
+        });
+        return [...options].filter(Boolean).sort();
+    },
+
+    renderFilterBar() {
+        const options = this.getAvailableFilterOptions();
+        this.filterOptions = options;
+        if (!options.length) {
+            this.dom.filterBarContainer.innerHTML = '';
+            this.dom.filterBarContainer.style.display = 'none';
+            return;
+        }
+        this.dom.filterBarContainer.style.display = this.showFilterBar ? 'flex' : 'none';
+        this.dom.filterBarContainer.innerHTML = options.map(option => `
+            <button type="button" class="filter-pill ${this.selectedFilter === option ? 'active' : ''}" onclick="app.setActiveFilter('${this.escapeHTML(option)}')">
+                <span class="filter-pill-icon">${this.getFilterIcon(option)}</span>
+                <span>${this.escapeHTML(option)}</span>
+            </button>
+        `).join('');
+    },
+
+    getFilterIcon(option) {
+        const map = {
+            'Sin gluten': '🌾',
+            'Vegano': '🌱',
+            'Vegetariano': '🥕',
+            'Picante': '🌶️',
+            'Gluten': '🌾',
+            'Lácteos': '🥛',
+            'Frutos secos': '🥜',
+            'Soja': '🌱',
+            'Huevo': '🥚',
+            'Pescado': '🐟',
+            'Marisco': '🦐'
+        };
+        return map[option] || '🏷️';
+    },
+
+    shouldShowDish(dish) {
+        if (!this.selectedFilter) return true;
+        const values = [...(dish.etiquetas || []), ...(dish.alergenos || [])];
+        return values.some(value => value === this.selectedFilter);
+    },
+
+    getDishBadgesHTML(dish) {
+        const badges = [];
+        const values = [...(dish.etiquetas || []), ...(dish.alergenos || [])];
+        values.forEach(value => {
+            const icon = this.getFilterIcon(value);
+            badges.push(`<span class="filter-pill" style="padding: 4px 8px; font-size: 0.72em; margin-top: 6px;">${icon} ${this.escapeHTML(value)}</span>`);
+        });
+        return badges.length ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top: 6px;">${badges.join('')}</div>` : '';
+    },
+
+    renderWifiBlock() {
+        const rInfo = this.data?.restaurantInfo || {};
+        const hasWifi = Boolean(rInfo.wifiSsid || rInfo.wifiPassword);
+        if (!hasWifi) {
+            this.dom.wifiFooter.style.display = 'none';
+            return;
+        }
+        this.dom.wifiFooter.innerHTML = `
+            <div class="wifi-card">
+                <div class="wifi-title">📶 WiFi</div>
+                <div class="wifi-line"><strong>${this.escapeHTML(rInfo.wifiSsid || 'WiFi')}</strong></div>
+                <div class="wifi-line">${this.escapeHTML(rInfo.wifiPassword || '')}</div>
+            </div>
+        `;
+        this.dom.wifiFooter.style.display = 'block';
+    },
+
+    appendQuickNote(note) {
+        const cleanNote = note.trim();
+        if (!cleanNote) return;
+        this.orderNotes = this.orderNotes ? `${this.orderNotes} • ${cleanNote}` : cleanNote;
+        if (this.dom.orderNotesInput) {
+            this.dom.orderNotesInput.value = this.orderNotes;
+            this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
+        }
+    },
+
+    updateOrderNotes(value) {
+        this.orderNotes = value.slice(0, 140);
+        if (this.dom.orderNotesInput) {
+            this.dom.orderNotesInput.value = this.orderNotes;
+        }
+        if (this.dom.orderNotesCounter) {
+            this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
+        }
+    },
+
+    renderQuickNotes() {
+        const notes = ['Poco hecho', 'Sin sal', 'Salsa aparte', 'Sin picante', 'Sin gluten'];
+        this.dom.quickNotesContainer.innerHTML = notes.map(note => `
+            <button type="button" class="filter-pill" onclick="app.appendQuickNote('${this.escapeHTML(note)}')">${this.escapeHTML(note)}</button>
+        `).join('');
+    },
+
+    getDistanceMeters(lat1, lon1, lat2, lon2) {
+        const toRadians = value => (value * Math.PI) / 180;
+        const earthRadius = 6371000;
+        const dLat = toRadians(lat2 - lat1);
+        const dLon = toRadians(lon2 - lon1);
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadius * c;
+    },
+
+    buildOrderMessage(selectedTable, orderItems, t_wa) {
+        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n${orderItems}\n\n${t_wa.footer}`;
+        const notes = this.orderNotes.trim();
+        if (notes) {
+            message += `\n\nObservaciones: ${notes}`;
+        }
+        return message;
     },
 
     acceptCookies() {
@@ -827,6 +1028,7 @@ const app = {
             if (cat.platos) {
                 for (let dishIndex = 0; dishIndex < cat.platos.length; dishIndex++) {
                     const dish = cat.platos[dishIndex];
+                    if (!this.shouldShowDish(dish)) continue;
                     html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, dishIndex);
                 }
             }
@@ -898,6 +1100,7 @@ const app = {
                         if (cat.platos) {
                             for (let dishIndex = 0; dishIndex < cat.platos.length; dishIndex++) {
                                 const dish = cat.platos[dishIndex];
+                                if (!this.shouldShowDish(dish)) continue;
                                 const name = (dish.nombre || '').toLowerCase();
                                 const desc = (dish.descripcion || '').toLowerCase();
                                 
@@ -936,6 +1139,7 @@ const app = {
         const safeName = this.escapeHTML(dish.nombre);
         const safeDesc = this.escapeHTML(dish.descripcion);
         const safePrice = this.formatPrice(dish.precio);
+        const badgesHTML = this.getDishBadgesHTML(dish);
 
         const modalData = { name: safeName, desc: safeDesc, price: safePrice, imgUrl };
         const safeModalData = encodeURIComponent(JSON.stringify(modalData));
@@ -965,6 +1169,7 @@ const app = {
                 <div class="dish-details">
                     <div class="dish-name">${safeName}</div>
                     ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
+                    ${badgesHTML}
                     <div class="dish-bottom-row">
                         <div class="dish-price">${safePrice} ${sourceMenuName ? `<span class="dish-source-badge">${this.escapeHTML(sourceMenuName)}</span>` : ''}</div>
                         ${actionButton}
@@ -1102,6 +1307,9 @@ const app = {
     renderCartModal() {
         const t = I18N[this.currentLang] || I18N['es'];
         let tableOptions = `<option value="">-- ${t.tableSelectDefault} --</option>`;
+        this.renderQuickNotes();
+        this.dom.orderNotesInput.value = this.orderNotes;
+        this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
         const displayLang = this.currentLang;
         const valueLang = this.whatsapp.msgLang;
 
@@ -1166,8 +1374,25 @@ const app = {
             const nameForWhatsapp = item.nombre_wa || item.nombre;
             return t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
         }).join('\n');
-        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n${orderItems}\n\n${t_wa.footer}`;
-        window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
+
+        const restaurantInfo = this.data?.restaurantInfo || {};
+        const hasCoords = typeof restaurantInfo.latitud === 'number' && typeof restaurantInfo.longitud === 'number';
+        if (!hasCoords) {
+            alert('El restaurante no tiene geolocalización activa para validar el pedido.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            const distance = this.getDistanceMeters(position.coords.latitude, position.coords.longitude, restaurantInfo.latitud, restaurantInfo.longitud);
+            if (distance > 300) {
+                alert('Estás demasiado lejos del restaurante para enviar el pedido.');
+                return;
+            }
+            const message = this.buildOrderMessage(selectedTable, orderItems, t_wa);
+            window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }, () => {
+            alert('No se pudo acceder a tu ubicación para validar el pedido.');
+        }, { enableHighAccuracy: true, timeout: 8000 });
     },
 
     updateFlag() { 
