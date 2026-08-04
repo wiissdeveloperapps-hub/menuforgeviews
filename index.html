@@ -206,6 +206,12 @@
         .filter-price-reset {
             border: 1px solid var(--border-light); background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 12px; padding: 10px 12px; font-weight: 700; cursor: pointer;
         }
+        .filter-rail {
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x proximity;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .filter-rail::-webkit-scrollbar { display: none; }
+        .filter-rail .filter-option-btn { min-width: max-content; scroll-snap-align: start; }
         .filter-option-btn:disabled {
             opacity: 0.5; cursor: not-allowed; box-shadow: none;
         }
@@ -492,7 +498,7 @@
 // --- DICCIONARIOS ÍNTEGROS CON MENSAJES FRIENDLY TRADUCIDOS Y NUEVAS CLAVES ---
 const I18N = {
     es: { 
-        search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.", notesLabel: "Observaciones", notesPlaceholder: "Añade detalles para la cocina", filterButtonTitle: "Filtrar platos",
+        search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.", notesLabel: "Observaciones", notesPlaceholder: "Añade detalles para la cocina", filterButtonTitle: "Filtrar platos", quickNotePocoHecho: "Poco hecho", quickNoteSinSal: "Sin sal", quickNoteSalsaAparte: "Salsa aparte", quickNoteSinPicante: "Sin picante", quickNoteSinGluten: "Sin gluten", filterCategoriesTitle: "Categorías", filterTagsTitle: "Etiquetas y alergias", filterPriceTitle: "Rango de precio", filterMinPrice: "Mínimo", filterMaxPrice: "Máximo", filterClear: "Limpiar", filterActive: "Activo", filterAvailable: "Disponible", filterUnavailable: "No disponible",
         "menu_diario": "📅 Menú del Día", "menu_especial": "⭐ Cartas Especiales",
         "diario::primeros": "🍝 Primeros Platos", "diario::segundos": "🍖 Segundos Platos", "diario::postres": "🍰 Postres Caseros", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés e Infusiones",
         "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas",
@@ -502,7 +508,7 @@ const I18N = {
         langSelect: "Selector de idioma"
     },
     en: { 
-        search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", notesLabel: "Notes", notesPlaceholder: "Add details for the kitchen", filterButtonTitle: "Filter dishes",
+        search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", notesLabel: "Notes", notesPlaceholder: "Add details for the kitchen", filterButtonTitle: "Filter dishes", quickNotePocoHecho: "Lightly cooked", quickNoteSinSal: "No salt", quickNoteSalsaAparte: "Sauce on the side", quickNoteSinPicante: "No spice", quickNoteSinGluten: "Gluten-free", filterCategoriesTitle: "Categories", filterTagsTitle: "Tags and allergens", filterPriceTitle: "Price range", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Clear", filterActive: "Active", filterAvailable: "Available", filterUnavailable: "Unavailable",
         "menu_diario": "📅 Daily Menu", "menu_especial": "⭐ Special Menus",
         "diario::primeros": "🍝 First Courses", "diario::segundos": "🍖 Main Courses", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Drinks", "diario::cafes": "☕ Coffees",
         "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners",
@@ -512,7 +518,7 @@ const I18N = {
         langSelect: "Language selector"
     },
     fr: { 
-        search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", notesLabel: "Observations", notesPlaceholder: "Ajoutez des détails pour la cuisine", filterButtonTitle: "Filtrer les plats",
+        search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", notesLabel: "Observations", notesPlaceholder: "Ajoutez des détails pour la cuisine", filterButtonTitle: "Filtrer les plats", quickNotePocoHecho: "Peu cuit", quickNoteSinSal: "Sans sel", quickNoteSalsaAparte: "Sauce séparée", quickNoteSinPicante: "Sans épice", quickNoteSinGluten: "Sans gluten", filterCategoriesTitle: "Catégories", filterTagsTitle: "Étiquettes et allergènes", filterPriceTitle: "Fourchette de prix", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Effacer", filterActive: "Actif", filterAvailable: "Disponible", filterUnavailable: "Indisponible",
         "menu_diario": "📅 Menu du Jour", "menu_especial": "⭐ Menus Spéciaux",
         "diario::primeros": "🍝 Entrées", "diario::segundos": "🍖 Plats", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Boissons", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners",
@@ -522,7 +528,7 @@ const I18N = {
         langSelect: "Sélecteur de langue"
     },
     it: { 
-        search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", notesLabel: "Osservazioni", notesPlaceholder: "Aggiungi dettagli per la cucina", filterButtonTitle: "Filtra i piatti",
+        search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", notesLabel: "Osservazioni", notesPlaceholder: "Aggiungi dettagli per la cucina", filterButtonTitle: "Filtra i piatti", quickNotePocoHecho: "Poco cotto", quickNoteSinSal: "Senza sale", quickNoteSalsaAparte: "Salsa a parte", quickNoteSinPicante: "Senza piccante", quickNoteSinGluten: "Senza glutine", filterCategoriesTitle: "Categorie", filterTagsTitle: "Etichette e allergeni", filterPriceTitle: "Intervallo di prezzo", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Cancella", filterActive: "Attivo", filterAvailable: "Disponibile", filterUnavailable: "Non disponibile",
         "menu_diario": "📅 Menu del Giorno", "menu_especial": "⭐ Menu Speciali",
         "diario::primeros": "🍝 Primi Piatti", "diario::segundos": "🍖 Secondi Piatti", "diario::postres": "🍰 Dolci", "diario::bebidas": "🍷 Bevande", "diario::cafes": "☕ Caffè",
         "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene",
@@ -532,7 +538,7 @@ const I18N = {
         langSelect: "Selettore di lingua"
     },
     de: { 
-        search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", notesLabel: "Anmerkungen", notesPlaceholder: "Fügen Sie Details für die Küche hinzu", filterButtonTitle: "Gerichte filtern",
+        search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", notesLabel: "Anmerkungen", notesPlaceholder: "Fügen Sie Details für die Küche hinzu", filterButtonTitle: "Gerichte filtern", quickNotePocoHecho: "Leicht gegart", quickNoteSinSal: "Ohne Salz", quickNoteSalsaAparte: "Soße separat", quickNoteSinPicante: "Nicht scharf", quickNoteSinGluten: "Glutenfrei", filterCategoriesTitle: "Kategorien", filterTagsTitle: "Schilder und Allergene", filterPriceTitle: "Preisspanne", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Löschen", filterActive: "Aktiv", filterAvailable: "Verfügbar", filterUnavailable: "Nicht verfügbar",
         "menu_diario": "📅 Tagesmenü", "menu_especial": "⭐ Spezialkarten",
         "diario::primeros": "🍝 Vorspeisen", "diario::segundos": "🍖 Hauptgerichte", "diario::postres": "🍰 Nachspeisen", "diario::bebidas": "🍷 Getränke", "diario::cafes": "☕ Kaffee",
         "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen",
@@ -542,7 +548,7 @@ const I18N = {
         langSelect: "Sprachauswahl"
     },
     pt: { 
-        search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", notesLabel: "Observações", notesPlaceholder: "Adicione detalhes para a cozinha", filterButtonTitle: "Filtrar pratos",
+        search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", notesLabel: "Observações", notesPlaceholder: "Adicione detalhes para a cozinha", filterButtonTitle: "Filtrar pratos", quickNotePocoHecho: "Pouco cozido", quickNoteSinSal: "Sem sal", quickNoteSalsaAparte: "Molho à parte", quickNoteSinPicante: "Sem picante", quickNoteSinGluten: "Sem glúten", filterCategoriesTitle: "Categorias", filterTagsTitle: "Etiquetas e alergénios", filterPriceTitle: "Faixa de preço", filterMinPrice: "Mín", filterMaxPrice: "Máx", filterClear: "Limpar", filterActive: "Ativo", filterAvailable: "Disponível", filterUnavailable: "Indisponível",
         "menu_diario": "📅 Menu do Dia", "menu_especial": "⭐ Menus Especiais",
         "diario::primeros": "🍝 Primeiros Pratos", "diario::segundos": "🍖 Pratos Principais", "diario::postres": "🍰 Sobremesas", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés",
         "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares",
@@ -552,7 +558,7 @@ const I18N = {
         langSelect: "Seletor de idioma"
     },
     cn: { 
-        search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", notesLabel: "备注", notesPlaceholder: "为厨房添加详细说明", filterButtonTitle: "筛选菜品",
+        search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", notesLabel: "备注", notesPlaceholder: "为厨房添加详细说明", filterButtonTitle: "筛选菜品", quickNotePocoHecho: "稍微熟一点", quickNoteSinSal: "少盐", quickNoteSalsaAparte: "酱汁分开", quickNoteSinPicante: "不辣", quickNoteSinGluten: "无麸质", filterCategoriesTitle: "类别", filterTagsTitle: "标签和过敏原", filterPriceTitle: "价格范围", filterMinPrice: "最低", filterMaxPrice: "最高", filterClear: "清除", filterActive: "已选", filterAvailable: "可用", filterUnavailable: "不可用",
         "menu_diario": "📅 每日精选套餐", "menu_especial": "⭐ 特色菜单",
         "diario::primeros": "🍝 头盘", "diario::segundos": "🍖 主菜", "diario::postres": "🍰 甜点", "diario::bebidas": "🍷 酒水饮料", "diario::cafes": "☕ 咖啡",
         "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐",
@@ -562,7 +568,7 @@ const I18N = {
         langSelect: "语言选择器"
     },
     sa: { 
-        search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", notesLabel: "ملاحظات", notesPlaceholder: "أضف تفاصيل للمطبخ", filterButtonTitle: "تصفية الأطباق",
+        search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", notesLabel: "ملاحظات", notesPlaceholder: "أضف تفاصيل للمطبخ", filterButtonTitle: "تصفية الأطباق", quickNotePocoHecho: "مطبوخ قليلاً", quickNoteSinSal: "بدون ملح", quickNoteSalsaAparte: "صلصة على حدة", quickNoteSinPicante: "بدون فلفل", quickNoteSinGluten: "خالي من الغلوتين", filterCategoriesTitle: "الفئات", filterTagsTitle: "الوسوم والمسببات", filterPriceTitle: "نطاق السعر", filterMinPrice: "الحد الأدنى", filterMaxPrice: "الحد الأقصى", filterClear: "مسح", filterActive: "نشط", filterAvailable: "متاح", filterUnavailable: "غير متاح",
         "menu_diario": "📅 قائمة اليوم", "menu_especial": "⭐ القوائم الخاصة",
         "diario::primeros": "🍝 المقبلات", "diario::segundos": "🍖 الأطباق الرئيسية", "diario::postres": "🍰 الحلويات", "diario::bebidas": "🍷 المشروبات", "diario::cafes": "☕ القهوة",
         "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء",
@@ -611,6 +617,7 @@ const app = {
     currentLang: 'es',
     currentView: 'home', 
     selectedCategory: null,
+    minPrice: null,
     maxPrice: null,
     currentMenuId: null,
     searchQuery: '',
@@ -667,7 +674,8 @@ const app = {
         filterModal: document.getElementById('filter-modal'),
         filterModalTitle: document.getElementById('filter-modal-title'),
         filterModalOptions: document.getElementById('filter-modal-options'),
-        filterPriceInput: document.getElementById('filter-price-input'),
+        filterPriceMinInput: document.getElementById('filter-price-min'),
+        filterPriceMaxInput: document.getElementById('filter-price-max'),
         filterPriceReset: document.getElementById('filter-price-reset'),
         wifiFooter: document.getElementById('wifi-footer'),
         sendOrderBtn: document.getElementById('send-order-btn')
@@ -792,8 +800,11 @@ const app = {
         this.dom.btnBack.title = t.back;
         this.dom.filterToggleBtn.title = t.filterButtonTitle || 'Filtrar platos';
         this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
-        if (this.dom.filterPriceInput) {
-            this.dom.filterPriceInput.value = this.maxPrice != null ? this.maxPrice : '';
+        if (this.dom.filterPriceMinInput) {
+            this.dom.filterPriceMinInput.value = this.minPrice != null ? this.minPrice : '';
+        }
+        if (this.dom.filterPriceMaxInput) {
+            this.dom.filterPriceMaxInput.value = this.maxPrice != null ? this.maxPrice : '';
         }
         this.dom.cartModalTitle.textContent = t.cartTitle;
         this.dom.orderNotesLabel.textContent = t.notesLabel || 'Observaciones';
@@ -857,6 +868,32 @@ const app = {
         document.body.style.overflow = 'hidden';
     },
 
+    goBack() {
+        if (this.searchQuery || this.selectedFilter || this.selectedCategory || this.minPrice != null || this.maxPrice != null) {
+            this.clearSearchAndFilters();
+            this.refreshCurrentView();
+            return;
+        }
+        if (this.currentView === 'menu') {
+            this.navigateHome();
+            return;
+        }
+        if (window.history.length > 1) {
+            window.history.back();
+        }
+    },
+
+    clearSearchAndFilters() {
+        this.searchQuery = '';
+        this.selectedFilter = null;
+        this.selectedCategory = null;
+        this.minPrice = null;
+        this.maxPrice = null;
+        this.dom.searchInput.value = '';
+        if (this.dom.filterPriceMinInput) this.dom.filterPriceMinInput.value = '';
+        if (this.dom.filterPriceMaxInput) this.dom.filterPriceMaxInput.value = '';
+    },
+
     closeFilterModal(event, force = false) {
         if (force || event.target === this.dom.filterModal) {
             this.dom.filterModal.classList.remove('active');
@@ -874,21 +911,32 @@ const app = {
     setCategoryFilter(category) {
         this.selectedCategory = this.selectedCategory === category ? null : category;
         this.refreshCurrentView();
+        this.renderFilterBar();
         this.renderFilterModal();
     },
 
     applyPriceFilter() {
-        const rawValue = this.dom.filterPriceInput?.value;
-        const parsed = rawValue === '' ? null : Number(rawValue);
-        this.maxPrice = Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+        const rawMin = this.dom.filterPriceMinInput?.value;
+        const rawMax = this.dom.filterPriceMaxInput?.value;
+        const parsedMin = rawMin === '' ? null : Number(rawMin);
+        const parsedMax = rawMax === '' ? null : Number(rawMax);
+        this.minPrice = Number.isFinite(parsedMin) && parsedMin >= 0 ? parsedMin : null;
+        this.maxPrice = Number.isFinite(parsedMax) && parsedMax >= 0 ? parsedMax : null;
+        if (this.minPrice != null && this.maxPrice != null && this.minPrice > this.maxPrice) {
+            this.maxPrice = this.minPrice;
+        }
         this.refreshCurrentView();
+        this.renderFilterBar();
         this.renderFilterModal();
     },
 
     resetPriceFilter() {
+        this.minPrice = null;
         this.maxPrice = null;
-        if (this.dom.filterPriceInput) this.dom.filterPriceInput.value = '';
+        if (this.dom.filterPriceMinInput) this.dom.filterPriceMinInput.value = '';
+        if (this.dom.filterPriceMaxInput) this.dom.filterPriceMaxInput.value = '';
         this.refreshCurrentView();
+        this.renderFilterBar();
         this.renderFilterModal();
     },
 
@@ -992,14 +1040,39 @@ const app = {
     },
 
     renderFilterBar() {
+        const t = I18N[this.currentLang] || I18N['es'];
         const options = this.getAvailableFilterOptions();
         this.filterOptions = options;
         this.dom.filterBarContainer.innerHTML = '';
         this.dom.filterBarContainer.style.display = 'none';
-        if (!options.length) return;
+
+        const chips = [];
+        if (this.selectedCategory) {
+            chips.push(`<button type="button" class="filter-pill active" onclick="app.setCategoryFilter('${this.escapeHTML(this.selectedCategory)}')">📂 ${this.escapeHTML(this.selectedCategory)}</button>`);
+        }
+        if (this.selectedFilter) {
+            chips.push(`<button type="button" class="filter-pill active" onclick="app.setActiveFilter('${this.selectedFilter}')">${this.escapeHTML(this.getFilterIcon(this.selectedFilter))} ${this.escapeHTML(this.getFilterLabel(this.selectedFilter))}</button>`);
+        }
+        if (this.minPrice != null || this.maxPrice != null) {
+            const priceLabel = this.minPrice != null && this.maxPrice != null
+                ? `${this.formatPrice(this.minPrice)} – ${this.formatPrice(this.maxPrice)}`
+                : this.maxPrice != null ? `≤ ${this.formatPrice(this.maxPrice)}` : `≥ ${this.formatPrice(this.minPrice)}`;
+            chips.push(`<button type="button" class="filter-pill active" onclick="app.resetPriceFilter()">💸 ${this.escapeHTML(priceLabel)}</button>`);
+        }
+
+        if (!chips.length) return;
+
+        this.dom.filterBarContainer.innerHTML = `
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                ${chips.join('')}
+                <button type="button" class="filter-pill" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
+            </div>
+        `;
+        this.dom.filterBarContainer.style.display = 'flex';
     },
 
     renderFilterModal() {
+        const t = I18N[this.currentLang] || I18N['es'];
         const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
         const catalog = [
@@ -1011,33 +1084,48 @@ const app = {
             available: options.includes(value)
         }));
         const categoryHtml = categories.length ? `
-            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">Categorías</div>
-            <div style="display:grid; gap:8px; margin-bottom: 12px;">
+            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
+            <div class="filter-rail" style="margin-bottom: 12px;">
                 ${categories.map(category => `
                     <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick="app.setCategoryFilter('${this.escapeHTML(category)}')">
                         <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
-                        <span class="filter-option-state">${this.selectedCategory === category ? 'Activo' : 'Disponible'}</span>
+                        <span class="filter-option-state">${this.selectedCategory === category ? (t.filterActive || 'Activo') : (t.filterAvailable || 'Disponible')}</span>
                     </button>
                 `).join('')}
             </div>
         ` : '';
         const tagsHtml = catalog.length ? `
-            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">Etiquetas y alergias</div>
-            <div style="display:grid; gap:8px;">
+            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
+            <div class="filter-rail">
                 ${catalog.map(option => `
                     <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
                         <span class="filter-option-label">
                             <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
                             <span>${this.escapeHTML(option.label)}</span>
                         </span>
-                        <span class="filter-option-state">${option.available ? (this.selectedFilter === option.value ? 'Activo' : 'Disponible') : 'No disponible'}</span>
+                        <span class="filter-option-state">${option.available ? (this.selectedFilter === option.value ? (t.filterActive || 'Activo') : (t.filterAvailable || 'Disponible')) : (t.filterUnavailable || 'No disponible')}</span>
                     </button>
                 `).join('')}
             </div>
         ` : '';
-        this.dom.filterModalOptions.innerHTML = `${categoryHtml}${tagsHtml}`;
-        if (this.dom.filterPriceInput) {
-            this.dom.filterPriceInput.value = this.maxPrice != null ? this.maxPrice : '';
+        const priceHtml = `
+            <div style="margin-top: 14px; border-top: 1px solid var(--border-light); padding-top: 14px;">
+                <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
+                <div class="filter-price-row">
+                    <input id="filter-price-min" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mínimo')}">
+                    <input id="filter-price-max" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máximo')}">
+                    <button type="button" id="filter-price-reset" class="filter-price-reset" onclick="app.resetPriceFilter()">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
+                </div>
+            </div>
+        `;
+        this.dom.filterModalOptions.innerHTML = `${categoryHtml}${tagsHtml}${priceHtml}`;
+        if (this.dom.filterPriceMinInput) {
+            this.dom.filterPriceMinInput.value = this.minPrice != null ? this.minPrice : '';
+            this.dom.filterPriceMinInput.setAttribute('placeholder', `${t.filterMinPrice || 'Mínimo'}`);
+        }
+        if (this.dom.filterPriceMaxInput) {
+            this.dom.filterPriceMaxInput.value = this.maxPrice != null ? this.maxPrice : '';
+            this.dom.filterPriceMaxInput.setAttribute('placeholder', `${t.filterMaxPrice || 'Máximo'}`);
         }
     },
 
@@ -1049,6 +1137,7 @@ const app = {
         if (this.selectedFilter) {
             if (!this.getDishFilterValues(dish).includes(this.selectedFilter)) return false;
         }
+        if (this.minPrice != null && typeof dish.precio === 'number' && dish.precio < this.minPrice) return false;
         if (this.maxPrice != null && typeof dish.precio === 'number' && dish.precio > this.maxPrice) return false;
         return true;
     },
@@ -1126,7 +1215,8 @@ const app = {
     },
 
     renderQuickNotes() {
-        const notes = ['Poco hecho', 'Sin sal', 'Salsa aparte', 'Sin picante', 'Sin gluten'];
+        const t = I18N[this.currentLang] || I18N['es'];
+        const notes = [t.quickNotePocoHecho || 'Poco hecho', t.quickNoteSinSal || 'Sin sal', t.quickNoteSalsaAparte || 'Salsa aparte', t.quickNoteSinPicante || 'Sin picante', t.quickNoteSinGluten || 'Sin gluten'];
         this.dom.quickNotesContainer.innerHTML = notes.map(note => `
             <button type="button" class="filter-pill" onclick="app.appendQuickNote('${this.escapeHTML(note)}')">${this.escapeHTML(note)}</button>
         `).join('');
@@ -1169,6 +1259,7 @@ const app = {
         } else {
             this.renderHomeGrid();
         }
+        this.renderFilterBar();
     },
 
     navigateToMenu(menuId) {
@@ -1177,6 +1268,7 @@ const app = {
         this.dom.btnBack.style.display = 'flex';
         this.dom.searchInput.value = ''; 
         this.updateSearchVisibility();
+        window.history.pushState({ view: 'menu', menuId }, '', window.location.pathname + window.location.search);
         this.renderMenu(menuId);
     },
 
@@ -1184,6 +1276,7 @@ const app = {
         if (this.searchQuery) this.renderSearch();
         else if (this.currentView === 'menu') this.renderMenu(this.currentMenuId);
         else this.renderHomeGrid();
+        this.renderFilterBar();
     },
 
     getMenuTitle(menu) {
@@ -1326,6 +1419,7 @@ const app = {
             this.refreshCurrentView();
             return;
         }
+        window.history.pushState({ view: 'search', query: this.searchQuery }, '', window.location.pathname + window.location.search);
         this.renderSearch();
     },
 
@@ -1626,24 +1720,8 @@ const app = {
             return t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
         }).join('\n');
 
-        const restaurantInfo = this.data?.restaurantInfo || {};
-        const hasCoords = typeof restaurantInfo.latitud === 'number' && typeof restaurantInfo.longitud === 'number';
-        if (!hasCoords) {
-            alert('El restaurante no tiene geolocalización activa para validar el pedido.');
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition((position) => {
-            const distance = this.getDistanceMeters(position.coords.latitude, position.coords.longitude, restaurantInfo.latitud, restaurantInfo.longitud);
-            if (distance > 300) {
-                alert('Estás demasiado lejos del restaurante para enviar el pedido.');
-                return;
-            }
-            const message = this.buildOrderMessage(selectedTable, orderItems, t_wa);
-            window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
-        }, () => {
-            alert('No se pudo acceder a tu ubicación para validar el pedido.');
-        }, { enableHighAccuracy: true, timeout: 8000 });
+        const message = this.buildOrderMessage(selectedTable, orderItems, t_wa);
+        window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
     },
 
     updateFlag() { 
@@ -1722,6 +1800,21 @@ const app = {
         return JSON.parse(decompressed || rawText);
     }
 };
+
+window.addEventListener('popstate', (event) => {
+    const state = event.state || {};
+    if (state.view === 'menu' && state.menuId) {
+        app.navigateToMenu(state.menuId);
+    } else if (state.view === 'search') {
+        app.searchQuery = state.query || '';
+        app.dom.searchInput.value = app.searchQuery;
+        if (app.searchQuery) app.renderSearch();
+        else app.navigateHome();
+    } else {
+        app.clearSearchAndFilters();
+        app.navigateHome();
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => app.init());
 </script>
