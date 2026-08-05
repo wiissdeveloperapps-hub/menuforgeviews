@@ -197,6 +197,19 @@
         .filter-option-btn.active {
             background: rgba(79, 70, 229, 0.12); color: var(--accent); border-color: rgba(79, 70, 229, 0.28);
         }
+        .filter-option-toggle {
+            width: 36px; height: 20px; border-radius: 999px; background: rgba(15, 23, 42, 0.12); position: relative; flex-shrink: 0; transition: all 0.25s ease;
+        }
+        .filter-option-toggle::after {
+            content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: all 0.25s ease;
+        }
+        .filter-option-btn.active .filter-option-toggle {
+            background: rgba(79, 70, 229, 0.35);
+        }
+        .filter-option-btn.active .filter-option-toggle::after {
+            transform: translateX(16px);
+            background: var(--accent);
+        }
         .filter-price-row {
             display: flex; align-items: center; gap: 10px; margin-top: 0;
         }
@@ -208,6 +221,15 @@
         }
         .filter-accordion {
             display: grid; gap: 10px;
+        }
+        .filter-section-card {
+            border: 1px solid var(--border-light); border-radius: 16px; background: var(--card-light); box-shadow: var(--shadow-subtle); padding: 12px 12px 10px; display: grid; gap: 8px;
+        }
+        .filter-section-title {
+            font-size: 0.86em; font-weight: 800; color: var(--text-muted-light); text-transform: uppercase; letter-spacing: 0.12em;
+        }
+        .filter-count-badge {
+            min-width: 26px; padding: 2px 8px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent); font-size: 0.74em; font-weight: 800; text-align: center;
         }
         .filter-accordion-section {
             border: 1px solid var(--border-light); border-radius: 16px; background: var(--card-light); box-shadow: var(--shadow-subtle); overflow: hidden;
@@ -232,12 +254,16 @@
         .search-controls-shell.visible { display: flex; flex-direction: column; gap: 10px; }
         .filter-modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); display: flex; align-items: flex-end; justify-content: center; z-index: 1100; padding: 16px; opacity: 0; visibility: hidden; transition: all 0.25s ease; }
         .filter-modal-overlay.active { opacity: 1; visibility: visible; }
-        .filter-modal-content { width: min(100%, 520px); background: var(--card-light); border-radius: 24px 24px 18px 18px; border: 1px solid var(--border-light); box-shadow: var(--shadow-card); padding: 18px 18px 22px; transform: translateY(20px); transition: transform 0.25s ease; }
+        .filter-modal-content { width: min(100%, 520px); max-height: min(84vh, 760px); background: var(--card-light); border-radius: 24px 24px 18px 18px; border: 1px solid var(--border-light); box-shadow: var(--shadow-card); padding: 18px 18px 12px; transform: translateY(20px); transition: transform 0.25s ease; display: flex; flex-direction: column; }
         .filter-modal-overlay.active .filter-modal-content { transform: translateY(0); }
         .filter-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .filter-modal-title { font-size: 1.05em; font-weight: 800; margin: 0; color: var(--text-light); }
         .filter-modal-close { border: none; background: rgba(79, 70, 229, 0.1); color: var(--accent); border-radius: 10px; width: 34px; height: 34px; cursor: pointer; }
-        .filter-modal-list { display: grid; gap: 10px; max-height: 60vh; overflow-y: auto; }
+        .filter-modal-list { display: grid; gap: 10px; overflow-y: auto; padding-bottom: 8px; }
+        .filter-modal-footer { display: flex; gap: 10px; padding-top: 12px; margin-top: auto; border-top: 1px solid var(--border-light); }
+        .filter-cta-btn { flex: 1; border: none; border-radius: 14px; padding: 11px 12px; font-weight: 800; cursor: pointer; font-family: inherit; }
+        .filter-cta-btn.secondary { background: var(--pill-bg); color: var(--text-light); }
+        .filter-cta-btn.primary { background: var(--accent-gradient); color: white; }
 
         @media (max-width: 640px) {
             .filter-modal-content { padding: 16px 14px 18px; max-height: 82vh; }
@@ -263,7 +289,7 @@
 
         .category-tabs-container { width: 100%; display: none; }
         .category-tabs {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; position: sticky; top: 0; z-index: 20;
             -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth;
         }
         .category-tabs::-webkit-scrollbar { display: none; }
@@ -274,6 +300,8 @@
         }
         .category-tab:hover { color: var(--accent); border-color: rgba(79, 70, 229, 0.3); }
         .category-tab.active { background: var(--accent-gradient); color: #ffffff; border-color: transparent; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transform: translateY(-1px); }
+        .category-tab .tab-count { margin-left: 6px; font-size: 0.72em; padding: 2px 6px; border-radius: 999px; background: rgba(255,255,255,0.18); color: inherit; }
+        .category { margin-bottom: 40px; scroll-margin-top: 110px; }
 
         /* --- CONTENIDO BENTO GRID --- */
         .menu-card, .dish {
@@ -308,6 +336,8 @@
         
         .dish-add-btn { background: var(--accent-gradient); color: white; border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); }
         .dish-add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.6); }
+        .dish-add-btn.bump { animation: buttonPop 0.35s ease; }
+        .dish-add-btn.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); transform: scale(1.05); }
 
         .dish-action-icon { background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 12px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
         .dish:hover .dish-action-icon { background: var(--accent); color: #ffffff; transform: translateX(3px); }
@@ -316,6 +346,14 @@
 
         .fade-in-slide { opacity: 0; transform: translateY(15px); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in-slide.visible { opacity: 1; transform: translateY(0); }
+        .skeleton-stack { display: grid; gap: 14px; }
+        .skeleton-card { padding: 16px; border-radius: 18px; background: var(--card-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle); animation: skeletonPulse 1.2s ease-in-out infinite; }
+        .skeleton-line { height: 12px; border-radius: 999px; background: linear-gradient(90deg, rgba(148,163,184,0.24) 0%, rgba(148,163,184,0.45) 50%, rgba(148,163,184,0.24) 100%); margin-bottom: 10px; }
+        .skeleton-line.wide { width: 72%; height: 14px; }
+        .skeleton-line.short { width: 42%; }
+        .skeleton-line:last-child { margin-bottom: 0; }
+        @keyframes skeletonPulse { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+        @keyframes buttonPop { 0% { transform: scale(1); } 50% { transform: scale(1.13); } 100% { transform: scale(1); } }
 
         /* --- MODALES Y CARRITO --- */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.35s ease; }
@@ -335,6 +373,7 @@
 
         .cart-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--accent-gradient); color: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.5); cursor: pointer; z-index: 999; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none; }
         .cart-fab:hover { transform: scale(1.1) rotate(5deg); }
+        .cart-fab.bump { animation: buttonPop 0.35s ease; }
         .cart-badge { position: absolute; top: -5px; right: -5px; background-color: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-light); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0); }
         .cart-badge.visible { transform: scale(1); }
 
@@ -472,12 +511,9 @@
             <button type="button" class="filter-modal-close" onclick="app.closeFilterModal(event, true)">✕</button>
         </div>
         <div id="filter-modal-options" class="filter-modal-list"></div>
-        <div style="margin-top: 14px; border-top: 1px solid var(--border-light); padding-top: 14px;">
-            <div style="font-size: 0.88em; font-weight: 800; color: var(--text-light); margin-bottom: 8px;">Precio máximo</div>
-            <div class="filter-price-row">
-                <input id="filter-price-input" class="filter-price-input" type="number" min="0" step="1" placeholder="Ej. 15">
-                <button type="button" id="filter-price-reset" class="filter-price-reset" onclick="app.resetPriceFilter()">Limpiar</button>
-            </div>
+        <div class="filter-modal-footer">
+            <button type="button" class="filter-cta-btn secondary" onclick="app.resetPriceFilter(); app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar(); app.renderFilterModal();">Limpiar</button>
+            <button type="button" class="filter-cta-btn primary" onclick="app.closeFilterModal({target: app.dom.filterModal}, true)">Listo</button>
         </div>
     </div>
 </div>
@@ -658,6 +694,8 @@ const app = {
     currentMenuId: null,
     searchQuery: '',
     categoryTabsObserver: null,
+    sourceHash: '',
+    isDarkMode: false,
     cart: [],
     whatsapp: { enabled: false, phone: '', msgLang: 'es' },
     tables: [],
@@ -671,6 +709,7 @@ const app = {
     dom: {
         header: document.getElementById('header-container'),
         content: document.getElementById('main-content'),
+        btnTheme: document.getElementById('btn-theme'),
         printContainer: document.getElementById('print-container'),
         btnBack: document.getElementById('btn-back'),
         logo: document.getElementById('restaurant-logo'),
@@ -736,6 +775,7 @@ const app = {
         
         try {
             const hash = window.location.hash.substring(1);
+            this.sourceHash = hash;
             if (!hash) throw new Error(t.invalidQR);
 
             let jsonData;
@@ -820,6 +860,7 @@ const app = {
             this.refreshCurrentView();
         });
 
+        this.applyThemePreference();
         this.updateUITexts();
         this.renderFilterBar();
         this.renderWifiBlock();
@@ -1112,60 +1153,78 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
-        const catalog = [
-            'sin-gluten', 'sin-lactosa', 'vegano', 'vegetariano', 'picante', 'sin-frutos-secos', 'sin-soja', 'sin-huevo', 'pescado', 'marisco', 'carnes', 'cafe', 'bebida'
-        ].map(value => ({
+        const dietOptions = ['vegano', 'vegetariano', 'picante', 'cafe', 'bebida'].map(value => ({
             value,
             label: this.getFilterLabel(value),
             icon: this.getFilterIcon(value),
             available: options.includes(value)
         }));
+        const allergyOptions = ['sin-gluten', 'sin-lactosa', 'sin-frutos-secos', 'sin-soja', 'sin-huevo'].map(value => ({
+            value,
+            label: this.getFilterLabel(value),
+            icon: this.getFilterIcon(value),
+            available: options.includes(value)
+        }));
+
         const categoryHtml = categories.length ? `
-            <details class="filter-accordion-section">
-                <summary>${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</summary>
-                <div class="filter-accordion-body">
-                    <div class="filter-rail">
-                        ${categories.map(category => `
-                            <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick="app.setCategoryFilter('${this.escapeHTML(category)}')">
-                                <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
-                                <span class="filter-option-state">${this.selectedCategory === category ? (t.filterActive || 'Activo') : (t.filterAvailable || 'Disponible')}</span>
-                            </button>
-                        `).join('')}
-                    </div>
+            <div class="filter-section-card">
+                <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
+                <div class="filter-rail">
+                    ${categories.map(category => `
+                        <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick="app.setCategoryFilter('${this.escapeHTML(category)}')">
+                            <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
+                            <span class="filter-count-badge">${this.getCategoryDishCount(category)}</span>
+                        </button>
+                    `).join('')}
                 </div>
-            </details>
+            </div>
         ` : '';
-        const tagsHtml = catalog.length ? `
-            <details class="filter-accordion-section">
-                <summary>${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</summary>
-                <div class="filter-accordion-body">
-                    <div class="filter-rail">
-                        ${catalog.map(option => `
-                            <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
-                                <span class="filter-option-label">
-                                    <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
-                                    <span>${this.escapeHTML(option.label)}</span>
-                                </span>
-                                <span class="filter-option-state">${option.available ? (this.selectedFilter === option.value ? (t.filterActive || 'Activo') : (t.filterAvailable || 'Disponible')) : (t.filterUnavailable || 'No disponible')}</span>
-                            </button>
-                        `).join('')}
-                    </div>
+
+        const dietHtml = dietOptions.length ? `
+            <div class="filter-section-card">
+                <div class="filter-section-title">Dietas</div>
+                <div class="filter-rail">
+                    ${dietOptions.map(option => `
+                        <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
+                            <span class="filter-option-label">
+                                <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
+                                <span>${this.escapeHTML(option.label)}</span>
+                            </span>
+                            <span class="filter-option-toggle"></span>
+                        </button>
+                    `).join('')}
                 </div>
-            </details>
+            </div>
         ` : '';
+
+        const allergyHtml = allergyOptions.length ? `
+            <div class="filter-section-card">
+                <div class="filter-section-title">Alergias</div>
+                <div class="filter-rail">
+                    ${allergyOptions.map(option => `
+                        <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
+                            <span class="filter-option-label">
+                                <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
+                                <span>${this.escapeHTML(option.label)}</span>
+                            </span>
+                            <span class="filter-option-toggle"></span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        ` : '';
+
         const priceHtml = `
-            <details class="filter-accordion-section">
-                <summary>${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</summary>
-                <div class="filter-accordion-body">
-                    <div class="filter-price-row">
-                        <input id="filter-price-min" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mínimo')}">
-                        <input id="filter-price-max" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máximo')}">
-                        <button type="button" id="filter-price-reset" class="filter-price-reset" onclick="app.resetPriceFilter()">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
-                    </div>
+            <div class="filter-section-card">
+                <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
+                <div class="filter-price-row">
+                    <input id="filter-price-min" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mínimo')}">
+                    <input id="filter-price-max" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máximo')}">
+                    <button type="button" id="filter-price-reset" class="filter-price-reset" onclick="app.resetPriceFilter()">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
                 </div>
-            </details>
+            </div>
         `;
-        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${categoryHtml}${tagsHtml}${priceHtml}</div>`;
+        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${categoryHtml}${dietHtml}${allergyHtml}${priceHtml}</div>`;
         if (this.dom.filterPriceMinInput) {
             this.dom.filterPriceMinInput.value = this.minPrice != null ? this.minPrice : '';
             this.dom.filterPriceMinInput.setAttribute('placeholder', `${t.filterMinPrice || 'Mínimo'}`);
@@ -1387,6 +1446,11 @@ const app = {
         this.dom.cookieBanner.classList.remove('show');
     },
 
+    getPreservedUrl() {
+        const hashSuffix = this.sourceHash ? `#${this.sourceHash}` : '';
+        return `${window.location.pathname}${window.location.search}${hashSuffix}`;
+    },
+
     navigateHome() {
         this.currentView = 'home';
         this.currentMenuId = null;
@@ -1409,7 +1473,7 @@ const app = {
         this.dom.btnBack.style.display = 'flex';
         this.dom.searchInput.value = ''; 
         this.updateSearchVisibility();
-        window.history.pushState({ view: 'menu', menuId }, '', window.location.pathname + window.location.search);
+        window.history.pushState({ view: 'menu', menuId, sourceHash: this.sourceHash }, '', this.getPreservedUrl());
         this.renderMenu(menuId);
     },
 
@@ -1479,6 +1543,33 @@ const app = {
         return originalName;
     },
 
+    getCategoryDishCount(categoryName) {
+        const menus = this.data?.menus || [];
+        let count = 0;
+        menus.forEach(menu => {
+            const trans = menu.traducciones?.[this.currentLang] || menu.traducciones?.[Object.keys(menu.traducciones || {})[0]];
+            (trans?.categorias || []).forEach(cat => {
+                const translatedName = this.getCategoryName(cat.key, cat.nombre);
+                if (translatedName !== categoryName) return;
+                (cat.platos || []).forEach(dish => {
+                    if (this.shouldShowDish(dish)) count += 1;
+                });
+            });
+        });
+        return count;
+    },
+
+    renderSkeletonLoader() {
+        const cards = Array.from({ length: 4 }, (_, index) => `
+            <div class="skeleton-card${index === 0 ? ' featured' : ''}">
+                <div class="skeleton-line wide"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        `).join('');
+        this.dom.content.innerHTML = `<div class="skeleton-stack">${cards}</div>`;
+    },
+
     renderMenu(menuId) {
         const menu = this.data.menus.find(m => m.id === menuId);
         if (!menu) return this.navigateHome();
@@ -1509,7 +1600,7 @@ const app = {
             const categorySlug = this.slugify(translatedCatName || cat.nombre);
             const visibleDishes = (cat.platos || []).filter((dish, dishIndex) => this.shouldShowDish(dish));
             if (!visibleDishes.length) continue;
-            tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}</div>`;
+            tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}<span class="tab-count">${visibleDishes.length}</span></div>`;
 
             html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(translatedCatName)}</h2>`;
@@ -1554,14 +1645,32 @@ const app = {
         window.scrollTo(0,0);
     },
 
+    normalizeText(value) {
+        return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    },
+
+    fuzzyMatch(text, query) {
+        const normalizedText = this.normalizeText(text);
+        const normalizedQuery = this.normalizeText(query).trim();
+        if (!normalizedQuery) return true;
+        if (normalizedText.includes(normalizedQuery)) return true;
+        let queryIndex = 0;
+        for (const char of normalizedText) {
+            if (char === normalizedQuery[queryIndex]) queryIndex += 1;
+            if (queryIndex === normalizedQuery.length) return true;
+        }
+        return false;
+    },
+
     handleSearch(query) {
         this.searchQuery = query.trim().toLowerCase();
         if (!this.searchQuery) {
             this.refreshCurrentView();
             return;
         }
-        window.history.pushState({ view: 'search', query: this.searchQuery }, '', window.location.pathname + window.location.search);
-        this.renderSearch();
+        window.history.pushState({ view: 'search', query: this.searchQuery, sourceHash: this.sourceHash }, '', this.getPreservedUrl());
+        this.renderSkeletonLoader();
+        window.setTimeout(() => this.renderSearch(), 140);
     },
 
     renderSearch() {
@@ -1587,10 +1696,10 @@ const app = {
                             for (let dishIndex = 0; dishIndex < cat.platos.length; dishIndex++) {
                                 const dish = cat.platos[dishIndex];
                                 if (!this.shouldShowDish(dish)) continue;
-                                const name = (dish.nombre || '').toLowerCase();
-                                const desc = (dish.descripcion || '').toLowerCase();
+                                const name = (dish.nombre || '');
+                                const desc = (dish.descripcion || '');
                                 
-                                if (name.includes(this.searchQuery) || desc.includes(this.searchQuery)) {
+                                if (this.fuzzyMatch(name, this.searchQuery) || this.fuzzyMatch(desc, this.searchQuery)) {
                                     const key = `${menu.id}-${catIndex}-${dishIndex}`;
                                     if (!foundKeys.has(key)) {
                                         foundKeys.add(key);
@@ -1646,7 +1755,7 @@ const app = {
         const safeCartData = encodeURIComponent(JSON.stringify(cartDishData));
 
         const actionButton = this.whatsapp.enabled
-            ? `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}');">+</button>`
+            ? `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}', event.currentTarget);">+</button>`
             : `<div class="dish-action-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>`;
 
         return `
@@ -1753,7 +1862,7 @@ const app = {
         }
     },
 
-    addToCart(safeCartData) {
+    addToCart(safeCartData, button = null) {
         const dish = JSON.parse(decodeURIComponent(safeCartData));
         const uniqueId = dish.cart_id || dish.nombre;
         const existingItem = this.cart.find(item => (item.cart_id || item.nombre) === uniqueId);
@@ -1764,6 +1873,22 @@ const app = {
             this.cart.push({ ...dish, quantity: 1 });
         }
         this.updateCartBadge();
+
+        if (button) {
+            button.classList.remove('success', 'bump');
+            void button.offsetWidth;
+            button.classList.add('success', 'bump');
+            button.innerHTML = '✓';
+            setTimeout(() => {
+                button.classList.remove('success', 'bump');
+                button.innerHTML = '+';
+            }, 700);
+        }
+        if (this.dom.cartFab) {
+            this.dom.cartFab.classList.remove('bump');
+            void this.dom.cartFab.offsetWidth;
+            this.dom.cartFab.classList.add('bump');
+        }
     },
 
     updateCartBadge() {
@@ -1869,9 +1994,24 @@ const app = {
         this.dom.currentFlag.src = `assets/flags/${this.currentLang}.png`; 
     },
     
+    applyThemePreference() {
+        const storedTheme = localStorage.getItem('menuforge-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldDark = storedTheme ? storedTheme === 'dark' : prefersDark;
+        document.body.classList.toggle('dark-mode', shouldDark);
+        this.isDarkMode = shouldDark;
+        if (this.dom.btnTheme) {
+            this.dom.btnTheme.textContent = shouldDark ? '☀️' : '🌙';
+        }
+    },
+
     toggleTheme() {
-        document.body.classList.toggle('dark-mode');
-        document.getElementById('btn-theme').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        this.isDarkMode = !document.body.classList.contains('dark-mode');
+        document.body.classList.toggle('dark-mode', this.isDarkMode);
+        localStorage.setItem('menuforge-theme', this.isDarkMode ? 'dark' : 'light');
+        if (this.dom.btnTheme) {
+            this.dom.btnTheme.textContent = this.isDarkMode ? '☀️' : '🌙';
+        }
     },
     
     formatPrice(price) {
