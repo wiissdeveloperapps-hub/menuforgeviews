@@ -118,9 +118,8 @@
         .action-icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
         .wifi-btn {
-            gap: 6px; padding: 8px 12px; min-width: fit-content;
+            gap: 0; padding: 8px; width: 38px; height: 38px; min-width: 38px;
         }
-        .wifi-btn .wifi-btn-label { font-size: 0.82em; font-weight: 800; }
         .wifi-btn.disabled {
             opacity: 0.7;
         }
@@ -173,14 +172,15 @@
         }
 
         .lang-selector-wrap {
-            display: flex; align-items: center; gap: 4px; padding: 7px 10px;
+            display: flex; align-items: center; gap: 4px; padding: 6px 8px;
             border-radius: 12px; background: var(--card-light); border: 1px solid var(--border-light);
             cursor: pointer; box-shadow: var(--shadow-subtle); flex-shrink: 0;
         }
         .lang-flag { width: 18px; height: 13px; border-radius: 2px; object-fit: cover; }
         #language-selector {
-            border: none; background: transparent; font-size: 0.85em; font-weight: 700;
+            border: none; background: transparent; font-size: 0.78em; font-weight: 800;
             color: var(--text-light); font-family: inherit; cursor: pointer; outline: none; appearance: none;
+            min-width: 2.2rem; padding: 0; line-height: 1;
         }
 
         /* --- TOAST FRIENDLY NOTIFICATION --- */
@@ -512,9 +512,8 @@
             <select id="language-selector"></select>
         </div>
 
-        <button id="wifi-action-btn" class="action-icon-btn wifi-btn" onclick="app.toggleWifiModal()" type="button">
+        <button id="wifi-action-btn" class="action-icon-btn wifi-btn" onclick="app.toggleWifiModal()" type="button" aria-label="WiFi">
             <svg viewBox="0 0 24 24"><path d="M5 12a13 13 0 0 1 14 0"/><path d="M9 16a7 7 0 0 1 6 0"/><path d="M13 20h.01"/></svg>
-            <span id="wifi-action-label" class="wifi-btn-label">WiFi</span>
         </button>
         
         <button class="action-icon-btn pdf-btn" onclick="app.printFullMenu()">PDF</button>
@@ -928,7 +927,8 @@ const app = {
             langsToRender.forEach(lang => {
                 const opt = document.createElement('option');
                 opt.value = lang;
-                opt.textContent = firstMenu.traducciones?.[lang]?.meta?.languageName || lang.toUpperCase();
+                opt.textContent = this.getCompactLanguageCode(lang);
+                opt.title = firstMenu.traducciones?.[lang]?.meta?.languageName || this.getLanguageName(lang);
                 this.dom.langSelect.appendChild(opt);
             });
             
@@ -1000,6 +1000,16 @@ const app = {
         this.dom.contactIconsContainer.innerHTML = iconsHtml;
     },
 
+    getCompactLanguageCode(langCode) {
+        const compactMap = { es: 'ES', en: 'EN', fr: 'FR', it: 'IT', de: 'DE', pt: 'PT', cn: 'CN', sa: 'SA' };
+        return compactMap[langCode] || String(langCode || '').toUpperCase();
+    },
+
+    getLanguageName(langCode) {
+        const names = { es: 'Español', en: 'English', fr: 'Français', it: 'Italiano', de: 'Deutsch', pt: 'Português', cn: '中文', sa: 'العربية' };
+        return names[langCode] || String(langCode || '').toUpperCase();
+    },
+
     updateWifiButton() {
         const t = I18N[this.currentLang] || I18N['es'];
         const rInfo = this.data?.restaurantInfo || {};
@@ -1007,9 +1017,6 @@ const app = {
         if (this.dom.wifiActionBtn) {
             this.dom.wifiActionBtn.classList.toggle('disabled', !hasWifi);
             this.dom.wifiActionBtn.title = t.wifiTitle || 'WiFi';
-        }
-        if (this.dom.wifiActionLabel) {
-            this.dom.wifiActionLabel.textContent = t.wifiTitle || 'WiFi';
         }
     },
 
