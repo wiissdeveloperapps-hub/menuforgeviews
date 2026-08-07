@@ -408,6 +408,45 @@
         .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
         .dish-price { font-size: 1.3em; font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; }
         
+        .daily-menu-shell { display: grid; gap: 16px; }
+        .daily-menu-hero {
+            position: relative; overflow: hidden; border-radius: 30px; min-height: 300px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.96), rgba(124, 58, 237, 0.9));
+            box-shadow: 0 24px 50px -24px rgba(79, 70, 229, 0.45); border: 1px solid rgba(255,255,255,0.16);
+        }
+        .daily-menu-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.2; }
+        .daily-menu-hero::after {
+            content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(2,6,23,0.82) 0%, rgba(2,6,23,0.35) 60%, rgba(2,6,23,0.18) 100%);
+        }
+        .daily-menu-hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; min-height: 300px; padding: 24px; gap: 10px; }
+        .daily-menu-badge {
+            align-self: flex-start; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22);
+            color: #fff; font-size: 0.74em; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; backdrop-filter: blur(8px);
+        }
+        .daily-menu-title { margin: 0; color: #fff; font-size: clamp(1.35rem, 2.4vw, 1.85rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+        .daily-menu-copy { margin: 0; color: rgba(255,255,255,0.86); font-size: 0.95rem; line-height: 1.5; max-width: 620px; }
+        .daily-menu-body {
+            display: grid; gap: 14px; padding: 20px; border-radius: 24px; background: var(--card-light); border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-card);
+        }
+        .daily-menu-price-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .daily-menu-price-pill {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent);
+            font-weight: 800; letter-spacing: -0.01em;
+        }
+        .daily-menu-action {
+            border: none; background: var(--accent-gradient); color: #fff; border-radius: 999px; padding: 10px 16px; font-weight: 800; cursor: pointer;
+            box-shadow: 0 12px 24px -14px rgba(79, 70, 229, 0.45);
+        }
+        .daily-menu-section-list { display: grid; gap: 10px; }
+        .daily-menu-section-card {
+            border-radius: 18px; padding: 14px 14px 12px; border: 1px solid rgba(148, 163, 184, 0.22); background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(248,250,252,0.9));
+        }
+        .daily-menu-section-title { font-size: 0.95rem; font-weight: 800; color: var(--text-light); margin-bottom: 8px; }
+        .daily-menu-section-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+        .daily-menu-section-list li {
+            color: var(--text-muted-light); font-size: 0.92rem; line-height: 1.4; padding-left: 0;
+        }
+        .daily-menu-section-list li strong { color: var(--text-light); font-weight: 700; }
         .dish-add-btn { background: var(--accent-gradient); color: white; border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); }
         .dish-add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.6); }
         .dish-add-btn.bump { animation: buttonPop 0.35s ease; }
@@ -1806,25 +1845,40 @@ const app = {
             const menuPrice = this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0);
             const dailyMenuTitle = (trans?.dailyMenuPriceTitle || t["menu_diario"] || '📅 Menú del Día').trim();
             const dailyMenuHelp = (trans?.dailyMenuPriceHelp || '').trim();
+            const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
+            const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
+            const heroImage = (menu.recursos?.imagenes && Object.keys(menu.recursos.imagenes).length > 0)
+                ? Object.values(menu.recursos.imagenes)[0]
+                : coverImg;
+            const heroImageWithCache = `${heroImage}?t=${new Date().getTime()}`;
             const summaryItems = (trans.categorias || []).map(cat => {
                 const dishNames = (cat.platos || []).map(plato => plato?.nombre).filter(Boolean);
-                return dishNames.length ? `<li>${this.escapeHTML(cat.nombre)}: ${this.escapeHTML(dishNames.join(', '))}</li>` : '';
+                return dishNames.length ? `<li><strong>${this.escapeHTML(cat.nombre)}</strong> · ${this.escapeHTML(dishNames.join(', '))}</li>` : '';
             }).filter(Boolean).join('');
             const safeMenuData = encodeURIComponent(JSON.stringify(this.buildDailyMenuCartItem(menu)));
             this.dom.categoryTabs.innerHTML = '';
             this.dom.categoryTabsContainer.style.display = 'none';
             this.dom.content.innerHTML = `
-                <div class="category fade-in-slide">
-                    <div class="dish" style="border: 1px solid rgba(79, 70, 229, 0.16); box-shadow: 0 18px 40px -22px rgba(79, 70, 229, 0.35);">
-                        <div class="dish-details">
-                            <div class="dish-name">${this.escapeHTML(this.getMenuTitle(menu))}</div>
-                            ${dailyMenuTitle ? `<p class="dish-desc">${this.escapeHTML(dailyMenuTitle)}</p>` : ''}
-                            ${dailyMenuHelp ? `<p class="dish-desc" style="margin-top: 4px; font-size: 0.92em;">${this.escapeHTML(dailyMenuHelp)}</p>` : ''}
-                            ${summaryItems ? `<ul style="margin: 10px 0 0 16px; padding: 0; color: var(--text-muted-light); line-height: 1.5;">${summaryItems}</ul>` : ''}
-                            <div class="dish-bottom-row">
-                                <div class="dish-price">${menuPrice}</div>
-                                <button class="dish-add-btn" onclick="event.stopPropagation(); app.addDailyMenuToCart('${safeMenuData}', event.currentTarget);">+</button>
-                            </div>
+                <div class="daily-menu-shell fade-in-slide">
+                    <div class="daily-menu-hero">
+                        <img src="${this.escapeHTML(heroImageWithCache)}" alt="${this.escapeHTML(this.getMenuTitle(menu))}">
+                        <div class="daily-menu-hero-content">
+                            <div class="daily-menu-badge">${this.escapeHTML(t["menu_diario"] || 'Menú del Día')}</div>
+                            <h2 class="daily-menu-title">${this.escapeHTML(this.getMenuTitle(menu))}</h2>
+                            ${dailyMenuHelp ? `<p class="daily-menu-copy">${this.escapeHTML(dailyMenuHelp)}</p>` : ''}
+                        </div>
+                    </div>
+                    <div class="daily-menu-body">
+                        <div class="daily-menu-price-row">
+                            <div class="daily-menu-price-pill">💎 ${this.escapeHTML(dailyMenuTitle)}</div>
+                            <div class="daily-menu-price-pill">${menuPrice}</div>
+                        </div>
+                        <div class="daily-menu-section-list">
+                            ${summaryItems ? `<div class="daily-menu-section-card"><div class="daily-menu-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div><ul>${summaryItems}</ul></div>` : ''}
+                        </div>
+                        <div class="daily-menu-price-row">
+                            <div class="dish-desc" style="margin:0;">${this.escapeHTML(t.filterButtonTitle || 'Filtrar platos')}</div>
+                            <button class="daily-menu-action" onclick="event.stopPropagation(); app.addDailyMenuToCart('${safeMenuData}', event.currentTarget);">Añadir al pedido</button>
                         </div>
                     </div>
                 </div>
