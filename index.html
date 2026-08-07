@@ -1617,6 +1617,58 @@ const app = {
         return trans?.nombreCarta || menu.nombreCarta || t.defaultMenu;
     },
 
+    isDailyMenu(menu) {
+        return (menu?.tipoMenu || menu?.tipo || '').toString().toLowerCase() === 'diario';
+    },
+
+    buildDailyMenuCartItem(menu) {
+        const menuName = this.getMenuTitle(menu);
+        const translatedMenu = menu?.traducciones?.[this.currentLang] || menu?.traducciones?.[Object.keys(menu?.traducciones || {})[0]];
+        const summary = (translatedMenu?.categorias || []).map(cat => {
+            const dishNames = (cat.platos || []).map(plato => plato?.nombre).filter(Boolean);
+            return dishNames.length ? `${cat.nombre}: ${dishNames.join(', ')}` : '';
+        }).filter(Boolean).join(' • ');
+
+        return {
+            cart_id: `menu-${menu.id}`,
+            nombre: menuName,
+            nombre_display: menuName,
+            nombre_wa: menuName,
+            precio: typeof menu.precio === 'number' ? menu.precio : 0,
+            tipo: 'daily-menu',
+            descripcion: summary
+        };
+    },
+
+    addDailyMenuToCart(menu, button = null) {
+        const dailyMenu = typeof menu === 'string' ? JSON.parse(decodeURIComponent(menu)) : menu;
+        const uniqueId = dailyMenu.cart_id || `menu-${dailyMenu.id || 'daily'}`;
+        const existingItem = this.cart.find(item => (item.cart_id || item.nombre) === uniqueId);
+
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            this.cart.push({ ...dailyMenu, quantity: 1 });
+        }
+        this.updateCartBadge();
+
+        if (button) {
+            button.classList.remove('success', 'bump');
+            void button.offsetWidth;
+            button.classList.add('success', 'bump');
+            button.innerHTML = '✓';
+            setTimeout(() => {
+                button.classList.remove('success', 'bump');
+                button.innerHTML = '+';
+            }, 700);
+        }
+        if (this.dom.cartFab) {
+            this.dom.cartFab.classList.remove('bump');
+            void this.dom.cartFab.offsetWidth;
+            this.dom.cartFab.classList.add('bump');
+        }
+    },
+
     renderHomeGrid() {
         const menus = this.data.menus || [];
         const t = I18N[this.currentLang] || I18N['es'];
@@ -1703,6 +1755,38 @@ const app = {
             this.dom.content.innerHTML = `<div id="loader">${t.emptyMenu}</div>`;
             this.dom.categoryTabs.innerHTML = '';
             this.dom.categoryTabsContainer.style.display = 'none';
+            return;
+        }
+
+        if (this.isDailyMenu(menu)) {
+            const menuPrice = this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0);
+            const dailyMenuTitle = (trans?.dailyMenuPriceTitle || t["menu_diario"] || '📅 Menú del Día').trim();
+            const dailyMenuHelp = (trans?.dailyMenuPriceHelp || '').trim();
+            const summaryItems = (trans.categorias || []).map(cat => {
+                const dishNames = (cat.platos || []).map(plato => plato?.nombre).filter(Boolean);
+                return dishNames.length ? `<li>${this.escapeHTML(cat.nombre)}: ${this.escapeHTML(dishNames.join(', '))}</li>` : '';
+            }).filter(Boolean).join('');
+            const safeMenuData = encodeURIComponent(JSON.stringify(this.buildDailyMenuCartItem(menu)));
+            this.dom.categoryTabs.innerHTML = '';
+            this.dom.categoryTabsContainer.style.display = 'none';
+            this.dom.content.innerHTML = `
+                <div class="category fade-in-slide">
+                    <div class="dish" style="border: 1px solid rgba(79, 70, 229, 0.16); box-shadow: 0 18px 40px -22px rgba(79, 70, 229, 0.35);">
+                        <div class="dish-details">
+                            <div class="dish-name">${this.escapeHTML(this.getMenuTitle(menu))}</div>
+                            ${dailyMenuTitle ? `<p class="dish-desc">${this.escapeHTML(dailyMenuTitle)}</p>` : ''}
+                            ${dailyMenuHelp ? `<p class="dish-desc" style="margin-top: 4px; font-size: 0.92em;">${this.escapeHTML(dailyMenuHelp)}</p>` : ''}
+                            ${summaryItems ? `<ul style="margin: 10px 0 0 16px; padding: 0; color: var(--text-muted-light); line-height: 1.5;">${summaryItems}</ul>` : ''}
+                            <div class="dish-bottom-row">
+                                <div class="dish-price">${menuPrice}</div>
+                                <button class="dish-add-btn" onclick="event.stopPropagation(); app.addDailyMenuToCart('${safeMenuData}', event.currentTarget);">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            this.initScrollAnimations();
+            window.scrollTo(0,0);
             return;
         }
 
