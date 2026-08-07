@@ -333,16 +333,6 @@
             padding: 7px 10px; font-size: 0.78em; border-radius: 999px; background: rgba(79, 70, 229, 0.08);
             color: var(--accent); border-color: rgba(79, 70, 229, 0.16);
         }
-        .wifi-footer {
-            margin: 0 16px 24px; padding-bottom: 8px;
-        }
-        .wifi-card {
-            border: 1px solid var(--border-light); background: var(--card-light); border-radius: 16px;
-            padding: 14px 16px; box-shadow: var(--shadow-subtle);
-        }
-        .wifi-title { font-weight: 800; color: var(--accent); margin-bottom: 6px; }
-        .wifi-line { font-size: 0.9em; color: var(--text-muted-light); margin-top: 2px; word-break: break-all; }
-
         .category-tabs-container { width: 100%; display: none; }
         .category-tabs {
             display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; position: sticky; top: 0; z-index: 20;
@@ -592,8 +582,6 @@
     <span id="cart-badge" class="cart-badge">0</span>
 </div>
 
-<div id="wifi-footer" class="wifi-footer" style="display:none;"></div>
-
 <div id="cart-modal" class="modal-overlay" onclick="app.closeCart(event)">
     <div class="modal-content">
         <button class="modal-close" onclick="app.closeCart(event, true)">✕</button>
@@ -835,7 +823,6 @@ const app = {
         filterPriceMinInput: document.getElementById('filter-price-min'),
         filterPriceMaxInput: document.getElementById('filter-price-max'),
         filterPriceReset: document.getElementById('filter-price-reset'),
-        wifiFooter: document.getElementById('wifi-footer'),
         sendOrderBtn: document.getElementById('send-order-btn')
     },
 
@@ -946,7 +933,6 @@ const app = {
         this.applyThemePreference();
         this.updateUITexts();
         this.renderFilterBar();
-        this.renderWifiBlock();
         this.updateSearchVisibility();
         this.initCookies();
         this.navigateHome();
@@ -1431,23 +1417,6 @@ const app = {
             this.dom.filterBarContainer.innerHTML = '';
             this.dom.filterBarContainer.style.display = 'none';
         }
-    },
-
-    renderWifiBlock() {
-        const rInfo = this.data?.restaurantInfo || {};
-        const hasWifi = Boolean(rInfo.wifiSsid || rInfo.wifiPassword);
-        if (!hasWifi) {
-            this.dom.wifiFooter.style.display = 'none';
-            return;
-        }
-        this.dom.wifiFooter.innerHTML = `
-            <div class="wifi-card">
-                <div class="wifi-title">📶 WiFi</div>
-                <div class="wifi-line"><strong>${this.escapeHTML(rInfo.wifiSsid || 'WiFi')}</strong></div>
-                <div class="wifi-line">${this.escapeHTML(rInfo.wifiPassword || '')}</div>
-            </div>
-        `;
-        this.dom.wifiFooter.style.display = 'block';
     },
 
     getQuickNoteLabel(note, lang) {
