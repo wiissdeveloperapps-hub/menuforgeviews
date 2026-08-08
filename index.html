@@ -103,7 +103,7 @@
             gap: 8px;
             width: 100%;
             flex-wrap: nowrap;
-            overflow-x: auto; /* Por si acaso en pantallas extremadamente pequeñas */
+            overflow-x: auto;
             -ms-overflow-style: none; scrollbar-width: none;
         }
         .action-bar::-webkit-scrollbar { display: none; }
@@ -117,71 +117,20 @@
         .action-icon-btn:hover { border-color: var(--accent); transform: translateY(-1px); color: var(--accent); }
         .action-icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-        .wifi-btn {
-            gap: 0; padding: 8px; width: 38px; height: 38px; min-width: 38px;
-        }
-        .wifi-btn.disabled {
-            opacity: 0.7;
-        }
-        .wifi-modal-content {
-            display: grid;
-            gap: 10px;
-            text-align: left;
-        }
-        .wifi-modal-row {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            padding: 10px 12px;
-            border-radius: 12px;
-            background: rgba(79, 70, 229, 0.06);
-            color: var(--text-light);
-        }
-        .wifi-modal-row strong {
-            font-size: 0.8em;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-        }
-        .wifi-modal-row span {
-            font-size: 0.95em;
-            font-weight: 700;
-            word-break: break-all;
-        }
-        .wifi-modal-empty {
-            padding: 14px 12px;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.04);
-            color: var(--text-muted-light);
-            font-weight: 700;
-            text-align: center;
-        }
+        .wifi-btn { gap: 0; padding: 8px; width: 38px; height: 38px; min-width: 38px; }
+        .wifi-btn.disabled { opacity: 0.7; }
+        .wifi-modal-content { display: grid; gap: 10px; text-align: left; }
+        .wifi-modal-row { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 12px; background: rgba(79, 70, 229, 0.06); color: var(--text-light); }
+        .wifi-modal-row strong { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+        .wifi-modal-row span { font-size: 0.95em; font-weight: 700; word-break: break-all; }
+        .wifi-modal-empty { padding: 14px 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.04); color: var(--text-muted-light); font-weight: 700; text-align: center; }
         
-        /* Estilo específico y llamativo para el PDF */
-        .action-icon-btn.pdf-btn { 
-            background: #ef4444; 
-            color: #ffffff; 
-            border: none; 
-            font-size: 0.9em;
-            padding: 8px 8px;
-        }
-        .action-icon-btn.pdf-btn:hover { 
-            background: #dc2626; 
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
+        .action-icon-btn.pdf-btn { background: #ef4444; color: #ffffff; border: none; font-size: 0.9em; padding: 8px 8px; }
+        .action-icon-btn.pdf-btn:hover { background: #dc2626; color: #ffffff; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
 
-        .lang-selector-wrap {
-            display: flex; align-items: center; gap: 4px; padding: 6px 4px;
-            border-radius: 12px; background: var(--card-light); border: 1px solid var(--border-light);
-            cursor: pointer; box-shadow: var(--shadow-subtle); flex-shrink: 0;
-        }
+        .lang-selector-wrap { display: flex; align-items: center; gap: 4px; padding: 6px 4px; border-radius: 12px; background: var(--card-light); border: 1px solid var(--border-light); cursor: pointer; box-shadow: var(--shadow-subtle); flex-shrink: 0; }
         .lang-flag { width: 18px; height: 13px; border-radius: 2px; object-fit: cover; }
-        #language-selector {
-            border: none; background: transparent; font-size: 0.78em; font-weight: 800;
-            color: var(--text-light); font-family: inherit; cursor: pointer; outline: none; appearance: none;
-            min-width: 2.2rem; padding: 0; line-height: 1;
-        }
+        #language-selector { border: none; background: transparent; font-size: 0.78em; font-weight: 800; color: var(--text-light); font-family: inherit; cursor: pointer; outline: none; appearance: none; min-width: 2.2rem; padding: 0; line-height: 1; }
 
         /* --- TOAST FRIENDLY NOTIFICATION --- */
         #friendly-toast {
@@ -213,121 +162,44 @@
             width: 32px; height: 32px; border-radius: 10px; cursor: pointer;
             display: inline-flex; align-items: center; justify-content: center; font-size: 0.95em;
         }
-        .filter-bar-container {
-            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
-        }
+        .filter-bar-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
         .filter-pill {
             display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
             border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.22);
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.92));
             color: var(--text-light); font-size: 0.8em; font-weight: 700; cursor: pointer;
-            box-shadow: 0 12px 24px -18px rgba(15, 23, 42, 0.35);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 24px -18px rgba(15, 23, 42, 0.35); backdrop-filter: blur(10px);
             transition: all 0.2s ease;
         }
         .filter-pill:hover { transform: translateY(-1px); box-shadow: 0 16px 26px -18px rgba(79, 70, 229, 0.35); }
-        .filter-pill.active {
-            background: var(--accent-gradient); color: white; border-color: transparent;
-            box-shadow: 0 16px 30px -16px rgba(79, 70, 229, 0.4);
-        }
-        .filter-pill .filter-pill-icon { font-size: 0.95em; }
-        .filter-pill:disabled {
-            opacity: 0.45; cursor: not-allowed; box-shadow: none;
-        }
+        .filter-pill.active { background: var(--accent-gradient); color: white; border-color: transparent; box-shadow: 0 16px 30px -16px rgba(79, 70, 229, 0.4); }
+        .filter-pill:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+        
         .filter-option-btn {
             width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
             border: 1px solid rgba(148, 163, 184, 0.24); background: rgba(255, 255, 255, 0.8); color: var(--text-light);
             padding: 12px 14px; border-radius: 16px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 12px 24px -16px rgba(15, 23, 42, 0.28);
-            transition: all 0.22s ease;
-            backdrop-filter: blur(8px);
+            box-shadow: 0 12px 24px -16px rgba(15, 23, 42, 0.28); transition: all 0.22s ease; backdrop-filter: blur(8px);
         }
-        .filter-option-btn:hover {
-            border-color: rgba(79, 70, 229, 0.35);
-            transform: translateY(-2px);
-            box-shadow: 0 16px 26px -16px rgba(79, 70, 229, 0.28);
-        }
-        .filter-option-btn.active {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.14), rgba(124, 58, 237, 0.12)); color: var(--accent); border-color: rgba(79, 70, 229, 0.28);
-            box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12), 0 14px 24px -16px rgba(79, 70, 229, 0.25);
-        }
-        .filter-option-toggle {
-            width: 36px; height: 20px; border-radius: 999px; background: rgba(15, 23, 42, 0.12); position: relative; flex-shrink: 0; transition: all 0.25s ease;
-        }
-        .filter-option-toggle::after {
-            content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: all 0.25s ease;
-        }
-        .filter-option-btn.active .filter-option-toggle {
-            background: rgba(79, 70, 229, 0.35);
-        }
-        .filter-option-btn.active .filter-option-toggle::after {
-            transform: translateX(16px);
-            background: var(--accent);
-        }
-        .filter-price-row {
-            display: flex; align-items: center; gap: 10px; margin-top: 0;
-        }
-        .filter-price-input {
-            flex: 1; border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 14px; padding: 10px 12px; background: rgba(255, 255, 255, 0.86); color: var(--text-light); font: inherit; min-width: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
-        }
-        .filter-price-reset {
-            border: 1px solid rgba(148, 163, 184, 0.24); background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 14px; padding: 10px 12px; font-weight: 700; cursor: pointer;
-        }
-        .filter-accordion {
-            display: grid; gap: 10px;
-        }
-        .filter-hero-card {
-            display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 18px;
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(124, 58, 237, 0.06));
-            border: 1px solid rgba(79, 70, 229, 0.16); margin-bottom: 4px;
-        }
-        .filter-hero-eyebrow {
-            font-size: 0.72em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
-        }
-        .filter-hero-title {
-            font-size: 0.96em; font-weight: 700; color: var(--text-light); margin-top: 3px;
-        }
-        .filter-hero-clear {
-            border: none; background: rgba(255,255,255,0.7); color: var(--accent); border-radius: 999px; padding: 8px 10px; font-weight: 700; cursor: pointer;
-        }
-        .filter-section-card {
-            border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 20px; background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.95)); box-shadow: 0 16px 34px -22px rgba(15, 23, 42, 0.24); padding: 14px 14px 12px; display: grid; gap: 8px;
-            overflow: hidden;
-        }
-        .filter-section-title {
-            font-size: 0.86em; font-weight: 800; color: var(--text-muted-light); text-transform: uppercase; letter-spacing: 0.12em;
-        }
-        .filter-count-badge {
-            min-width: 26px; padding: 2px 8px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent); font-size: 0.74em; font-weight: 800; text-align: center;
-        }
-        .filter-accordion-section {
-            border: 1px solid var(--border-light); border-radius: 16px; background: var(--card-light); box-shadow: var(--shadow-subtle); overflow: hidden;
-        }
-        .filter-accordion-section summary {
-            display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; font-weight: 800; color: var(--text-light); list-style: none;
-        }
-        .filter-accordion-section summary::-webkit-details-marker { display: none; }
-        .filter-accordion-section[open] summary { border-bottom: 1px solid var(--border-light); }
-        .filter-accordion-body { padding: 10px 10px 12px; display: grid; gap: 8px; }
-        .filter-rail {
-            display: flex; flex-wrap: wrap; gap: 8px; overflow: visible; padding-bottom: 0;
-        }
-        .filter-rail .filter-option-btn {
-            width: auto; flex: 1 1 calc(50% - 4px); min-width: 0;
-        }
-        .filter-rail .filter-option-btn { min-width: 0; }
-        .filter-option-btn:disabled {
-            opacity: 0.5; cursor: not-allowed; box-shadow: none;
-        }
-        .filter-option-btn.active {
-            background: rgba(79, 70, 229, 0.1);
-            border-color: rgba(79, 70, 229, 0.35);
-            color: var(--accent);
-            box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
-        }
-        .filter-option-label { display: flex; align-items: center; gap: 8px; }
-        .filter-option-icon { font-size: 1em; }
-        .filter-option-state { font-size: 0.8em; color: var(--text-muted-light); }
+        .filter-option-btn:hover { border-color: rgba(79, 70, 229, 0.35); transform: translateY(-2px); box-shadow: 0 16px 26px -16px rgba(79, 70, 229, 0.28); }
+        .filter-option-btn.active { background: linear-gradient(135deg, rgba(79, 70, 229, 0.14), rgba(124, 58, 237, 0.12)); color: var(--accent); border-color: rgba(79, 70, 229, 0.28); }
+        .filter-option-toggle { width: 36px; height: 20px; border-radius: 999px; background: rgba(15, 23, 42, 0.12); position: relative; flex-shrink: 0; transition: all 0.25s ease; }
+        .filter-option-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: all 0.25s ease; }
+        .filter-option-btn.active .filter-option-toggle { background: rgba(79, 70, 229, 0.35); }
+        .filter-option-btn.active .filter-option-toggle::after { transform: translateX(16px); background: var(--accent); }
+        
+        .filter-price-row { display: flex; align-items: center; gap: 10px; margin-top: 0; }
+        .filter-price-input { flex: 1; border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 14px; padding: 10px 12px; background: rgba(255, 255, 255, 0.86); color: var(--text-light); font: inherit; min-width: 0; }
+        .filter-price-reset { border: 1px solid rgba(148, 163, 184, 0.24); background: rgba(79, 70, 229, 0.08); color: var(--accent); border-radius: 14px; padding: 10px 12px; font-weight: 700; cursor: pointer; }
+        .filter-accordion { display: grid; gap: 10px; }
+        .filter-hero-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 18px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(124, 58, 237, 0.06)); border: 1px solid rgba(79, 70, 229, 0.16); margin-bottom: 4px; }
+        .filter-hero-eyebrow { font-size: 0.72em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+        .filter-hero-title { font-size: 0.96em; font-weight: 700; color: var(--text-light); margin-top: 3px; }
+        .filter-hero-clear { border: none; background: rgba(255,255,255,0.7); color: var(--accent); border-radius: 999px; padding: 8px 10px; font-weight: 700; cursor: pointer; }
+        .filter-section-card { border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 20px; background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.95)); box-shadow: 0 16px 34px -22px rgba(15, 23, 42, 0.24); padding: 14px 14px 12px; display: grid; gap: 8px; overflow: hidden; }
+        .filter-section-title { font-size: 0.86em; font-weight: 800; color: var(--text-muted-light); text-transform: uppercase; letter-spacing: 0.12em; }
+        .filter-count-badge { min-width: 26px; padding: 2px 8px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent); font-size: 0.74em; font-weight: 800; text-align: center; }
+        
         .search-controls-shell { display: none; }
         .search-controls-shell.visible { display: flex; flex-direction: column; gap: 10px; }
         .filter-modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.62); display: flex; align-items: flex-end; justify-content: center; z-index: 1100; padding: 16px; opacity: 0; visibility: hidden; transition: all 0.25s ease; }
@@ -349,40 +221,16 @@
         body.dark-mode .filter-hero-card { background: linear-gradient(135deg, rgba(79,70,229,0.18), rgba(124,58,237,0.14)); }
         body.dark-mode .filter-modal-content { background: linear-gradient(180deg, rgba(18,18,21,0.97), rgba(24,24,27,0.97)); }
 
-        @media (max-width: 640px) {
-            .filter-modal-content { padding: 16px 14px 18px; max-height: 82vh; }
-            .filter-accordion-section summary { padding: 10px 12px; font-size: 0.94em; }
-            .filter-accordion-body { padding: 8px 8px 10px; }
-            .filter-option-btn { padding: 10px 12px; font-size: 0.88em; }
-            .filter-price-row { flex-direction: column; align-items: stretch; }
-            .filter-price-reset { width: 100%; }
-        }
-        .quick-note-chip {
-            padding: 7px 10px; font-size: 0.78em; border-radius: 999px; background: rgba(79, 70, 229, 0.08);
-            color: var(--accent); border-color: rgba(79, 70, 229, 0.16);
-        }
+        .quick-note-chip { padding: 7px 10px; font-size: 0.78em; border-radius: 999px; background: rgba(79, 70, 229, 0.08); color: var(--accent); border-color: rgba(79, 70, 229, 0.16); }
         .category-tabs-container { width: 100%; display: none; }
-        .category-tabs {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; position: sticky; top: 0; z-index: 20;
-            -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth;
-        }
+        .category-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; position: sticky; top: 0; z-index: 20; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
         .category-tabs::-webkit-scrollbar { display: none; }
-        .category-tab {
-            padding: 6px 14px; border-radius: 12px; background-color: var(--card-light);
-            color: var(--text-muted-light); font-weight: 600; font-size: 0.85em; cursor: pointer;
-            white-space: nowrap; transition: all 0.3s ease; border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle);
-        }
+        .category-tab { padding: 6px 14px; border-radius: 12px; background-color: var(--card-light); color: var(--text-muted-light); font-weight: 600; font-size: 0.85em; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle); }
         .category-tab:hover { color: var(--accent); border-color: rgba(79, 70, 229, 0.3); }
         .category-tab.active { background: var(--accent-gradient); color: #ffffff; border-color: transparent; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transform: translateY(-1px); }
         .category-tab .tab-count { margin-left: 6px; font-size: 0.72em; padding: 2px 6px; border-radius: 999px; background: rgba(255,255,255,0.18); color: inherit; }
-        .category { margin-bottom: 40px; scroll-margin-top: 110px; }
 
-        /* --- CONTENIDO BENTO GRID --- */
-        .menu-card, .dish {
-            background-color: var(--card-light); border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-subtle); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
-            position: relative; overflow: hidden;
-        }
+        .menu-card, .dish { background-color: var(--card-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease; position: relative; overflow: hidden; }
         .menu-card:hover, .dish:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); border-color: rgba(79, 70, 229, 0.35); }
 
         #main-content { padding: 24px 16px; max-width: 850px; margin: 0 auto; min-height: 70vh; padding-bottom: 90px; }
@@ -395,11 +243,12 @@
         .menu-card:hover .menu-card-img { transform: scale(1.08); }
         .menu-card-title { color: #ffffff; font-size: 1.6em; font-weight: 800; margin: 0; letter-spacing: -0.02em; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
 
-        .category { margin-bottom: 40px; }
+        .category { margin-bottom: 40px; scroll-margin-top: 110px; }
         .category-title { font-size: 1.5em; font-weight: 800; color: var(--text-light); display: inline-block; position: relative; margin-bottom: 20px; letter-spacing: -0.02em; }
         .category-title::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 40px; height: 3px; background: var(--accent-gradient); border-radius: 4px; }
 
         .dish { display: flex; gap: 16px; border-radius: var(--radius-main); margin-bottom: 16px; cursor: pointer; padding: 0; }
+        .dish.selected-daily-dish { border: 2px solid var(--accent); background: rgba(79, 70, 229, 0.04); }
         .dish-img { width: 125px; height: 125px; object-fit: cover; flex-shrink: 0; border-radius: var(--radius-main) 0 0 var(--radius-main); }
         .dish-details { padding: 16px 16px 16px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
         .dish:not(:has(.dish-img)) .dish-details { padding-left: 18px; }
@@ -409,31 +258,16 @@
         .dish-price { font-size: 1.3em; font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; }
         
         .daily-menu-shell { display: grid; gap: 14px; }
-        .daily-menu-card {
-            display: flex; gap: 16px; border-radius: var(--radius-main); overflow: hidden; border: 1px solid var(--border-light);
-            background: var(--card-light); box-shadow: var(--shadow-card); position: relative;
-        }
-        .daily-menu-card img {
-            width: 150px; height: 100%; min-height: 180px; object-fit: cover; flex-shrink: 0; display: block;
-        }
-        .daily-menu-card-body {
-            flex: 1; padding: 18px 18px 18px 0; display: flex; flex-direction: column; justify-content: center; gap: 8px;
-        }
-        .daily-menu-badge {
-            display: inline-flex; align-self: flex-start; padding: 6px 10px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent);
-            font-size: 0.74em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-        }
+        .daily-menu-card { display: flex; gap: 16px; border-radius: var(--radius-main); overflow: hidden; border: 1px solid var(--border-light); background: var(--card-light); box-shadow: var(--shadow-card); position: relative; }
+        .daily-menu-card img { width: 150px; height: 100%; min-height: 180px; object-fit: cover; flex-shrink: 0; display: block; }
+        .daily-menu-card-body { flex: 1; padding: 18px 18px 18px 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+        .daily-menu-badge { display: inline-flex; align-self: flex-start; padding: 6px 10px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent); font-size: 0.74em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
         .daily-menu-title { margin: 0; color: var(--text-light); font-size: 1.18em; font-weight: 800; letter-spacing: -0.02em; }
         .daily-menu-copy { margin: 0; color: var(--text-muted-light); font-size: 0.92rem; line-height: 1.45; }
         .daily-menu-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
-        .daily-menu-price-pill {
-            display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: rgba(79, 70, 229, 0.08); color: var(--accent);
-            font-weight: 800; font-size: 1rem;
-        }
-        .daily-menu-action {
-            border: none; background: var(--accent-gradient); color: #fff; border-radius: 999px; padding: 9px 14px; font-weight: 800; cursor: pointer;
-            box-shadow: 0 12px 24px -14px rgba(79, 70, 229, 0.45);
-        }
+        .daily-menu-price-pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: rgba(79, 70, 229, 0.08); color: var(--accent); font-weight: 800; font-size: 1rem; }
+        .daily-menu-action { border: none; background: var(--accent-gradient); color: #fff; border-radius: 999px; padding: 9px 14px; font-weight: 800; cursor: pointer; box-shadow: 0 12px 24px -14px rgba(79, 70, 229, 0.45); }
+        
         .dish-add-btn { background: var(--accent-gradient); color: white; border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); }
         .dish-add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.6); }
         .dish-add-btn.bump { animation: buttonPop 0.35s ease; }
@@ -446,13 +280,7 @@
 
         .fade-in-slide { opacity: 0; transform: translateY(15px); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .fade-in-slide.visible { opacity: 1; transform: translateY(0); }
-        .skeleton-stack { display: grid; gap: 14px; }
-        .skeleton-card { padding: 16px; border-radius: 18px; background: var(--card-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle); animation: skeletonPulse 1.2s ease-in-out infinite; }
-        .skeleton-line { height: 12px; border-radius: 999px; background: linear-gradient(90deg, rgba(148,163,184,0.24) 0%, rgba(148,163,184,0.45) 50%, rgba(148,163,184,0.24) 100%); margin-bottom: 10px; }
-        .skeleton-line.wide { width: 72%; height: 14px; }
-        .skeleton-line.short { width: 42%; }
-        .skeleton-line:last-child { margin-bottom: 0; }
-        @keyframes skeletonPulse { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+        
         @keyframes buttonPop { 0% { transform: scale(1); } 50% { transform: scale(1.13); } 100% { transform: scale(1); } }
 
         /* --- MODALES Y CARRITO --- */
@@ -478,9 +306,11 @@
         .cart-badge.visible { transform: scale(1); }
 
         #cart-items-container { max-height: 40vh; overflow-y: auto; margin: 14px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 10px 0; }
-        .cart-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; border-bottom: 1px solid var(--border-light); }
+        .cart-item { display: flex; flex-direction: column; padding: 10px 4px; border-bottom: 1px solid var(--border-light); }
         .cart-item:last-child { border-bottom: none; }
+        .cart-item-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
         .cart-item-name { font-weight: 600; flex-grow: 1; margin-right: 10px; font-size: 0.95em; }
+        .cart-item-details-list { font-size: 0.8em; color: var(--text-muted-light); margin-top: 4px; padding-left: 10px; }
         .cart-item-controls { display: flex; align-items: center; gap: 8px; user-select: none; }
         .cart-item-quantity { font-weight: 700; min-width: 20px; text-align: center; }
         .cart-item-price { font-weight: 700; color: var(--accent); min-width: 65px; text-align: right; }
@@ -494,52 +324,18 @@
         .btn-cookie { background: var(--accent-gradient); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transition: transform 0.2s; }
         .btn-cookie:hover { transform: scale(1.03); }
 
-        /* --- PDF PRINT --- */
         #print-container { display: none; }
-
-        @media print {
-            body * { visibility: hidden; }
-            body { background: white !important; }
-            #print-container, #print-container * { visibility: visible; }
-            #print-container { position: absolute; left: 0; top: 0; width: 100%; display: block !important; color: black; }
-            header, #main-content, .modal-overlay, #cookie-banner, .cart-fab, #friendly-toast { display: none !important; }
-            
-            .pdf-page-section { position: relative; width: 100%; min-height: 90vh; padding: 30px 40px; box-sizing: border-box; }
-            .pdf-page-break { page-break-before: always; break-before: page; }
-            .pdf-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; max-width: 450px; opacity: 0.04; filter: grayscale(100%); z-index: -1; pointer-events: none; }
-            
-            .pdf-header-top { text-align: center; margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px solid #000; padding-bottom: 15px; }
-            .pdf-header-top img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #000; }
-            .pdf-header-top h1 { margin: 0; font-size: 26px; text-transform: uppercase; letter-spacing: 2px; color: #000; }
-            .pdf-header-top p { margin: 5px 0 0 0; font-size: 13px; color: #444; }
-            
-            .pdf-menu-title-box { text-align: center; margin: 30px 0 20px; }
-            .pdf-menu-title-box span { display: inline-block; padding: 6px 20px; border: 2px solid #4f46e5; color: #4f46e5; font-size: 18px; font-weight: 800; text-transform: uppercase; border-radius: 8px; }
-            
-            .pdf-cat-title { font-size: 16px; font-weight: bold; margin: 25px 0 10px 0; text-transform: uppercase; color: #222; }
-            
-            .pdf-dish-row { display: flex; align-items: flex-end; margin-bottom: 14px; page-break-inside: avoid; }
-            .pdf-dish-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; margin-right: 12px; flex-shrink: 0; border: 1px solid #ddd; }
-            .pdf-dish-info { flex-shrink: 0; max-width: 65%; }
-            .pdf-dish-name { font-weight: bold; font-size: 14px; margin: 0; color: #000; }
-            .pdf-dish-desc { font-size: 11px; color: #555; margin: 2px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-            
-            .pdf-dish-dots { flex-grow: 1; border-bottom: 2px dotted #ccc; margin: 0 10px; position: relative; top: -6px; }
-            .pdf-dish-price { font-weight: bold; font-size: 14px; flex-shrink: 0; color: #000; }
-        }
     </style>
 </head>
 
 <body>
 
-<!-- TOAST FRIENDLY TRADUCIDO -->
 <div id="friendly-toast">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     <span id="toast-text"></span>
 </div>
 
 <header id="header-container" style="display:none;">
-    <!-- FILA 1: Logo, Nombre Libre y Botón Tema -->
     <div class="header-top-row">
         <button id="btn-back" onclick="app.goBack()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -549,7 +345,6 @@
         <button id="btn-theme" class="btn-theme-header" onclick="app.toggleTheme()">🌙</button>
     </div>
 
-    <!-- FILA 2: Barra de acciones -->
     <div class="action-bar">
         <div class="lang-selector-wrap">
             <img id="current-flag" class="lang-flag" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
@@ -565,7 +360,6 @@
         <div id="contact-icons-container" style="display:contents;"></div>
     </div>
 
-    <!-- FILA 3: Buscador y Pestañas -->
     <div id="search-controls-shell" class="search-controls-shell">
         <div class="search-and-tabs">
             <div class="search-container">
@@ -661,95 +455,86 @@
 </div>
 
 <script>
-// --- DICCIONARIOS ÍNTEGROS CON MENSAJES FRIENDLY TRADUCIDOS Y NUEVAS CLAVES ---
 const I18N = {
     es: { 
         search: "Buscar platos...", back: "Volver", results: "Resultados de búsqueda", emptyMenu: "Esta carta está vacía.", emptySearch: "No se encontraron resultados para", cookieMsg: "Utilizamos cookies para mejorar su experiencia.", cookieBtn: "Aceptar", cartTitle: "Tu Pedido", cartTotal: "Total:", cartTableLabel: "Selecciona tu mesa:", cartEmpty: "Tu pedido está vacío.", tableSelectDefault: "Seleccionar", noDescription: "Sin descripción.", defaultRestaurant: "Restaurante", defaultMenu: "Carta", invalidQR: "Escanea un código QR válido para ver el menú.", errorTitle: "Error", fetchError: "El menú no está disponible o no se encuentra.", notesLabel: "Observaciones", notesPlaceholder: "Añade detalles para la cocina", filterButtonTitle: "Filtrar platos", quickNotePocoHecho: "Poco hecho", quickNoteSinSal: "Sin sal", quickNoteSalsaAparte: "Salsa aparte", quickNoteSinPicante: "Sin picante", quickNoteSinGluten: "Sin gluten", quickNoteSinCebolla: "Sin cebolla", quickNoteSinTomate: "Sin tomate", quickNoteSinAceite: "Sin aceite", quickNoteSinQueso: "Sin queso", quickNoteSinNueces: "Sin nueces", quickNoteSinAlergenicos: "Sin alérgenicos", quickNoteMuyHecho: "Muy hecho", quickNoteConSalsa: "Con salsa", quickNoteExtraPicante: "Extra picante", quickNoteSinCilantro: "Sin cilantro", quickNoteSinPepinillos: "Sin pepinillos", filterCategoriesTitle: "Categorías", filterTagsTitle: "Etiquetas y alergias", filterPriceTitle: "Rango de precio", filterMinPrice: "Mínimo", filterMaxPrice: "Máximo", filterClear: "Limpiar", filterActive: "Activo", filterAvailable: "Disponible", filterUnavailable: "No disponible",
         "menu_diario": "📅 Menú del Día", "menu_especial": "⭐ Cartas Especiales",
-        "diario::primeros": "🍝 Primeros Platos", "diario::segundos": "🍖 Segundos Platos", "diario::postres": "🍰 Postres Caseros", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés e Infusiones",
-        "especial::desayuno": "☕ Desayunos", "especial::comida": "🍽️ Comidas", "especial::merienda": "🥞 Meriendas", "especial::cena": "🌙 Cenas",
         toastTel: "📞 Llamando al teléfono:", toastEmail: "✉️ Abriendo correo para:", toastDir: "📍 Abriendo mapa en:",
         btnPhone: "Teléfono", btnEmail: "Email", btnMap: "Dirección",
         loading: "Cargando...", preparing: "Preparando experiencia gastronómica...",
         langSelect: "Selector de idioma",
-        wifiTitle: "WiFi", wifiUnavailable: "No hay WiFi disponible", wifiSsidLabel: "Nombre", wifiPasswordLabel: "Contraseña"
+        wifiTitle: "WiFi", wifiUnavailable: "No hay WiFi disponible", wifiSsidLabel: "Nombre", wifiPasswordLabel: "Contraseña",
+        selectDailyAlert: "Por favor, selecciona un plato de la categoría: {category}"
     },
     en: { 
         search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", notesLabel: "Notes", notesPlaceholder: "Add details for the kitchen", filterButtonTitle: "Filter dishes", quickNotePocoHecho: "Lightly cooked", quickNoteSinSal: "No salt", quickNoteSalsaAparte: "Sauce on the side", quickNoteSinPicante: "No spice", quickNoteSinGluten: "Gluten-free", quickNoteSinCebolla: "No onion", quickNoteSinTomate: "No tomato", quickNoteSinAceite: "No oil", quickNoteSinQueso: "No cheese", quickNoteSinNueces: "No nuts", quickNoteSinAlergenicos: "No allergens", quickNoteMuyHecho: "Well done", quickNoteConSalsa: "With sauce", quickNoteExtraPicante: "Extra spicy", quickNoteSinCilantro: "No cilantro", quickNoteSinPepinillos: "No pickles", filterCategoriesTitle: "Categories", filterTagsTitle: "Tags and allergens", filterPriceTitle: "Price range", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Clear", filterActive: "Active", filterAvailable: "Available", filterUnavailable: "Unavailable",
         "menu_diario": "📅 Daily Menu", "menu_especial": "⭐ Special Menus",
-        "diario::primeros": "🍝 First Courses", "diario::segundos": "🍖 Main Courses", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Drinks", "diario::cafes": "☕ Coffees",
-        "especial::desayuno": "☕ Breakfasts", "especial::comida": "🍽️ Lunches", "especial::merienda": "🥞 Afternoon Snacks", "especial::cena": "🌙 Dinners",
         toastTel: "📞 Calling phone number:", toastEmail: "✉️ Opening email to:", toastDir: "📍 Opening map at:",
         btnPhone: "Phone", btnEmail: "Email", btnMap: "Address",
         loading: "Loading...", preparing: "Preparing gastronomic experience...",
         langSelect: "Language selector",
-        wifiTitle: "WiFi", wifiUnavailable: "No WiFi available", wifiSsidLabel: "Name", wifiPasswordLabel: "Password"
+        wifiTitle: "WiFi", wifiUnavailable: "No WiFi available", wifiSsidLabel: "Name", wifiPasswordLabel: "Password",
+        selectDailyAlert: "Please select a dish from category: {category}"
     },
     fr: { 
         search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", notesLabel: "Observations", notesPlaceholder: "Ajoutez des détails pour la cuisine", filterButtonTitle: "Filtrer les plats", quickNotePocoHecho: "Peu cuit", quickNoteSinSal: "Sans sel", quickNoteSalsaAparte: "Sauce séparée", quickNoteSinPicante: "Sans épice", quickNoteSinGluten: "Sans gluten", quickNoteSinCebolla: "Sans oignon", quickNoteSinTomate: "Sans tomate", quickNoteSinAceite: "Sans huile", quickNoteSinQueso: "Sans fromage", quickNoteSinNueces: "Sans noix", quickNoteSinAlergenicos: "Sans allergènes", quickNoteMuyHecho: "Bien cuit", quickNoteConSalsa: "Avec sauce", quickNoteExtraPicante: "Très épicé", quickNoteSinCilantro: "Sans coriandre", quickNoteSinPepinillos: "Sans cornichons", filterCategoriesTitle: "Catégories", filterTagsTitle: "Étiquettes et allergènes", filterPriceTitle: "Fourchette de prix", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Effacer", filterActive: "Actif", filterAvailable: "Disponible", filterUnavailable: "Indisponible",
         "menu_diario": "📅 Menu du Jour", "menu_especial": "⭐ Menus Spéciaux",
-        "diario::primeros": "🍝 Entrées", "diario::segundos": "🍖 Plats", "diario::postres": "🍰 Desserts", "diario::bebidas": "🍷 Boissons", "diario::cafes": "☕ Cafés",
-        "especial::desayuno": "☕ Petits Déjeuners", "especial::comida": "🍽️ Déjeuners", "especial::merienda": "🥞 Goûters", "especial::cena": "🌙 Dîners",
         toastTel: "📞 Appel au numéro:", toastEmail: "✉️ Envoi d'un e-mail à:", toastDir: "📍 Ouverture de la carte sur:",
         btnPhone: "Téléphone", btnEmail: "E-mail", btnMap: "Adresse",
         loading: "Chargement...", preparing: "Préparation de l'expérience gastronomique...",
         langSelect: "Sélecteur de langue",
-        wifiTitle: "WiFi", wifiUnavailable: "Aucun WiFi disponible", wifiSsidLabel: "Nom", wifiPasswordLabel: "Mot de passe"
+        wifiTitle: "WiFi", wifiUnavailable: "Aucun WiFi disponible", wifiSsidLabel: "Nom", wifiPasswordLabel: "Mot de passe",
+        selectDailyAlert: "Veuillez sélectionner un plat de la catégorie : {category}"
     },
     it: { 
         search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", notesLabel: "Osservazioni", notesPlaceholder: "Aggiungi dettagli per la cucina", filterButtonTitle: "Filtra i piatti", quickNotePocoHecho: "Poco cotto", quickNoteSinSal: "Senza sale", quickNoteSalsaAparte: "Salsa a parte", quickNoteSinPicante: "Senza piccante", quickNoteSinGluten: "Senza glutine", quickNoteSinCebolla: "Senza cipolla", quickNoteSinTomate: "Senza pomodoro", quickNoteSinAceite: "Senza olio", quickNoteSinQueso: "Senza formaggio", quickNoteSinNueces: "Senza noci", quickNoteSinAlergenicos: "Senza allergeni", quickNoteMuyHecho: "Ben cotto", quickNoteConSalsa: "Con salsa", quickNoteExtraPicante: "Molto piccante", quickNoteSinCilantro: "Senza coriandolo", quickNoteSinPepinillos: "Senza sottaceti", filterCategoriesTitle: "Categorie", filterTagsTitle: "Etichette e allergeni", filterPriceTitle: "Intervallo di prezzo", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Cancella", filterActive: "Attivo", filterAvailable: "Disponibile", filterUnavailable: "Non disponibile",
         "menu_diario": "📅 Menu del Giorno", "menu_especial": "⭐ Menu Speciali",
-        "diario::primeros": "🍝 Primi Piatti", "diario::segundos": "🍖 Secondi Piatti", "diario::postres": "🍰 Dolci", "diario::bebidas": "🍷 Bevande", "diario::cafes": "☕ Caffè",
-        "especial::desayuno": "☕ Colazioni", "especial::comida": "🍽️ Pranzi", "especial::merienda": "🥞 Merende", "especial::cena": "🌙 Cene",
         toastTel: "📞 Chiamata al numero:", toastEmail: "✉️ Apertura email per:", toastDir: "📍 Apertura mappa su:",
         btnPhone: "Telefono", btnEmail: "Email", btnMap: "Indirizzo",
         loading: "Caricamento...", preparing: "Preparando l'esperienza gastronomica...",
         langSelect: "Selettore di lingua",
-        wifiTitle: "WiFi", wifiUnavailable: "Nessun WiFi disponibile", wifiSsidLabel: "Nome", wifiPasswordLabel: "Password"
+        wifiTitle: "WiFi", wifiUnavailable: "Nessun WiFi disponibile", wifiSsidLabel: "Nome", wifiPasswordLabel: "Password",
+        selectDailyAlert: "Seleziona un piatto dalla categoria: {category}"
     },
     de: { 
         search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", notesLabel: "Anmerkungen", notesPlaceholder: "Fügen Sie Details für die Küche hinzu", filterButtonTitle: "Gerichte filtern", quickNotePocoHecho: "Leicht gegart", quickNoteSinSal: "Ohne Salz", quickNoteSalsaAparte: "Soße separat", quickNoteSinPicante: "Nicht scharf", quickNoteSinGluten: "Glutenfrei", quickNoteSinCebolla: "Ohne Zwiebeln", quickNoteSinTomate: "Ohne Tomaten", quickNoteSinAceite: "Ohne Öl", quickNoteSinQueso: "Ohne Käse", quickNoteSinNueces: "Ohne Nüsse", quickNoteSinAlergenicos: "Ohne Allergene", quickNoteMuyHecho: "Gut durchgebraten", quickNoteConSalsa: "Mit Sauce", quickNoteExtraPicante: "Extra scharf", quickNoteSinCilantro: "Ohne Koriander", quickNoteSinPepinillos: "Ohne Gewürzgurken", filterCategoriesTitle: "Kategorien", filterTagsTitle: "Schilder und Allergene", filterPriceTitle: "Preisspanne", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Löschen", filterActive: "Aktiv", filterAvailable: "Verfügbar", filterUnavailable: "Nicht verfügbar",
         "menu_diario": "📅 Tagesmenü", "menu_especial": "⭐ Spezialkarten",
-        "diario::primeros": "🍝 Vorspeisen", "diario::segundos": "🍖 Hauptgerichte", "diario::postres": "🍰 Nachspeisen", "diario::bebidas": "🍷 Getränke", "diario::cafes": "☕ Kaffee",
-        "especial::desayuno": "☕ Frühstück", "especial::comida": "🍽️ Mittagessen", "especial::merienda": "🥞 Snacks", "especial::cena": "🌙 Abendessen",
         toastTel: "📞 Anruf unter:", toastEmail: "✉️ E-Mail öffnen an:", toastDir: "📍 Karte öffnen bei:",
         btnPhone: "Telefon", btnEmail: "E-Mail", btnMap: "Adresse",
         loading: "Wird geladen...", preparing: "Vorbereitung des gastronomischen Erlebnisses...",
         langSelect: "Sprachauswahl",
-        wifiTitle: "WiFi", wifiUnavailable: "Kein WiFi verfügbar", wifiSsidLabel: "Name", wifiPasswordLabel: "Passwort"
+        wifiTitle: "WiFi", wifiUnavailable: "Kein WiFi verfügbar", wifiSsidLabel: "Name", wifiPasswordLabel: "Passwort",
+        selectDailyAlert: "Bitte wählen Sie ein Gericht aus der Kategorie: {category}"
     },
     pt: { 
         search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", notesLabel: "Observações", notesPlaceholder: "Adicione detalhes para a cozinha", filterButtonTitle: "Filtrar pratos", quickNotePocoHecho: "Pouco cozido", quickNoteSinSal: "Sem sal", quickNoteSalsaAparte: "Molho à parte", quickNoteSinPicante: "Sem picante", quickNoteSinGluten: "Sem glúten", quickNoteSinCebolla: "Sem cebola", quickNoteSinTomate: "Sem tomate", quickNoteSinAceite: "Sem óleo", quickNoteSinQueso: "Sem queijo", quickNoteSinNueces: "Sem nozes", quickNoteSinAlergenicos: "Sem alérgenos", quickNoteMuyHecho: "Bem cozido", quickNoteConSalsa: "Com molho", quickNoteExtraPicante: "Extra picante", quickNoteSinCilantro: "Sem coentro", quickNoteSinPepinillos: "Sem picles", filterCategoriesTitle: "Categorias", filterTagsTitle: "Etiquetas e alergénios", filterPriceTitle: "Faixa de preço", filterMinPrice: "Mín", filterMaxPrice: "Máx", filterClear: "Limpar", filterActive: "Ativo", filterAvailable: "Disponível", filterUnavailable: "Indisponível",
         "menu_diario": "📅 Menu do Dia", "menu_especial": "⭐ Menus Especiais",
-        "diario::primeros": "🍝 Primeiros Pratos", "diario::segundos": "🍖 Pratos Principais", "diario::postres": "🍰 Sobremesas", "diario::bebidas": "🍷 Bebidas", "diario::cafes": "☕ Cafés",
-        "especial::desayuno": "☕ Cafés da Manhã", "especial::comida": "🍽️ Almoços", "especial::merienda": "🥞 Lanches", "especial::cena": "🌙 Jantares",
         toastTel: "📞 Ligando para:", toastEmail: "✉️ Abrindo e-mail para:", toastDir: "📍 Abrindo mapa em:",
         btnPhone: "Telefone", btnEmail: "E-mail", btnMap: "Endereço",
         loading: "Carregando...", preparing: "Preparando a experiência gastronômica...",
         langSelect: "Seletor de idioma",
-        wifiTitle: "WiFi", wifiUnavailable: "Nenhum WiFi disponível", wifiSsidLabel: "Nome", wifiPasswordLabel: "Senha"
+        wifiTitle: "WiFi", wifiUnavailable: "Nenhum WiFi disponível", wifiSsidLabel: "Nome", wifiPasswordLabel: "Senha",
+        selectDailyAlert: "Por favor, selecione um prato da categoria: {category}"
     },
     cn: { 
         search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", notesLabel: "备注", notesPlaceholder: "为厨房添加详细说明", filterButtonTitle: "筛选菜品", quickNotePocoHecho: "稍微熟一点", quickNoteSinSal: "少盐", quickNoteSalsaAparte: "酱汁分开", quickNoteSinPicante: "不辣", quickNoteSinGluten: "无麸质", quickNoteSinCebolla: "不加洋葱", quickNoteSinTomate: "不加番茄", quickNoteSinAceite: "不加油", quickNoteSinQueso: "不加奶酪", quickNoteSinNueces: "无坚果", quickNoteSinAlergenicos: "无过敏原", quickNoteMuyHecho: "做得很熟", quickNoteConSalsa: "加酱", quickNoteExtraPicante: "特别辣", quickNoteSinCilantro: "不加香菜", quickNoteSinPepinillos: "不加泡菜", filterCategoriesTitle: "类别", filterTagsTitle: "标签和过敏原", filterPriceTitle: "价格范围", filterMinPrice: "最低", filterMaxPrice: "最高", filterClear: "清除", filterActive: "已选", filterAvailable: "可用", filterUnavailable: "不可用",
         "menu_diario": "📅 每日精选套餐", "menu_especial": "⭐ 特色菜单",
-        "diario::primeros": "🍝 头盘", "diario::segundos": "🍖 主菜", "diario::postres": "🍰 甜点", "diario::bebidas": "🍷 酒水饮料", "diario::cafes": "☕ 咖啡",
-        "especial::desayuno": "☕ 早餐", "especial::comida": "🍽️ 午餐", "especial::merienda": "🥞 下午茶", "especial::cena": "🌙 晚餐",
         toastTel: "📞 正在呼叫:", toastEmail: "✉️ 正在发送邮件至:", toastDir: "📍 正在地图中打开:",
         btnPhone: "电话", btnEmail: "电子邮件", btnMap: "地址",
         loading: "加载中...", preparing: "正在准备美食体验...",
         langSelect: "语言选择器",
-        wifiTitle: "WiFi", wifiUnavailable: "暂无可用 WiFi", wifiSsidLabel: "名称", wifiPasswordLabel: "密码"
+        wifiTitle: "WiFi", wifiUnavailable: "暂无可用 WiFi", wifiSsidLabel: "名称", wifiPasswordLabel: "密码",
+        selectDailyAlert: "请从以下类别中选择一道菜：{category}"
     },
     sa: { 
         search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", notesLabel: "ملاحظات", notesPlaceholder: "أضف تفاصيل للمطبخ", filterButtonTitle: "تصفية الأطباق", quickNotePocoHecho: "مطبوخ قليلاً", quickNoteSinSal: "بدون ملح", quickNoteSalsaAparte: "صلصة على حدة", quickNoteSinPicante: "بدون فلفل", quickNoteSinGluten: "خالي من الغلوتين", quickNoteSinCebolla: "بدون بصل", quickNoteSinTomate: "بدون طماطم", quickNoteSinAceite: "بدون زيت", quickNoteSinQueso: "بدون جبن", quickNoteSinNueces: "بدون مكسرات", quickNoteSinAlergenicos: "بدون مسببات", quickNoteMuyHecho: "مُشوي جيدًا", quickNoteConSalsa: "مع الصلصة", quickNoteExtraPicante: "حار جدًا", quickNoteSinCilantro: "بدون كزبرة", quickNoteSinPepinillos: "بدون مخللات", filterCategoriesTitle: "الفئات", filterTagsTitle: "الوسوم والمسببات", filterPriceTitle: "نطاق السعر", filterMinPrice: "الحد الأدنى", filterMaxPrice: "الحد الأقصى", filterClear: "مسح", filterActive: "نشط", filterAvailable: "متاح", filterUnavailable: "غير متاح",
         "menu_diario": "📅 قائمة اليوم", "menu_especial": "⭐ القوائم الخاصة",
-        "diario::primeros": "🍝 المقبلات", "diario::segundos": "🍖 الأطباق الرئيسية", "diario::postres": "🍰 الحلويات", "diario::bebidas": "🍷 المشروبات", "diario::cafes": "☕ القهوة",
-        "especial::desayuno": "☕ الإفطار", "especial::comida": "🍽️ الغداء", "especial::merienda": "🥞 الوجبات الخفيفة", "especial::cena": "🌙 العشاء",
         toastTel: "📞 جاري الاتصال بـ:", toastEmail: "✉️ فتح البريد الإلكتروني إلى:", toastDir: "📍 فتح الخريطة على:",
         btnPhone: "هاتف", btnEmail: "بريد إلكتروني", btnMap: "عنوان",
         loading: "جارٍ التحميل...", preparing: "تجهيز تجربة تذوق الطعام...",
         langSelect: "محدد اللغة",
-        wifiTitle: "واي فاي", wifiUnavailable: "لا يوجد واي فاي متاح", wifiSsidLabel: "الاسم", wifiPasswordLabel: "كلمة المرور"
+        wifiTitle: "واي فاي", wifiUnavailable: "لا يوجد واي فاي متاح", wifiSsidLabel: "الاسم", wifiPasswordLabel: "كلمة المرور",
+        selectDailyAlert: "يرجى اختيار طبق من الفئة: {category}"
     }
 };
 
@@ -823,6 +608,7 @@ const app = {
     filterOptions: [],
     orderNotes: '',
     selectedQuickNotes: [],
+    dailySelections: {}, // Almacena selecciones por menú diario: { [menuId]: { [catIndex]: dishIndex } }
     toastTimer: null,
 
     dom: {
@@ -839,7 +625,6 @@ const app = {
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         wifiActionBtn: document.getElementById('wifi-action-btn'),
-        wifiActionLabel: document.getElementById('wifi-action-label'),
         wifiModal: document.getElementById('wifi-modal'),
         wifiModalTitle: document.getElementById('wifi-modal-title'),
         wifiModalContent: document.getElementById('wifi-modal-content'),
@@ -894,12 +679,10 @@ const app = {
         const loaderInit = document.getElementById('loader');
         if (loaderInit) loaderInit.textContent = tInit.preparing;
 
-        const t = I18N[this.currentLang] || I18N['es'];
-        
         try {
             const hash = window.location.hash.substring(1);
             this.sourceHash = hash;
-            if (!hash) throw new Error(t.invalidQR);
+            if (!hash) throw new Error(tInit.invalidQR);
 
             let jsonData;
             if (hash.startsWith('pako:')) {
@@ -1180,21 +963,6 @@ const app = {
         this.closeFilterModal({ target: this.dom.filterModal }, true);
     },
 
-    applyPriceFilter() {
-        const rawMin = this.dom.filterPriceMinInput?.value;
-        const rawMax = this.dom.filterPriceMaxInput?.value;
-        const parsedMin = rawMin === '' ? null : Number(rawMin);
-        const parsedMax = rawMax === '' ? null : Number(rawMax);
-        this.minPrice = Number.isFinite(parsedMin) && parsedMin >= 0 ? parsedMin : null;
-        this.maxPrice = Number.isFinite(parsedMax) && parsedMax >= 0 ? parsedMax : null;
-        if (this.minPrice != null && this.maxPrice != null && this.minPrice > this.maxPrice) {
-            this.maxPrice = this.minPrice;
-        }
-        this.refreshCurrentView();
-        this.renderFilterBar();
-        this.renderFilterModal();
-    },
-
     resetPriceFilter() {
         this.minPrice = null;
         this.maxPrice = null;
@@ -1209,39 +977,12 @@ const app = {
         if (!value) return '';
         const normalized = String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         const map = {
-            'sin gluten': 'sin-gluten',
-            'gluten': 'sin-gluten',
-            'gluten free': 'sin-gluten',
-            'sin lactosa': 'sin-lactosa',
-            'lactosa': 'sin-lactosa',
-            'lacteos': 'sin-lactosa',
-            'dairy': 'sin-lactosa',
-            'milk': 'sin-lactosa',
-            'vegano': 'vegano',
-            'vegan': 'vegano',
-            'vegetariano': 'vegetariano',
-            'vegetarian': 'vegetariano',
-            'picante': 'picante',
-            'spicy': 'picante',
-            'sin frutos secos': 'sin-frutos-secos',
-            'frutos secos': 'sin-frutos-secos',
-            'nuts': 'sin-frutos-secos',
-            'sin soja': 'sin-soja',
-            'soja': 'sin-soja',
-            'soy': 'sin-soja',
-            'sin huevo': 'sin-huevo',
-            'huevo': 'sin-huevo',
-            'egg': 'sin-huevo',
-            'pescado': 'pescado',
-            'fish': 'pescado',
-            'marisco': 'marisco',
-            'seafood': 'marisco',
-            'carnes': 'carnes',
-            'meat': 'carnes',
-            'cafe': 'cafe',
-            'coffee': 'cafe',
-            'bebida': 'bebida',
-            'drink': 'bebida'
+            'sin gluten': 'sin-gluten', 'gluten': 'sin-gluten', 'gluten free': 'sin-gluten',
+            'sin lactosa': 'sin-lactosa', 'lactosa': 'sin-lactosa', 'lacteos': 'sin-lactosa',
+            'vegano': 'vegano', 'vegan': 'vegano', 'vegetariano': 'vegetariano', 'vegetarian': 'vegetariano',
+            'picante': 'picante', 'spicy': 'picante', 'sin frutos secos': 'sin-frutos-secos',
+            'sin soja': 'sin-soja', 'sin huevo': 'sin-huevo', 'pescado': 'pescado', 'marisco': 'marisco',
+            'carnes': 'carnes', 'cafe': 'cafe', 'bebida': 'bebida'
         };
         return map[normalized] || normalized.replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     },
@@ -1255,19 +996,9 @@ const app = {
     getFilterIcon(value) {
         const key = this.normalizeFilterValue(value);
         const map = {
-            'sin-gluten': '🌾',
-            'sin-lactosa': '🥛',
-            'vegano': '🌱',
-            'vegetariano': '🥕',
-            'picante': '🌶️',
-            'sin-frutos-secos': '🥜',
-            'sin-soja': '🌱',
-            'sin-huevo': '🥚',
-            'pescado': '🐟',
-            'marisco': '🦐',
-            'carnes': '🥩',
-            'cafe': '☕',
-            'bebida': '🥤'
+            'sin-gluten': '🌾', 'sin-lactosa': '🥛', 'vegano': '🌱', 'vegetariano': '🥕',
+            'picante': '🌶️', 'sin-frutos-secos': '🥜', 'sin-soja': '🌱', 'sin-huevo': '🥚',
+            'pescado': '🐟', 'marisco': '🦐', 'carnes': '🥩', 'cafe': '☕', 'bebida': '🥤'
         };
         return map[key] || '🏷️';
     },
@@ -1348,22 +1079,16 @@ const app = {
         const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
         const dietOptions = ['vegano', 'vegetariano', 'picante', 'cafe', 'bebida'].map(value => ({
-            value,
-            label: this.getFilterLabel(value),
-            icon: this.getFilterIcon(value),
-            available: options.includes(value)
+            value, label: this.getFilterLabel(value), icon: this.getFilterIcon(value), available: options.includes(value)
         }));
         const allergyOptions = ['sin-gluten', 'sin-lactosa', 'sin-frutos-secos', 'sin-soja', 'sin-huevo'].map(value => ({
-            value,
-            label: this.getFilterLabel(value),
-            icon: this.getFilterIcon(value),
-            available: options.includes(value)
+            value, label: this.getFilterLabel(value), icon: this.getFilterIcon(value), available: options.includes(value)
         }));
 
         const categoryHtml = categories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
-                <div class="filter-rail">
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     ${categories.map(category => `
                         <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick="app.setCategoryFilter('${this.escapeHTML(category)}')">
                             <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
@@ -1374,50 +1099,6 @@ const app = {
             </div>
         ` : '';
 
-        const dietHtml = dietOptions.length ? `
-            <div class="filter-section-card">
-                <div class="filter-section-title">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
-                <div class="filter-rail">
-                    ${dietOptions.map(option => `
-                        <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
-                            <span class="filter-option-label">
-                                <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
-                                <span>${this.escapeHTML(option.label)}</span>
-                            </span>
-                            <span class="filter-option-toggle"></span>
-                        </button>
-                    `).join('')}
-                </div>
-            </div>
-        ` : '';
-
-        const allergyHtml = allergyOptions.length ? `
-            <div class="filter-section-card">
-                <div class="filter-section-title">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
-                <div class="filter-rail">
-                    ${allergyOptions.map(option => `
-                        <button type="button" class="filter-option-btn ${this.selectedFilter === option.value ? 'active' : ''}" ${option.available ? '' : 'disabled'} onclick="app.setActiveFilter('${option.value}')">
-                            <span class="filter-option-label">
-                                <span class="filter-option-icon">${this.escapeHTML(option.icon)}</span>
-                                <span>${this.escapeHTML(option.label)}</span>
-                            </span>
-                            <span class="filter-option-toggle"></span>
-                        </button>
-                    `).join('')}
-                </div>
-            </div>
-        ` : '';
-
-        const priceHtml = `
-            <div class="filter-section-card">
-                <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
-                <div class="filter-price-row">
-                    <input id="filter-price-min" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mínimo')}">
-                    <input id="filter-price-max" class="filter-price-input" type="number" min="0" step="1" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máximo')}">
-                    <button type="button" id="filter-price-reset" class="filter-price-reset" onclick="app.resetPriceFilter()">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
-                </div>
-            </div>
-        `;
         const activeCount = [this.selectedCategory, this.selectedFilter].filter(Boolean).length + (this.minPrice != null || this.maxPrice != null ? 1 : 0);
         const footerLabel = activeCount > 0 ? `${t.filterButtonTitle || 'Filtrar'} (${activeCount})` : (t.filterButtonTitle || 'Filtrar');
         const heroHtml = `
@@ -1429,19 +1110,9 @@ const app = {
                 ${activeCount > 0 ? `<button type="button" class="filter-hero-clear" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>` : ''}
             </div>
         `;
-        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${heroHtml}${categoryHtml}${dietHtml}${allergyHtml}${priceHtml}</div>`;
+        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${heroHtml}${categoryHtml}</div>`;
         const footerButton = document.querySelector('#filter-modal .filter-cta-btn.primary');
-        if (footerButton) {
-            footerButton.textContent = footerLabel;
-        }
-        if (this.dom.filterPriceMinInput) {
-            this.dom.filterPriceMinInput.value = this.minPrice != null ? this.minPrice : '';
-            this.dom.filterPriceMinInput.setAttribute('placeholder', `${t.filterMinPrice || 'Mínimo'}`);
-        }
-        if (this.dom.filterPriceMaxInput) {
-            this.dom.filterPriceMaxInput.value = this.maxPrice != null ? this.maxPrice : '';
-            this.dom.filterPriceMaxInput.setAttribute('placeholder', `${t.filterMaxPrice || 'Máximo'}`);
-        }
+        if (footerButton) footerButton.textContent = footerLabel;
     },
 
     shouldShowDish(dish) {
@@ -1463,9 +1134,7 @@ const app = {
             const trans = menu.traducciones?.[this.currentLang] || menu.traducciones?.[Object.keys(menu.traducciones || {})[0]];
             const cats = trans?.categorias || [];
             for (const cat of cats) {
-                if ((cat.platos || []).includes(dish)) {
-                    return cat.nombre || '';
-                }
+                if ((cat.platos || []).includes(dish)) return cat.nombre || '';
             }
         }
         return '';
@@ -1527,12 +1196,8 @@ const app = {
 
     updateOrderNotes(value) {
         this.orderNotes = value.slice(0, 140);
-        if (this.dom.orderNotesInput) {
-            this.dom.orderNotesInput.value = this.orderNotes;
-        }
-        if (this.dom.orderNotesCounter) {
-            this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
-        }
+        if (this.dom.orderNotesInput) this.dom.orderNotesInput.value = this.orderNotes;
+        if (this.dom.orderNotesCounter) this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
     },
 
     getConfiguredQuickNotes() {
@@ -1550,18 +1215,7 @@ const app = {
         return [
             { id: 'quick_note_poco_hecho', displayLabel: t.quickNotePocoHecho || 'Poco hecho', recipientLabel: tRecipient.quickNotePocoHecho || 'Poco hecho' },
             { id: 'quick_note_sin_sal', displayLabel: t.quickNoteSinSal || 'Sin sal', recipientLabel: tRecipient.quickNoteSinSal || 'Sin sal' },
-            { id: 'quick_note_salsa_aparte', displayLabel: t.quickNoteSalsaAparte || 'Salsa aparte', recipientLabel: tRecipient.quickNoteSalsaAparte || 'Salsa aparte' },
-            { id: 'quick_note_sin_cebolla', displayLabel: t.quickNoteSinCebolla || 'Sin cebolla', recipientLabel: tRecipient.quickNoteSinCebolla || 'Sin cebolla' },
-            { id: 'quick_note_sin_tomate', displayLabel: t.quickNoteSinTomate || 'Sin tomate', recipientLabel: tRecipient.quickNoteSinTomate || 'Sin tomate' },
-            { id: 'quick_note_sin_aceite', displayLabel: t.quickNoteSinAceite || 'Sin aceite', recipientLabel: tRecipient.quickNoteSinAceite || 'Sin aceite' },
-            { id: 'quick_note_sin_queso', displayLabel: t.quickNoteSinQueso || 'Sin queso', recipientLabel: tRecipient.quickNoteSinQueso || 'Sin queso' },
-            { id: 'quick_note_sin_nueces', displayLabel: t.quickNoteSinNueces || 'Sin nueces', recipientLabel: tRecipient.quickNoteSinNueces || 'Sin nueces' },
-            { id: 'quick_note_sin_alergenicos', displayLabel: t.quickNoteSinAlergenicos || 'Sin alérgenicos', recipientLabel: tRecipient.quickNoteSinAlergenicos || 'Sin alérgenicos' },
-            { id: 'quick_note_muy_hecho', displayLabel: t.quickNoteMuyHecho || 'Muy hecho', recipientLabel: tRecipient.quickNoteMuyHecho || 'Muy hecho' },
-            { id: 'quick_note_con_salsa', displayLabel: t.quickNoteConSalsa || 'Con salsa', recipientLabel: tRecipient.quickNoteConSalsa || 'Con salsa' },
-            { id: 'quick_note_extra_picante', displayLabel: t.quickNoteExtraPicante || 'Extra picante', recipientLabel: tRecipient.quickNoteExtraPicante || 'Extra picante' },
-            { id: 'quick_note_sin_cilantro', displayLabel: t.quickNoteSinCilantro || 'Sin cilantro', recipientLabel: tRecipient.quickNoteSinCilantro || 'Sin cilantro' },
-            { id: 'quick_note_sin_pepinillos', displayLabel: t.quickNoteSinPepinillos || 'Sin pepinillos', recipientLabel: tRecipient.quickNoteSinPepinillos || 'Sin pepinillos' }
+            { id: 'quick_note_salsa_aparte', displayLabel: t.quickNoteSalsaAparte || 'Salsa aparte', recipientLabel: tRecipient.quickNoteSalsaAparte || 'Salsa aparte' }
         ];
     },
 
@@ -1571,15 +1225,6 @@ const app = {
             if (this.dom.quickNotesContainer) {
                 this.dom.quickNotesContainer.innerHTML = '';
                 this.dom.quickNotesContainer.style.display = 'none';
-            }
-            if (this.dom.orderNotesInput) {
-                this.dom.orderNotesInput.style.display = 'none';
-            }
-            if (this.dom.orderNotesCounter) {
-                this.dom.orderNotesCounter.style.display = 'none';
-            }
-            if (this.dom.orderNotesLabel) {
-                this.dom.orderNotesLabel.style.display = 'none';
             }
             return;
         }
@@ -1591,31 +1236,10 @@ const app = {
                     const noteLabel = (note.displayLabel || note.recipientLabel || '').trim().toLowerCase();
                     return (entry.id && note.id && entry.id === note.id) || entryLabel === noteLabel;
                 });
-                return `
-                    <button type="button" class="filter-pill quick-note-chip ${isActive ? 'active' : ''}" onclick="app.appendQuickNote(${JSON.stringify(note)})">${this.escapeHTML(note.displayLabel || note.recipientLabel || '')}</button>
-                `;
+                return `<button type="button" class="filter-pill quick-note-chip ${isActive ? 'active' : ''}" onclick="app.appendQuickNote(${JSON.stringify(note)})">${this.escapeHTML(note.displayLabel || note.recipientLabel || '')}</button>`;
             }).join('');
             this.dom.quickNotesContainer.style.display = 'flex';
         }
-        if (this.dom.orderNotesInput) {
-            this.dom.orderNotesInput.style.display = 'none';
-        }
-        if (this.dom.orderNotesCounter) {
-            this.dom.orderNotesCounter.style.display = 'none';
-        }
-        if (this.dom.orderNotesLabel) {
-            this.dom.orderNotesLabel.style.display = 'none';
-        }
-    },
-
-    getDistanceMeters(lat1, lon1, lat2, lon2) {
-        const toRadians = value => (value * Math.PI) / 180;
-        const earthRadius = 6371000;
-        const dLat = toRadians(lat2 - lat1);
-        const dLon = toRadians(lon2 - lon1);
-        const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2;
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return earthRadius * c;
     },
 
     buildOrderMessage(selectedTable, orderItems, t_wa) {
@@ -1684,7 +1308,6 @@ const app = {
         if (tipo === 'diario') return t["menu_diario"] || "📅 Menú del Día";
         if (tipo === 'especial') return t["menu_especial"] || "⭐ Cartas Especiales";
         if (tipo === 'normal') return t["menu_normal"] || t.defaultMenu || "📋 Carta Principal";
-        if (tipo === 'local') return t["menu_local"] || t.defaultMenu || "🏪 Menú del Local";
 
         let trans = menu.traducciones?.[this.currentLang];
         if (!trans && menu.traducciones) {
@@ -1697,35 +1320,58 @@ const app = {
         return (menu?.tipoMenu || menu?.tipo || '').toString().toLowerCase() === 'diario';
     },
 
-    buildDailyMenuCartItem(menu) {
-        const menuName = this.getMenuTitle(menu);
-        const translatedMenu = menu?.traducciones?.[this.currentLang] || menu?.traducciones?.[Object.keys(menu?.traducciones || {})[0]];
-        const summary = (translatedMenu?.categorias || []).map(cat => {
-            const dishNames = (cat.platos || []).map(plato => plato?.nombre).filter(Boolean);
-            return dishNames.length ? `${cat.nombre}: ${dishNames.join(', ')}` : '';
-        }).filter(Boolean).join(' • ');
+    selectDailyDish(menuId, catIndex, dishIndex) {
+        if (!this.dailySelections[menuId]) {
+            this.dailySelections[menuId] = {};
+        }
+        this.dailySelections[menuId][catIndex] = dishIndex;
+        this.refreshCurrentView();
+    },
 
-        return {
-            cart_id: `menu-${menu.id}`,
+    addDailyMenuToCart(menu, button = null) {
+        const trans = menu.traducciones?.[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
+        const cats = trans?.categorias || [];
+        const selections = this.dailySelections[menu.id] || {};
+        const t = I18N[this.currentLang] || I18N['es'];
+
+        // Obligar a seleccionar 1 plato de cada categoría/sección
+        for (let i = 0; i < cats.length; i++) {
+            if (selections[i] === undefined) {
+                const alertMsg = (t.selectDailyAlert || "Por favor, selecciona un plato de la categoría: {category}").replace('{category}', cats[i].nombre);
+                alert(alertMsg);
+                return;
+            }
+        }
+
+        const selectedDishesDetails = [];
+        const selectedDishesDetailsWa = [];
+        const waMenu = menu.traducciones?.[this.whatsapp.msgLang] || trans;
+
+        cats.forEach((cat, catIdx) => {
+            const dishIdx = selections[catIdx];
+            const dish = cat.platos[dishIdx];
+            const waDish = waMenu.categorias?.[catIdx]?.platos[dishIdx] || dish;
+            const waCatName = waMenu.categorias?.[catIdx]?.nombre || cat.nombre;
+
+            selectedDishesDetails.push({ category: cat.nombre, dish: dish.nombre });
+            selectedDishesDetailsWa.push({ category: waCatName, dish: waDish.nombre });
+        });
+
+        const menuName = this.getMenuTitle(menu);
+        const uniqueId = `menu-${menu.id}-${Date.now()}`;
+
+        const cartItem = {
+            cart_id: uniqueId,
             nombre: menuName,
             nombre_display: menuName,
             nombre_wa: menuName,
             precio: typeof menu.precio === 'number' ? menu.precio : 0,
             tipo: 'daily-menu',
-            descripcion: summary
+            selectedDishes: selectedDishesDetails,
+            selectedDishesWa: selectedDishesDetailsWa
         };
-    },
 
-    addDailyMenuToCart(menu, button = null) {
-        const dailyMenu = typeof menu === 'string' ? JSON.parse(decodeURIComponent(menu)) : menu;
-        const uniqueId = dailyMenu.cart_id || `menu-${dailyMenu.id || 'daily'}`;
-        const existingItem = this.cart.find(item => (item.cart_id || item.nombre) === uniqueId);
-
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            this.cart.push({ ...dailyMenu, quantity: 1 });
-        }
+        this.cart.push({ ...cartItem, quantity: 1 });
         this.updateCartBadge();
 
         if (button) {
@@ -1784,9 +1430,7 @@ const app = {
 
     getCategoryName(catKey, originalName) {
         const t = I18N[this.currentLang] || I18N['es'];
-        if (catKey && t[catKey]) {
-            return t[catKey];
-        }
+        if (catKey && t[catKey]) return t[catKey];
         return originalName;
     },
 
@@ -1804,17 +1448,6 @@ const app = {
             });
         });
         return count;
-    },
-
-    renderSkeletonLoader() {
-        const cards = Array.from({ length: 4 }, (_, index) => `
-            <div class="skeleton-card${index === 0 ? ' featured' : ''}">
-                <div class="skeleton-line wide"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line short"></div>
-            </div>
-        `).join('');
-        this.dom.content.innerHTML = `<div class="skeleton-stack">${cards}</div>`;
     },
 
     renderMenu(menuId) {
@@ -1837,7 +1470,6 @@ const app = {
         const isDaily = this.isDailyMenu(menu);
         let html = '';
 
-        // --- HERO BANNER PARA MENÚ DIARIO ---
         if (isDaily) {
             const menuPrice = this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0);
             const dailyMenuTitle = (trans?.dailyMenuPriceTitle || t["menu_diario"] || '📅 Menú del Día').trim();
@@ -1845,30 +1477,32 @@ const app = {
             const dailyMenuActionLabel = t.dailyMenuAdd || 'Añadir';
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
+            
+            // Verificación segura de imagen para evitar imagen rota
             const heroImage = (menu.recursos?.imagenes && Object.keys(menu.recursos.imagenes).length > 0)
                 ? Object.values(menu.recursos.imagenes)[0]
                 : coverImg;
-            const heroImageWithCache = `${heroImage}?t=${new Date().getTime()}`;
-            const safeMenuData = encodeURIComponent(JSON.stringify(this.buildDailyMenuCartItem(menu)));
+            
+            const hasHeroImg = heroImage && heroImage.trim() !== '';
+            const heroImageWithCache = hasHeroImg ? `${heroImage}?t=${new Date().getTime()}` : '';
             
             html += `
                 <div class="daily-menu-shell fade-in-slide" style="margin-bottom: 30px;">
                     <div class="daily-menu-card">
-                        <img src="${this.escapeHTML(heroImageWithCache)}" alt="${this.escapeHTML(this.getMenuTitle(menu))}">
+                        ${hasHeroImg ? `<img src="${this.escapeHTML(heroImageWithCache)}" alt="${this.escapeHTML(this.getMenuTitle(menu))}" onerror="this.style.display='none'">` : ''}
                         <div class="daily-menu-card-body">
                             <div class="daily-menu-badge">${this.escapeHTML(dailyMenuTitle)}</div>
                             <h2 class="daily-menu-title">${this.escapeHTML(this.getMenuTitle(menu))}</h2>
                             ${dailyMenuHelp ? `<p class="daily-menu-copy">${this.escapeHTML(dailyMenuHelp)}</p>` : ''}
                             <div class="daily-menu-meta">
                                 <div class="daily-menu-price-pill">${menuPrice}</div>
-                                <button class="daily-menu-action" onclick="event.stopPropagation(); app.addDailyMenuToCart('${safeMenuData}', event.currentTarget);">${this.escapeHTML(dailyMenuActionLabel)}</button>
+                                <button class="daily-menu-action" onclick="event.stopPropagation(); app.addDailyMenuToCart(app.data.menus.find(m=>m.id==='${menu.id}'), event.currentTarget);">${this.escapeHTML(dailyMenuActionLabel)}</button>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
         }
-        // ------------------------------------
 
         this.dom.categoryTabsContainer.style.display = 'block';
         const images = menu.recursos?.imagenes || {};
@@ -1880,16 +1514,17 @@ const app = {
             const translatedCatName = this.getCategoryName(catKey, cat.nombre);
             
             const categorySlug = this.slugify(translatedCatName || cat.nombre);
-            const visibleDishes = (cat.platos || []).filter((dish, dishIndex) => this.shouldShowDish(dish));
+            const visibleDishes = (cat.platos || []).filter((dish) => this.shouldShowDish(dish));
             if (!visibleDishes.length) continue;
             
             tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}<span class="tab-count">${visibleDishes.length}</span></div>`;
 
             html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(translatedCatName)}</h2>`;
-            visibleDishes.forEach((dish, dishIndex) => {
+            
+            visibleDishes.forEach((dish) => {
                 const originalIndex = (cat.platos || []).findIndex(item => item === dish);
-                html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, originalIndex >= 0 ? originalIndex : dishIndex, isDaily);
+                html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, originalIndex >= 0 ? originalIndex : 0, isDaily);
             });
             html += `</div>`;
         }
@@ -1953,8 +1588,7 @@ const app = {
             return;
         }
         window.history.pushState({ view: 'search', query: this.searchQuery, sourceHash: this.sourceHash }, '', this.getPreservedUrl());
-        this.renderSkeletonLoader();
-        window.setTimeout(() => this.renderSearch(), 140);
+        this.renderSearch();
     },
 
     renderSearch() {
@@ -2024,10 +1658,15 @@ const app = {
         const modalData = { name: safeName, desc: safeDesc, price: isDailyMenu ? '' : safePrice, imgUrl };
         const safeModalData = encodeURIComponent(JSON.stringify(modalData));
 
+        let isSelected = false;
+        if (isDailyMenu && menuId) {
+            isSelected = this.dailySelections[menuId]?.[catIndex] === dishIndex;
+        }
+
         let cartDishData = dish;
         if (this.whatsapp.enabled && menuId !== undefined) {
             const menu = this.data.menus.find(m => m.id === menuId);
-            const waDish = menu?.traducciones[this.whatsapp.msgLang]?.categorias[catIndex]?.platos[dishIndex];
+            const waDish = menu?.traducciones?.[this.whatsapp.msgLang]?.categorias?.[catIndex]?.platos?.[dishIndex];
             if (waDish) {
                 cartDishData = {
                     ...dish,
@@ -2039,18 +1678,22 @@ const app = {
         }
         const safeCartData = encodeURIComponent(JSON.stringify(cartDishData));
 
-        const actionButton = this.whatsapp.enabled
-            ? `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}', event.currentTarget);">+</button>`
-            : `<div class="dish-action-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>`;
+        let actionButton = '';
+        if (isDailyMenu) {
+            actionButton = `<button class="dish-add-btn ${isSelected ? 'success' : ''}" onclick="event.stopPropagation(); app.selectDailyDish('${menuId}', ${catIndex}, ${dishIndex});">${isSelected ? '✓' : '○'}</button>`;
+        } else if (this.whatsapp.enabled) {
+            actionButton = `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}', event.currentTarget);">+</button>`;
+        } else {
+            actionButton = `<div class="dish-action-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>`;
+        }
 
         let bottomRowHTML = '';
         if (isDailyMenu) {
-            if (sourceMenuName) {
-                bottomRowHTML = `
-                <div class="dish-bottom-row">
-                    <div class="dish-price"><span class="dish-source-badge" style="margin-left:0;">${this.escapeHTML(sourceMenuName)}</span></div>
-                </div>`;
-            }
+            bottomRowHTML = `
+            <div class="dish-bottom-row">
+                <div class="dish-price" style="font-size:0.85em; color:var(--text-muted-light);">${isSelected ? 'Seleccionado' : 'Pulsa para elegir'}</div>
+                ${actionButton}
+            </div>`;
         } else {
             bottomRowHTML = `
             <div class="dish-bottom-row">
@@ -2059,9 +1702,11 @@ const app = {
             </div>`;
         }
 
+        const cardClass = isDailyMenu && isSelected ? 'dish selected-daily-dish' : 'dish';
+
         return `
-            <div class="dish" onclick="app.openModal('${safeModalData}')">
-                ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy">` : ''}
+            <div class="${cardClass}" onclick="${isDailyMenu ? `app.selectDailyDish('${menuId}', ${catIndex}, ${dishIndex})` : `app.openModal('${safeModalData}')`}">
+                ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy" onerror="this.style.display='none'">` : ''}
                 <div class="dish-details">
                     <div class="dish-name">${safeName}</div>
                     ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
@@ -2084,12 +1729,12 @@ const app = {
             printHTML += `<div class="pdf-page-section ${breakClass}">`;
             
             if (rInfo.logoBase64) {
-                printHTML += `<img src="${rInfo.logoBase64}" class="pdf-watermark-bg">`;
+                printHTML += `<img src="${rInfo.logoBase64}" class="pdf-watermark-bg" onerror="this.style.display='none'">`;
             }
 
             printHTML += `
                 <div class="pdf-header-top">
-                    ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}">` : ''}
+                    ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}" onerror="this.style.display='none'">` : ''}
                     <h1>${this.escapeHTML(rInfo.nombre || t.defaultRestaurant)}</h1>
                     <p>${this.escapeHTML(rInfo.direccion || '')} &bull; ${this.escapeHTML(rInfo.telefono || '')}</p>
                 </div>
@@ -2113,7 +1758,7 @@ const app = {
                             
                             printHTML += `
                                 <div class="pdf-dish-row">
-                                    ${imgUrl ? `<img src="${imgUrl}" class="pdf-dish-thumb">` : ''}
+                                    ${imgUrl ? `<img src="${imgUrl}" class="pdf-dish-thumb" onerror="this.style.display='none'">` : ''}
                                     <div class="pdf-dish-info">
                                         <p class="pdf-dish-name">${this.escapeHTML(dish.nombre)}</p>
                                         ${dish.descripcion ? `<p class="pdf-dish-desc">${this.escapeHTML(dish.descripcion)}</p>` : ''}
@@ -2247,15 +1892,25 @@ const app = {
             const uniqueId = this.escapeHTML(item.cart_id || item.nombre);
             const displayName = this.escapeHTML(item.nombre_display || item.nombre);
 
+            let detailsHtml = '';
+            if (item.tipo === 'daily-menu' && item.selectedDishes) {
+                detailsHtml = `<div class="cart-item-details-list">` +
+                    item.selectedDishes.map(d => `• ${this.escapeHTML(d.category)}: ${this.escapeHTML(d.dish)}`).join('<br>') +
+                    `</div>`;
+            }
+
             itemsHtml += `
                 <div class="cart-item">
-                    <div class="cart-item-name">${displayName}</div>
-                    <div class="cart-item-controls">
-                        <button class="quantity-btn" onclick="app.adjustCartQuantity('${uniqueId}', -1)">-</button>
-                        <span class="cart-item-quantity">${item.quantity}</span>
-                        <button class="quantity-btn" onclick="app.adjustCartQuantity('${uniqueId}', 1)">+</button>
+                    <div class="cart-item-row">
+                        <div class="cart-item-name">${displayName}</div>
+                        <div class="cart-item-controls">
+                            <button class="quantity-btn" onclick="app.adjustCartQuantity('${uniqueId}', -1)">-</button>
+                            <span class="cart-item-quantity">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="app.adjustCartQuantity('${uniqueId}', 1)">+</button>
+                        </div>
+                        <div class="cart-item-price">${this.formatPrice(item.precio * item.quantity)}</div>
                     </div>
-                    <div class="cart-item-price">${this.formatPrice(item.precio * item.quantity)}</div>
+                    ${detailsHtml}
                 </div>
             `;
         });
@@ -2288,7 +1943,14 @@ const app = {
 
         const orderItems = this.cart.map(item => {
             const nameForWhatsapp = item.nombre_wa || item.nombre;
-            return t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
+            let itemStr = t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
+            
+            if (item.tipo === 'daily-menu' && item.selectedDishesWa) {
+                item.selectedDishesWa.forEach(sel => {
+                    itemStr += `\n    - ${sel.category}: ${sel.dish}`;
+                });
+            }
+            return itemStr;
         }).join('\n');
 
         const message = this.buildOrderMessage(selectedTable, orderItems, t_wa);
