@@ -434,16 +434,6 @@
             border: none; background: var(--accent-gradient); color: #fff; border-radius: 999px; padding: 9px 14px; font-weight: 800; cursor: pointer;
             box-shadow: 0 12px 24px -14px rgba(79, 70, 229, 0.45);
         }
-        .daily-menu-section-list { display: grid; gap: 10px; }
-        .daily-menu-section-card {
-            border-radius: 18px; padding: 14px 14px 12px; border: 1px solid rgba(148, 163, 184, 0.22); background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(248,250,252,0.9));
-        }
-        .daily-menu-section-title { font-size: 0.95rem; font-weight: 800; color: var(--text-light); margin-bottom: 8px; }
-        .daily-menu-section-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-        .daily-menu-section-list li {
-            color: var(--text-muted-light); font-size: 0.92rem; line-height: 1.4; padding-left: 0;
-        }
-        .daily-menu-section-list li strong { color: var(--text-light); font-weight: 700; }
         .dish-add-btn { background: var(--accent-gradient); color: white; border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); }
         .dish-add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.6); }
         .dish-add-btn.bump { animation: buttonPop 0.35s ease; }
@@ -892,7 +882,6 @@ const app = {
     },
 
     async init() {
-        // DETECCIÓN TEMPRANA DE IDIOMA PARA TRADUCIR EL LOADER ANTES DEL FETCH
         let rawBrowserLang = navigator.language.split('-')[0].toLowerCase();
         if (rawBrowserLang === 'zh') rawBrowserLang = 'cn';
         if (rawBrowserLang === 'ar') rawBrowserLang = 'sa';
@@ -1037,7 +1026,6 @@ const app = {
         this.dom.langSelect.setAttribute('aria-label', t.langSelect);
         this.updateWifiButton();
 
-        // Renderizado de iconos de contacto con textos traducidos
         let iconsHtml = '';
         if (rInfo.telefono) {
             const cleanTel = this.escapeHTML(rInfo.telefono);
@@ -1846,7 +1834,11 @@ const app = {
             return;
         }
 
-        if (this.isDailyMenu(menu)) {
+        const isDaily = this.isDailyMenu(menu);
+        let html = '';
+
+        // --- HERO BANNER PARA MENÚ DIARIO ---
+        if (isDaily) {
             const menuPrice = this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0);
             const dailyMenuTitle = (trans?.dailyMenuPriceTitle || t["menu_diario"] || '📅 Menú del Día').trim();
             const dailyMenuHelp = (trans?.dailyMenuPriceHelp || '').trim();
@@ -1857,15 +1849,10 @@ const app = {
                 ? Object.values(menu.recursos.imagenes)[0]
                 : coverImg;
             const heroImageWithCache = `${heroImage}?t=${new Date().getTime()}`;
-            const summaryItems = (trans.categorias || []).map(cat => {
-                const dishNames = (cat.platos || []).map(plato => plato?.nombre).filter(Boolean);
-                return dishNames.length ? `<li><strong>${this.escapeHTML(cat.nombre)}</strong> · ${this.escapeHTML(dishNames.join(', '))}</li>` : '';
-            }).filter(Boolean).join('');
             const safeMenuData = encodeURIComponent(JSON.stringify(this.buildDailyMenuCartItem(menu)));
-            this.dom.categoryTabs.innerHTML = '';
-            this.dom.categoryTabsContainer.style.display = 'none';
-            this.dom.content.innerHTML = `
-                <div class="daily-menu-shell fade-in-slide">
+            
+            html += `
+                <div class="daily-menu-shell fade-in-slide" style="margin-bottom: 30px;">
                     <div class="daily-menu-card">
                         <img src="${this.escapeHTML(heroImageWithCache)}" alt="${this.escapeHTML(this.getMenuTitle(menu))}">
                         <div class="daily-menu-card-body">
@@ -1878,19 +1865,13 @@ const app = {
                             </div>
                         </div>
                     </div>
-                    <div class="daily-menu-section-list">
-                        ${summaryItems ? `<div class="daily-menu-section-card"><div class="daily-menu-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div><ul>${summaryItems}</ul></div>` : ''}
-                    </div>
                 </div>
             `;
-            this.initScrollAnimations();
-            window.scrollTo(0,0);
-            return;
         }
+        // ------------------------------------
 
         this.dom.categoryTabsContainer.style.display = 'block';
         const images = menu.recursos?.imagenes || {};
-        let html = '';
         let tabsHtml = '';
 
         for (let catIndex = 0; catIndex < trans.categorias.length; catIndex++) {
@@ -1901,13 +1882,14 @@ const app = {
             const categorySlug = this.slugify(translatedCatName || cat.nombre);
             const visibleDishes = (cat.platos || []).filter((dish, dishIndex) => this.shouldShowDish(dish));
             if (!visibleDishes.length) continue;
+            
             tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}<span class="tab-count">${visibleDishes.length}</span></div>`;
 
             html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(translatedCatName)}</h2>`;
             visibleDishes.forEach((dish, dishIndex) => {
                 const originalIndex = (cat.platos || []).findIndex(item => item === dish);
-                html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, originalIndex >= 0 ? originalIndex : dishIndex);
+                html += this.generateDishCardHTML(dish, images, null, menu.id, catIndex, originalIndex >= 0 ? originalIndex : dishIndex, isDaily);
             });
             html += `</div>`;
         }
@@ -1939,9 +1921,10 @@ const app = {
                 if (tab) tab.classList.toggle('active', entry.isIntersecting);
             });
         }, observerOptions);
+        
+        this.dom.content.innerHTML = html;
         document.querySelectorAll('.category').forEach(section => this.categoryTabsObserver.observe(section));
 
-        this.dom.content.innerHTML = html;
         this.initScrollAnimations();
         window.scrollTo(0,0);
     },
@@ -1985,6 +1968,7 @@ const app = {
 
         this.data.menus.forEach(menu => {
             if (!menu.traducciones) return;
+            const isDaily = this.isDailyMenu(menu);
             const images = menu.recursos?.imagenes || {};
             const displayMenuName = this.getMenuTitle(menu);
 
@@ -2006,7 +1990,7 @@ const app = {
                                         foundKeys.add(key);
                                         const displayDish = menu.traducciones[this.currentLang]?.categorias[catIndex]?.platos[dishIndex];
                                         if (displayDish) {
-                                            resultsHTML += this.generateDishCardHTML(displayDish, images, displayMenuName, menu.id, catIndex, dishIndex);
+                                            resultsHTML += this.generateDishCardHTML(displayDish, images, displayMenuName, menu.id, catIndex, dishIndex, isDaily);
                                         }
                                     }
                                 }
@@ -2030,14 +2014,14 @@ const app = {
         }
     },
 
-    generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex) {
+    generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex, isDailyMenu = false) {
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
         const safeName = this.escapeHTML(dish.nombre);
         const safeDesc = this.escapeHTML(dish.descripcion);
         const safePrice = this.formatPrice(dish.precio);
         const badgesHTML = this.getDishBadgesHTML(dish);
 
-        const modalData = { name: safeName, desc: safeDesc, price: safePrice, imgUrl };
+        const modalData = { name: safeName, desc: safeDesc, price: isDailyMenu ? '' : safePrice, imgUrl };
         const safeModalData = encodeURIComponent(JSON.stringify(modalData));
 
         let cartDishData = dish;
@@ -2059,6 +2043,22 @@ const app = {
             ? `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}', event.currentTarget);">+</button>`
             : `<div class="dish-action-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>`;
 
+        let bottomRowHTML = '';
+        if (isDailyMenu) {
+            if (sourceMenuName) {
+                bottomRowHTML = `
+                <div class="dish-bottom-row">
+                    <div class="dish-price"><span class="dish-source-badge" style="margin-left:0;">${this.escapeHTML(sourceMenuName)}</span></div>
+                </div>`;
+            }
+        } else {
+            bottomRowHTML = `
+            <div class="dish-bottom-row">
+                <div class="dish-price">${safePrice} ${sourceMenuName ? `<span class="dish-source-badge">${this.escapeHTML(sourceMenuName)}</span>` : ''}</div>
+                ${actionButton}
+            </div>`;
+        }
+
         return `
             <div class="dish" onclick="app.openModal('${safeModalData}')">
                 ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy">` : ''}
@@ -2066,10 +2066,7 @@ const app = {
                     <div class="dish-name">${safeName}</div>
                     ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
                     ${badgesHTML}
-                    <div class="dish-bottom-row">
-                        <div class="dish-price">${safePrice} ${sourceMenuName ? `<span class="dish-source-badge">${this.escapeHTML(sourceMenuName)}</span>` : ''}</div>
-                        ${actionButton}
-                    </div>
+                    ${bottomRowHTML}
                 </div>
             </div>
         `;
@@ -2141,7 +2138,14 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         
         this.dom.mTitle.innerHTML = data.name;
-        this.dom.mPrice.innerHTML = data.price;
+        
+        if (data.price) {
+            this.dom.mPrice.innerHTML = data.price;
+            this.dom.mPrice.style.display = 'inline-block';
+        } else {
+            this.dom.mPrice.style.display = 'none';
+        }
+        
         this.dom.mDesc.innerHTML = data.desc || `<i>${t.noDescription}</i>`;
         
         if (data.imgUrl) {
