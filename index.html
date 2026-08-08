@@ -408,33 +408,30 @@
         .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
         .dish-price { font-size: 1.3em; font-weight: 800; color: var(--text-light); letter-spacing: -0.02em; }
         
-        .daily-menu-shell { display: grid; gap: 16px; }
-        .daily-menu-hero {
-            position: relative; overflow: hidden; border-radius: 30px; min-height: 300px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.96), rgba(124, 58, 237, 0.9));
-            box-shadow: 0 24px 50px -24px rgba(79, 70, 229, 0.45); border: 1px solid rgba(255,255,255,0.16);
+        .daily-menu-shell { display: grid; gap: 14px; }
+        .daily-menu-card {
+            display: flex; gap: 16px; border-radius: var(--radius-main); overflow: hidden; border: 1px solid var(--border-light);
+            background: var(--card-light); box-shadow: var(--shadow-card); position: relative;
         }
-        .daily-menu-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.2; }
-        .daily-menu-hero::after {
-            content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(2,6,23,0.82) 0%, rgba(2,6,23,0.35) 60%, rgba(2,6,23,0.18) 100%);
+        .daily-menu-card img {
+            width: 150px; height: 100%; min-height: 180px; object-fit: cover; flex-shrink: 0; display: block;
         }
-        .daily-menu-hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; min-height: 300px; padding: 24px; gap: 10px; }
+        .daily-menu-card-body {
+            flex: 1; padding: 18px 18px 18px 0; display: flex; flex-direction: column; justify-content: center; gap: 8px;
+        }
         .daily-menu-badge {
-            align-self: flex-start; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22);
-            color: #fff; font-size: 0.74em; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; backdrop-filter: blur(8px);
+            display: inline-flex; align-self: flex-start; padding: 6px 10px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent);
+            font-size: 0.74em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
         }
-        .daily-menu-title { margin: 0; color: #fff; font-size: clamp(1.35rem, 2.4vw, 1.85rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
-        .daily-menu-copy { margin: 0; color: rgba(255,255,255,0.86); font-size: 0.95rem; line-height: 1.5; max-width: 620px; }
-        .daily-menu-body {
-            display: grid; gap: 14px; padding: 20px; border-radius: 24px; background: var(--card-light); border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-card);
-        }
-        .daily-menu-price-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .daily-menu-title { margin: 0; color: var(--text-light); font-size: 1.18em; font-weight: 800; letter-spacing: -0.02em; }
+        .daily-menu-copy { margin: 0; color: var(--text-muted-light); font-size: 0.92rem; line-height: 1.45; }
+        .daily-menu-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
         .daily-menu-price-pill {
-            display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.1); color: var(--accent);
-            font-weight: 800; letter-spacing: -0.01em;
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: rgba(79, 70, 229, 0.08); color: var(--accent);
+            font-weight: 800; font-size: 1rem;
         }
         .daily-menu-action {
-            border: none; background: var(--accent-gradient); color: #fff; border-radius: 999px; padding: 10px 16px; font-weight: 800; cursor: pointer;
+            border: none; background: var(--accent-gradient); color: #fff; border-radius: 999px; padding: 9px 14px; font-weight: 800; cursor: pointer;
             box-shadow: 0 12px 24px -14px rgba(79, 70, 229, 0.45);
         }
         .daily-menu-section-list { display: grid; gap: 10px; }
@@ -629,7 +626,7 @@
         </div>
         <div id="filter-modal-options" class="filter-modal-list"></div>
         <div class="filter-modal-footer">
-            <button type="button" class="filter-cta-btn primary" onclick="app.applyCurrentFiltersAndClose()">Filtrar</button>
+            <button type="button" id="filter-apply-btn" class="filter-cta-btn primary" onclick="app.applyCurrentFiltersAndClose()"></button>
         </div>
     </div>
 </div>
@@ -887,6 +884,7 @@ const app = {
         filterModal: document.getElementById('filter-modal'),
         filterModalTitle: document.getElementById('filter-modal-title'),
         filterModalOptions: document.getElementById('filter-modal-options'),
+        filterApplyBtn: document.getElementById('filter-apply-btn'),
         filterPriceMinInput: document.getElementById('filter-price-min'),
         filterPriceMaxInput: document.getElementById('filter-price-max'),
         filterPriceReset: document.getElementById('filter-price-reset'),
@@ -1013,7 +1011,11 @@ const app = {
         this.dom.searchInput.placeholder = t.search;
         this.dom.btnBack.title = t.back;
         this.dom.filterToggleBtn.title = t.filterButtonTitle || 'Filtrar platos';
+        this.dom.filterToggleBtn.setAttribute('aria-label', t.filterToggleAriaLabel || t.filterButtonTitle || 'Filtrar platos');
         this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
+        if (this.dom.filterApplyBtn) {
+            this.dom.filterApplyBtn.textContent = t.filterApply || 'Filtrar';
+        }
         if (this.dom.filterPriceMinInput) {
             this.dom.filterPriceMinInput.value = this.minPrice != null ? this.minPrice : '';
         }
@@ -1629,16 +1631,17 @@ const app = {
     },
 
     buildOrderMessage(selectedTable, orderItems, t_wa) {
+        const t = I18N[this.currentLang] || I18N['es'];
         const total = this.cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
         const notes = (this.selectedQuickNotes.length ? this.selectedQuickNotes : (this.orderNotes ? [{ displayLabel: this.orderNotes, recipientLabel: this.orderNotes }] : [])).map(note => note.recipientLabel || note.displayLabel || '').filter(Boolean);
         const noteText = notes.join(' • ');
 
-        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n🛎️ Nuevo pedido`;
-        message += `\n\n🧾 Pedido:\n${orderItems}`;
+        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n${t.orderIntro || '🛎️ Nuevo pedido'}`;
+        message += `\n\n${t.orderSection || '🧾 Pedido:'}\n${orderItems}`;
         if (noteText) {
-            message += `\n\n📝 Notas: ${noteText}`;
+            message += `\n\n${t.orderNotes || '📝 Notas:'} ${noteText}`;
         }
-        message += `\n\n💳 Total: ${this.formatPrice(total)}`;
+        message += `\n\n${t.orderTotal || '💳 Total:'} ${this.formatPrice(total)}`;
         message += `\n\n${t_wa.footer}`;
         return message;
     },
@@ -1692,6 +1695,8 @@ const app = {
         
         if (tipo === 'diario') return t["menu_diario"] || "📅 Menú del Día";
         if (tipo === 'especial') return t["menu_especial"] || "⭐ Cartas Especiales";
+        if (tipo === 'normal') return t["menu_normal"] || t.defaultMenu || "📋 Carta Principal";
+        if (tipo === 'local') return t["menu_local"] || t.defaultMenu || "🏪 Menú del Local";
 
         let trans = menu.traducciones?.[this.currentLang];
         if (!trans && menu.traducciones) {
@@ -1845,6 +1850,7 @@ const app = {
             const menuPrice = this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0);
             const dailyMenuTitle = (trans?.dailyMenuPriceTitle || t["menu_diario"] || '📅 Menú del Día').trim();
             const dailyMenuHelp = (trans?.dailyMenuPriceHelp || '').trim();
+            const dailyMenuActionLabel = t.dailyMenuAdd || 'Añadir';
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
             const heroImage = (menu.recursos?.imagenes && Object.keys(menu.recursos.imagenes).length > 0)
@@ -1860,26 +1866,20 @@ const app = {
             this.dom.categoryTabsContainer.style.display = 'none';
             this.dom.content.innerHTML = `
                 <div class="daily-menu-shell fade-in-slide">
-                    <div class="daily-menu-hero">
+                    <div class="daily-menu-card">
                         <img src="${this.escapeHTML(heroImageWithCache)}" alt="${this.escapeHTML(this.getMenuTitle(menu))}">
-                        <div class="daily-menu-hero-content">
-                            <div class="daily-menu-badge">${this.escapeHTML(t["menu_diario"] || 'Menú del Día')}</div>
+                        <div class="daily-menu-card-body">
+                            <div class="daily-menu-badge">${this.escapeHTML(dailyMenuTitle)}</div>
                             <h2 class="daily-menu-title">${this.escapeHTML(this.getMenuTitle(menu))}</h2>
                             ${dailyMenuHelp ? `<p class="daily-menu-copy">${this.escapeHTML(dailyMenuHelp)}</p>` : ''}
+                            <div class="daily-menu-meta">
+                                <div class="daily-menu-price-pill">${menuPrice}</div>
+                                <button class="daily-menu-action" onclick="event.stopPropagation(); app.addDailyMenuToCart('${safeMenuData}', event.currentTarget);">${this.escapeHTML(dailyMenuActionLabel)}</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="daily-menu-body">
-                        <div class="daily-menu-price-row">
-                            <div class="daily-menu-price-pill">💎 ${this.escapeHTML(dailyMenuTitle)}</div>
-                            <div class="daily-menu-price-pill">${menuPrice}</div>
-                        </div>
-                        <div class="daily-menu-section-list">
-                            ${summaryItems ? `<div class="daily-menu-section-card"><div class="daily-menu-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div><ul>${summaryItems}</ul></div>` : ''}
-                        </div>
-                        <div class="daily-menu-price-row">
-                            <div class="dish-desc" style="margin:0;">${this.escapeHTML(t.filterButtonTitle || 'Filtrar platos')}</div>
-                            <button class="daily-menu-action" onclick="event.stopPropagation(); app.addDailyMenuToCart('${safeMenuData}', event.currentTarget);">Añadir al pedido</button>
-                        </div>
+                    <div class="daily-menu-section-list">
+                        ${summaryItems ? `<div class="daily-menu-section-card"><div class="daily-menu-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div><ul>${summaryItems}</ul></div>` : ''}
                     </div>
                 </div>
             `;
