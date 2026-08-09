@@ -21,6 +21,11 @@ const app = {
     dailySelections: {},
     toastTimer: null,
     confirmationCallback: null,
+    
+    // Generamos un sello de tiempo ÚNICO por recarga de página.
+    // Esto garantiza que el usuario vea la última versión del menú al entrar,
+    // pero que no re-descargue las imágenes cada vez que hace clic en una pestaña.
+    sessionTimestamp: Date.now(),
 
     dom: {
         header: document.getElementById('header-container'),
@@ -734,7 +739,6 @@ const app = {
         this.refreshCurrentView();
     },
 
-    /* Lógica mejorada del Menú Diario */
     addDailyMenuToCart(menu, button = null, force = false) {
         const trans = menu.traducciones?.[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
         const cats = trans?.categorias || [];
@@ -810,7 +814,7 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         document.getElementById('conf-title').textContent = title;
         document.getElementById('conf-msg').textContent = message;
-        // Botones traducidos
+        
         const confModal = document.getElementById('confirmation-modal');
         confModal.querySelectorAll('.secondary')[0].textContent = t.btnCancel;
         confModal.querySelectorAll('.primary')[0].textContent = t.btnAccept;
@@ -851,7 +855,8 @@ const app = {
         menus.forEach(menu => {
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
-            const noCacheImg = `${coverImg}?t=${new Date().getTime()}`;
+            // Usamos el timestamp de la SESIÓN. No redescarga al navegar, pero sí al recargar la web.
+            const noCacheImg = `${coverImg}?t=${this.sessionTimestamp}`;
             const menuName = this.getMenuTitle(menu);
 
             html += `
@@ -924,7 +929,8 @@ const app = {
                 : coverImg;
             
             const hasHeroImg = heroImage && heroImage.trim() !== '';
-            const heroImageWithCache = hasHeroImg ? `${heroImage}?t=${new Date().getTime()}` : '';
+            // Usamos el timestamp de la SESIÓN.
+            const heroImageWithCache = hasHeroImg ? `${heroImage}?t=${this.sessionTimestamp}` : '';
             
             html += `
                 <div class="daily-menu-shell fade-in-slide" style="margin-bottom: 30px;">
@@ -1473,18 +1479,22 @@ const app = {
         return JSON.parse(pako.inflate(new Uint8Array(compressed), { to: 'string' }));
     },
 
+    // AHORA SÍ: Siempre descarga fresco, nunca almacena caché falsa.
     async fetchRemote(id, folder) {
         const workerUrl = window.location.hostname.includes('github.io') || window.location.hostname === 'localhost' 
             ? 'https://wiissdeveloperapps.dpdns.org' 
             : ''; 
 
+        // Obliga a descargar SIEMPRE la versión más reciente del servidor
         const url = `${workerUrl}/${folder}/${id}.json?t=${Date.now()}`;
+        
         const response = await fetch(url);
         const t = I18N[this.currentLang] || I18N['es'];
         if (!response.ok) throw new Error(t.fetchError);
         
         const rawText = await response.text();
         const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
+        
         return JSON.parse(decompressed || rawText);
     }
 };
