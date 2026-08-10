@@ -101,42 +101,100 @@ const app = {
             this.sourceHash = hash;
             if (!hash) throw new Error(tInit.invalidQR);
 
-            let jsonData;
-            if (hash.startsWith('pako:')) {
-                jsonData = this.decompressPako(hash.substring(5));
-            } else if (hash.startsWith('restaurant:')) {
-                const id = hash.replace('restaurant:', '');
-                jsonData = await this.fetchRemote(id, 'restaurants');
-            } else if (hash.startsWith('remote:')) {
-                const id = hash.replace('remote:', '');
-                jsonData = await this.fetchRemote(id, 'menus');
+            // Clave única para guardar esta carta en el navegador
+            const localCacheKey = `menuforge_data_${hash}`;
+            const cachedDataStr = localStorage.getItem(localCacheKey);
+
+            if (cachedDataStr) {
+                // 1. CARGA ULTRA RÁPIDA: Tenemos datos guardados. Los pintamos al instante.
+                try {
+                    this.data = JSON.parse(cachedDataStr);
+                    this.setupUI(); // La app ya es usable en 0 ms
+                    
+                    // 2. REVALIDACIÓN: Comprobamos en segundo plano si el hostelero ha cambiado algo.
+                    this.revalidateDataInBackground(hash, localCacheKey);
+                } catch (e) {
+                    // Si falla la caché local por formato, hacemos carga normal.
+                    await this.loadFreshData(hash, localCacheKey);
+                }
             } else {
-                jsonData = await this.fetchRemote(hash, 'restaurants');
+                // Es la primera vez que este cliente escanea el QR. Toca descargar.
+                await this.loadFreshData(hash, localCacheKey);
             }
 
-            if (!jsonData.menus) {
-                this.data = {
-                    restaurantInfo: {
-                        nombre: jsonData.nombreRestaurante || '',
-                        logoBase64: jsonData.logoRestaurante || '',
-                        telefono: jsonData.telefonoRestaurante,
-                        direccion: jsonData.direccionRestaurante,
-                        email: jsonData.emailRestaurante,
-                        currency: jsonData.currency || 'EUR'
-                    },
-                    menus: [jsonData] 
-                };
-            } else {
-                this.data = jsonData;
-            }
-
-            this.setupUI();
         } catch (error) {
             console.error(error);
             const tErr = I18N[this.currentLang] || I18N['es'];
             this.dom.content.innerHTML = `<div style="text-align:center; padding: 50px; color: #ef4444;"><h3>${tErr.errorTitle}</h3><p>${error.message}</p></div>`;
         }
     },
+
+    // --- NUEVAS FUNCIONES DE SOPORTE PARA LA CACHÉ INTELIGENTE ---
+    async loadFreshData(hash, cacheKey) {
+        const rawJsonData = await this.downloadData(hash);
+        this.data = this.formatDataToStandard(rawJsonData);
+        
+        // Guardamos para la próxima vez
+        try { localStorage.setItem(cacheKey, JSON.stringify(this.data)); } catch(e) {}
+        
+        this.setupUI();
+    },
+
+    async revalidateDataInBackground(hash, cacheKey) {
+        try {
+            // Descargamos siempre la última versión forzando Date.now()
+            const freshJsonData = await this.downloadData(hash);
+            const processedFreshData = this.formatDataToStandard(freshJsonData);
+
+            // Comparamos el JSON nuevo con el que estamos mostrando
+            const newString = JSON.stringify(processedFreshData);
+            const oldString = JSON.stringify(this.data);
+
+            if (newString !== oldString) {
+                // ¡El hostelero ha actualizado algo! Actualizamos los datos de la app.
+                this.data = processedFreshData;
+                try { localStorage.setItem(cacheKey, newString); } catch(e) {}
+                
+                // Refrescamos la UI silenciosamente para mostrar los nuevos precios/platos
+                this.updateUITexts();
+                this.refreshCurrentView();
+            }
+        } catch (e) {
+            console.warn("Fallo silencioso validando actualizaciones en segundo plano.", e);
+        }
+    },
+
+    async downloadData(hash) {
+        if (hash.startsWith('pako:')) {
+            return this.decompressPako(hash.substring(5));
+        } else if (hash.startsWith('restaurant:')) {
+            const id = hash.replace('restaurant:', '');
+            return await this.fetchRemote(id, 'restaurants');
+        } else if (hash.startsWith('remote:')) {
+            const id = hash.replace('remote:', '');
+            return await this.fetchRemote(id, 'menus');
+        } else {
+            return await this.fetchRemote(hash, 'restaurants');
+        }
+    },
+
+    formatDataToStandard(jsonData) {
+        if (!jsonData.menus) {
+            return {
+                restaurantInfo: {
+                    nombre: jsonData.nombreRestaurante || '',
+                    logoBase64: jsonData.logoRestaurante || '',
+                    telefono: jsonData.telefonoRestaurante,
+                    direccion: jsonData.direccionRestaurante,
+                    email: jsonData.emailRestaurante,
+                    currency: jsonData.currency || 'EUR'
+                },
+                menus: [jsonData] 
+            };
+        }
+        return jsonData;
+    },
+    // -------------------------------------------------------------
 
     setupUI() {
         this.dom.header.style.display = 'flex';
