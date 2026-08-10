@@ -22,9 +22,6 @@ const app = {
     toastTimer: null,
     confirmationCallback: null,
     
-    // Generamos un sello de tiempo ÚNICO por recarga de página.
-    // Esto garantiza que el usuario vea la última versión del menú al entrar,
-    // pero que no re-descargue las imágenes cada vez que hace clic en una pestaña.
     sessionTimestamp: Date.now(),
 
     dom: {
@@ -76,9 +73,6 @@ const app = {
         filterModalTitle: document.getElementById('filter-modal-title'),
         filterModalOptions: document.getElementById('filter-modal-options'),
         filterApplyBtn: document.getElementById('filter-apply-btn'),
-        filterPriceMinInput: document.getElementById('filter-price-min'),
-        filterPriceMaxInput: document.getElementById('filter-price-max'),
-        filterPriceReset: document.getElementById('filter-price-reset'),
         sendOrderBtn: document.getElementById('send-order-btn'),
         confModal: document.getElementById('confirmation-modal')
     },
@@ -101,24 +95,19 @@ const app = {
             this.sourceHash = hash;
             if (!hash) throw new Error(tInit.invalidQR);
 
-            // Clave única para guardar esta carta en el navegador
             const localCacheKey = `menuforge_data_${hash}`;
             const cachedDataStr = localStorage.getItem(localCacheKey);
 
             if (cachedDataStr) {
-                // 1. CARGA ULTRA RÁPIDA: Tenemos datos guardados. Los pintamos al instante.
                 try {
                     this.data = JSON.parse(cachedDataStr);
-                    this.setupUI(); // La app ya es usable en 0 ms
+                    this.setupUI(); 
                     
-                    // 2. REVALIDACIÓN: Comprobamos en segundo plano si el hostelero ha cambiado algo.
                     this.revalidateDataInBackground(hash, localCacheKey);
                 } catch (e) {
-                    // Si falla la caché local por formato, hacemos carga normal.
                     await this.loadFreshData(hash, localCacheKey);
                 }
             } else {
-                // Es la primera vez que este cliente escanea el QR. Toca descargar.
                 await this.loadFreshData(hash, localCacheKey);
             }
 
@@ -129,12 +118,10 @@ const app = {
         }
     },
 
-    // --- NUEVAS FUNCIONES DE SOPORTE PARA LA CACHÉ INTELIGENTE ---
     async loadFreshData(hash, cacheKey) {
         const rawJsonData = await this.downloadData(hash);
         this.data = this.formatDataToStandard(rawJsonData);
         
-        // Guardamos para la próxima vez
         try { localStorage.setItem(cacheKey, JSON.stringify(this.data)); } catch(e) {}
         
         this.setupUI();
@@ -142,20 +129,16 @@ const app = {
 
     async revalidateDataInBackground(hash, cacheKey) {
         try {
-            // Descargamos siempre la última versión forzando Date.now()
             const freshJsonData = await this.downloadData(hash);
             const processedFreshData = this.formatDataToStandard(freshJsonData);
 
-            // Comparamos el JSON nuevo con el que estamos mostrando
             const newString = JSON.stringify(processedFreshData);
             const oldString = JSON.stringify(this.data);
 
             if (newString !== oldString) {
-                // ¡El hostelero ha actualizado algo! Actualizamos los datos de la app.
                 this.data = processedFreshData;
                 try { localStorage.setItem(cacheKey, newString); } catch(e) {}
                 
-                // Refrescamos la UI silenciosamente para mostrar los nuevos precios/platos
                 this.updateUITexts();
                 this.refreshCurrentView();
             }
@@ -194,7 +177,6 @@ const app = {
         }
         return jsonData;
     },
-    // -------------------------------------------------------------
 
     setupUI() {
         this.dom.header.style.display = 'flex';
@@ -263,12 +245,12 @@ const app = {
         if (this.dom.filterApplyBtn) {
             this.dom.filterApplyBtn.textContent = t.filterApply || 'Filtrar';
         }
-        if (this.dom.filterPriceMinInput) {
-            this.dom.filterPriceMinInput.value = this.minPrice != null ? this.minPrice : '';
-        }
-        if (this.dom.filterPriceMaxInput) {
-            this.dom.filterPriceMaxInput.value = this.maxPrice != null ? this.maxPrice : '';
-        }
+        
+        const minInput = document.getElementById('filter-price-min');
+        const maxInput = document.getElementById('filter-price-max');
+        if (minInput) minInput.value = this.minPrice != null ? this.minPrice : '';
+        if (maxInput) maxInput.value = this.maxPrice != null ? this.maxPrice : '';
+        
         this.dom.cartModalTitle.textContent = t.cartTitle;
         this.dom.orderNotesLabel.textContent = t.notesLabel || 'Observaciones';
         this.dom.orderNotesInput.placeholder = t.notesPlaceholder || 'Añade detalles para la cocina';
@@ -407,8 +389,11 @@ const app = {
         this.minPrice = null;
         this.maxPrice = null;
         this.dom.searchInput.value = '';
-        if (this.dom.filterPriceMinInput) this.dom.filterPriceMinInput.value = '';
-        if (this.dom.filterPriceMaxInput) this.dom.filterPriceMaxInput.value = '';
+        
+        const minInput = document.getElementById('filter-price-min');
+        const maxInput = document.getElementById('filter-price-max');
+        if (minInput) minInput.value = '';
+        if (maxInput) maxInput.value = '';
     },
 
     closeFilterModal(event, force = false) {
@@ -441,8 +426,10 @@ const app = {
     resetPriceFilter() {
         this.minPrice = null;
         this.maxPrice = null;
-        if (this.dom.filterPriceMinInput) this.dom.filterPriceMinInput.value = '';
-        if (this.dom.filterPriceMaxInput) this.dom.filterPriceMaxInput.value = '';
+        const minInput = document.getElementById('filter-price-min');
+        const maxInput = document.getElementById('filter-price-max');
+        if (minInput) minInput.value = '';
+        if (maxInput) maxInput.value = '';
         this.refreshCurrentView();
         this.renderFilterBar();
         this.renderFilterModal();
@@ -554,6 +541,7 @@ const app = {
         const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
         
+        // Sección de Categorías
         const categoryHtml = categories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
@@ -568,6 +556,31 @@ const app = {
             </div>
         ` : '';
 
+        // Sección de Etiquetas / Alergias 
+        const tagsHtml = options.length ? `
+            <div class="filter-section-card">
+                <div class="filter-section-title">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    ${options.map(opt => `
+                        <button type="button" class="filter-pill ${this.selectedFilter === opt ? 'active' : ''}" onclick="app.setActiveFilter('${this.escapeHTML(opt)}')">
+                            ${this.escapeHTML(this.getFilterIcon(opt))} ${this.escapeHTML(this.getFilterLabel(opt))}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        ` : '';
+
+        // Sección de Precio 
+        const priceHtml = `
+            <div class="filter-section-card">
+                <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
+                <div class="filter-price-row">
+                    <input type="number" id="filter-price-min" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mín')}" value="${this.minPrice != null ? this.minPrice : ''}" oninput="app.minPrice = this.value ? parseFloat(this.value) : null">
+                    <input type="number" id="filter-price-max" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máx')}" value="${this.maxPrice != null ? this.maxPrice : ''}" oninput="app.maxPrice = this.value ? parseFloat(this.value) : null">
+                </div>
+            </div>
+        `;
+
         const activeCount = [this.selectedCategory, this.selectedFilter].filter(Boolean).length + (this.minPrice != null || this.maxPrice != null ? 1 : 0);
         const footerLabel = activeCount > 0 ? `${t.filterButtonTitle || 'Filtrar'} (${activeCount})` : (t.filterButtonTitle || 'Filtrar');
         const heroHtml = `
@@ -579,7 +592,10 @@ const app = {
                 ${activeCount > 0 ? `<button type="button" class="filter-hero-clear" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>` : ''}
             </div>
         `;
-        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${heroHtml}${categoryHtml}</div>`;
+        
+        // Juntamos todo el HTML y lo incrustamos (antes faltaban variables por inyectar)
+        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${heroHtml}${categoryHtml}${tagsHtml}${priceHtml}</div>`;
+        
         const footerButton = document.querySelector('#filter-modal .filter-cta-btn.primary');
         if (footerButton) footerButton.textContent = footerLabel;
     },
@@ -913,7 +929,6 @@ const app = {
         menus.forEach(menu => {
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
-            // Usamos el timestamp de la SESIÓN. No redescarga al navegar, pero sí al recargar la web.
             const noCacheImg = `${coverImg}?t=${this.sessionTimestamp}`;
             const menuName = this.getMenuTitle(menu);
 
@@ -987,7 +1002,6 @@ const app = {
                 : coverImg;
             
             const hasHeroImg = heroImage && heroImage.trim() !== '';
-            // Usamos el timestamp de la SESIÓN.
             const heroImageWithCache = hasHeroImg ? `${heroImage}?t=${this.sessionTimestamp}` : '';
             
             html += `
@@ -1247,7 +1261,8 @@ const app = {
                 </div>
             `;
             
-            let trans = menu.traducciones?.[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
+            // Verificamos de forma segura si existen traducciones
+            let trans = menu.traducciones ? (menu.traducciones[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]]) : null;
             const images = menu.recursos?.imagenes || {};
 
             if (trans && trans.categorias) {
@@ -1537,13 +1552,11 @@ const app = {
         return JSON.parse(pako.inflate(new Uint8Array(compressed), { to: 'string' }));
     },
 
-    // AHORA SÍ: Siempre descarga fresco, nunca almacena caché falsa.
     async fetchRemote(id, folder) {
         const workerUrl = window.location.hostname.includes('github.io') || window.location.hostname === 'localhost' 
             ? 'https://wiissdeveloperapps.dpdns.org' 
             : ''; 
 
-        // Obliga a descargar SIEMPRE la versión más reciente del servidor
         const url = `${workerUrl}/${folder}/${id}.json?t=${Date.now()}`;
         
         const response = await fetch(url);
