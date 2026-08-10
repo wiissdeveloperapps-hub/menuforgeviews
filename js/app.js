@@ -513,10 +513,10 @@ const app = {
 
         const chips = [];
         if (this.selectedCategory) {
-            chips.push(`<button type="button" class="filter-pill active" onclick="app.setCategoryFilter('${this.escapeHTML(this.selectedCategory)}')">📂 ${this.escapeHTML(this.selectedCategory)}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick='app.setCategoryFilter(${JSON.stringify(this.selectedCategory)})'>📂 ${this.escapeHTML(this.selectedCategory)}</button>`);
         }
         if (this.selectedFilter) {
-            chips.push(`<button type="button" class="filter-pill active" onclick="app.setActiveFilter('${this.selectedFilter}')">${this.escapeHTML(this.getFilterIcon(this.selectedFilter))} ${this.escapeHTML(this.getFilterLabel(this.selectedFilter))}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick='app.setActiveFilter(${JSON.stringify(this.selectedFilter)})'>${this.escapeHTML(this.getFilterIcon(this.selectedFilter))} ${this.escapeHTML(this.getFilterLabel(this.selectedFilter))}</button>`);
         }
         if (this.minPrice != null || this.maxPrice != null) {
             const priceLabel = this.minPrice != null && this.maxPrice != null
@@ -541,13 +541,12 @@ const app = {
         const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
         
-        // Sección de Categorías
         const categoryHtml = categories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
                 <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     ${categories.map(category => `
-                        <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick="app.setCategoryFilter('${this.escapeHTML(category)}')">
+                        <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick='app.setCategoryFilter(${JSON.stringify(category)})'>
                             <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
                             <span class="filter-count-badge">${this.getCategoryDishCount(category)}</span>
                         </button>
@@ -556,13 +555,12 @@ const app = {
             </div>
         ` : '';
 
-        // Sección de Etiquetas / Alergias 
         const tagsHtml = options.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
                 <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     ${options.map(opt => `
-                        <button type="button" class="filter-pill ${this.selectedFilter === opt ? 'active' : ''}" onclick="app.setActiveFilter('${this.escapeHTML(opt)}')">
+                        <button type="button" class="filter-pill ${this.selectedFilter === opt ? 'active' : ''}" onclick='app.setActiveFilter(${JSON.stringify(opt)})'>
                             ${this.escapeHTML(this.getFilterIcon(opt))} ${this.escapeHTML(this.getFilterLabel(opt))}
                         </button>
                     `).join('')}
@@ -570,7 +568,6 @@ const app = {
             </div>
         ` : '';
 
-        // Sección de Precio 
         const priceHtml = `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
@@ -593,7 +590,6 @@ const app = {
             </div>
         `;
         
-        // Juntamos todo el HTML y lo incrustamos (antes faltaban variables por inyectar)
         this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${heroHtml}${categoryHtml}${tagsHtml}${priceHtml}</div>`;
         
         const footerButton = document.querySelector('#filter-modal .filter-cta-btn.primary');
@@ -1261,8 +1257,11 @@ const app = {
                 </div>
             `;
             
-            // Verificamos de forma segura si existen traducciones
-            let trans = menu.traducciones ? (menu.traducciones[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]]) : null;
+            let trans = null;
+            if (menu.traducciones) {
+                trans = menu.traducciones[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
+            }
+            
             const images = menu.recursos?.imagenes || {};
 
             if (trans && trans.categorias) {
