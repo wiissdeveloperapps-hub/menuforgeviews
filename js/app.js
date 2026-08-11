@@ -1231,9 +1231,17 @@ const app = {
         `;
     },
 
+    getPrintableMenus() {
+        const menus = this.data?.menus || [];
+        if (this.currentView === 'menu' && this.currentMenuId) {
+            return menus.filter(menu => menu.id === this.currentMenuId);
+        }
+        return menus;
+    },
+
     printFullMenu() {
         const rInfo = this.data?.restaurantInfo || {};
-        const menus = this.data?.menus || [];
+        const menus = this.getPrintableMenus();
         const t = I18N[this.currentLang] || I18N['es'];
         let printHTML = '';
 
