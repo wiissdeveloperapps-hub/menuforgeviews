@@ -46,8 +46,8 @@ const app = vm.runInContext('app', context);
 app.data = {
   restaurantInfo: {},
   menus: [
-    { id: 'menu-1', tipoMenu: 'normal', traducciones: { es: { nombreCarta: 'Carta 1', categorias: [{ nombre: 'Entrantes', platos: [{ nombre: 'Pan', precio: 3 }] }] } } },
-    { id: 'menu-2', tipoMenu: 'normal', traducciones: { es: { nombreCarta: 'Carta 2', categorias: [{ nombre: 'Postres', platos: [{ nombre: 'Tarta', precio: 5 }] }] } } }
+    { id: 'menu-1', tipoMenu: 'normal', traducciones: { es: { nombreCarta: 'Carta 1', categorias: [{ nombre: 'Entrantes', platos: [{ nombre: 'Pan', precio: 3, etiquetas: ['Vegano'], alergenos: ['Sin gluten'] }] }] } } },
+    { id: 'menu-2', tipoMenu: 'normal', traducciones: { es: { nombreCarta: 'Carta 2', categorias: [{ nombre: 'Postres', platos: [{ nombre: 'Tarta', precio: 5, etiquetas: ['Vegetariano'], alergenos: ['Lácteos'] }] }] } } }
   ]
 };
 app.currentLang = 'es';
@@ -57,4 +57,8 @@ app.currentMenuId = 'menu-2';
 const printableMenus = app.getPrintableMenus();
 assert.strictEqual(printableMenus.length, 1, 'Should print only the active menu when browsing a menu');
 assert.strictEqual(printableMenus[0].id, 'menu-2');
+const filterValues = app.getDishFilterValues(printableMenus[0].traducciones.es.categorias[0].platos[0]);
+assert.strictEqual(filterValues.length, 2);
+assert.strictEqual(filterValues[0], 'vegetariano');
+assert.strictEqual(filterValues[1], 'sin-lactosa');
 console.log('viewer regression test passed');
