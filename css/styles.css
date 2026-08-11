@@ -162,18 +162,46 @@ body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
 .filter-pill.active { background: var(--accent-gradient); color: white; border-color: transparent; box-shadow: 0 16px 30px -16px rgba(79, 70, 229, 0.4); }
 .filter-pill:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
 
+..filter-option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
 .filter-option-btn {
     width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
     border: 1px solid rgba(148, 163, 184, 0.24); background: rgba(255, 255, 255, 0.8); color: var(--text-light);
-    padding: 12px 14px; border-radius: 16px; font-weight: 700; cursor: pointer;
+    padding: 12px 14px; border-radius: 18px; font-weight: 700; cursor: pointer;
     box-shadow: 0 12px 24px -16px rgba(15, 23, 42, 0.28); transition: all 0.22s ease; backdrop-filter: blur(8px);
+    min-height: 54px;
 }
 .filter-option-btn:hover { border-color: rgba(79, 70, 229, 0.35); transform: translateY(-2px); box-shadow: 0 16px 26px -16px rgba(79, 70, 229, 0.28); }
-.filter-option-btn.active { background: linear-gradient(135deg, rgba(79, 70, 229, 0.14), rgba(124, 58, 237, 0.12)); color: var(--accent); border-color: rgba(79, 70, 229, 0.28); }
+.filter-option-btn.active { background: linear-gradient(135deg, rgba(79, 70, 229, 0.14), rgba(124, 58, 237, 0.12)); color: var(--accent); border-color: rgba(79, 70, 229, 0.28); box-shadow: 0 16px 30px -18px rgba(79, 70, 229, 0.35); }
+.filter-option-label { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.filter-option-icon { font-size: 1rem; }
 .filter-option-toggle { width: 36px; height: 20px; border-radius: 999px; background: rgba(15, 23, 42, 0.12); position: relative; flex-shrink: 0; transition: all 0.25s ease; }
 .filter-option-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: all 0.25s ease; }
 .filter-option-btn.active .filter-option-toggle { background: rgba(79, 70, 229, 0.35); }
 .filter-option-btn.active .filter-option-toggle::after { transform: translateX(16px); background: var(--accent); }
+.filter-chip-card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    min-height: 48px;
+    border: 1px solid rgba(148,163,184,0.22);
+    background: rgba(255,255,255,0.84);
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.2;
+}
+.filter-chip-card.active {
+    background: linear-gradient(135deg, rgba(79,70,229,0.16), rgba(124,58,237,0.14));
+    color: var(--accent);
+    border-color: rgba(79,70,229,0.28);
+}
+.filter-chip-icon { font-size: 1rem; }
 
 .filter-price-row { display: flex; align-items: center; gap: 10px; margin-top: 0; }
 .filter-price-input { flex: 1; border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 14px; padding: 10px 12px; background: rgba(255, 255, 255, 0.86); color: var(--text-light); font: inherit; min-width: 0; }
@@ -204,6 +232,7 @@ body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
 
 body.dark-mode .filter-pill { background: linear-gradient(135deg, rgba(18,18,21,0.95), rgba(24,24,27,0.92)); border-color: rgba(82,82,91,0.45); }
 body.dark-mode .filter-option-btn { background: rgba(18,18,21,0.82); }
+body.dark-mode .filter-chip-card { background: rgba(18,18,21,0.82); }
 body.dark-mode .filter-section-card { background: linear-gradient(145deg, rgba(18,18,21,0.9), rgba(24,24,27,0.92)); }
 body.dark-mode .filter-hero-card { background: linear-gradient(135deg, rgba(79,70,229,0.18), rgba(124,58,237,0.14)); }
 body.dark-mode .filter-modal-content { background: linear-gradient(180deg, rgba(18,18,21,0.97), rgba(24,24,27,0.97)); }

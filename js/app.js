@@ -21,6 +21,11 @@ const app = {
     dailySelections: {},
     toastTimer: null,
     confirmationCallback: null,
+    selectedFilters: [],
+    pendingSelectedFilters: [],
+    pendingSelectedCategory: null,
+    pendingMinPrice: null,
+    pendingMaxPrice: null,
     
     sessionTimestamp: Date.now(),
 
@@ -362,13 +367,17 @@ const app = {
     toggleFilterPanel() {
         const options = this.getAvailableFilterOptions();
         if (!options.length && !this.getAvailableCategories().length) return;
+        this.pendingSelectedFilters = [...this.selectedFilters];
+        this.pendingSelectedCategory = this.selectedCategory;
+        this.pendingMinPrice = this.minPrice;
+        this.pendingMaxPrice = this.maxPrice;
         this.renderFilterModal();
         this.dom.filterModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     },
 
     goBack() {
-        if (this.searchQuery || this.selectedFilter || this.selectedCategory || this.minPrice != null || this.maxPrice != null) {
+        if (this.searchQuery || this.selectedFilters.length || this.selectedCategory || this.minPrice != null || this.maxPrice != null) {
             this.clearSearchAndFilters();
             this.refreshCurrentView();
             return;
@@ -384,10 +393,14 @@ const app = {
 
     clearSearchAndFilters() {
         this.searchQuery = '';
-        this.selectedFilter = null;
+        this.selectedFilters = [];
         this.selectedCategory = null;
         this.minPrice = null;
         this.maxPrice = null;
+        this.pendingSelectedFilters = [];
+        this.pendingSelectedCategory = null;
+        this.pendingMinPrice = null;
+        this.pendingMaxPrice = null;
         this.dom.searchInput.value = '';
         
         const minInput = document.getElementById('filter-price-min');
@@ -403,21 +416,32 @@ const app = {
         }
     },
 
-    setActiveFilter(filter) {
-        this.selectedFilter = this.selectedFilter === filter ? null : filter;
-        this.refreshCurrentView();
-        this.renderFilterBar();
+    togglePendingFilter(filter) {
+        this.pendingSelectedFilters = this.pendingSelectedFilters.includes(filter)
+            ? this.pendingSelectedFilters.filter(item => item !== filter)
+            : [...this.pendingSelectedFilters, filter];
         this.renderFilterModal();
     },
 
-    setCategoryFilter(category) {
-        this.selectedCategory = this.selectedCategory === category ? null : category;
-        this.refreshCurrentView();
-        this.renderFilterBar();
+    togglePendingCategory(category) {
+        this.pendingSelectedCategory = this.pendingSelectedCategory === category ? null : category;
         this.renderFilterModal();
+    },
+
+    setPendingPriceFilter(type, value) {
+        const parsed = value === '' || value == null ? null : parseFloat(value);
+        if (type === 'min') {
+            this.pendingMinPrice = Number.isFinite(parsed) ? parsed : null;
+        } else {
+            this.pendingMaxPrice = Number.isFinite(parsed) ? parsed : null;
+        }
     },
 
     applyCurrentFiltersAndClose() {
+        this.selectedFilters = [...this.pendingSelectedFilters];
+        this.selectedCategory = this.pendingSelectedCategory;
+        this.minPrice = this.pendingMinPrice;
+        this.maxPrice = this.pendingMaxPrice;
         this.refreshCurrentView();
         this.renderFilterBar();
         this.closeFilterModal({ target: this.dom.filterModal }, true);
@@ -426,6 +450,8 @@ const app = {
     resetPriceFilter() {
         this.minPrice = null;
         this.maxPrice = null;
+        this.pendingMinPrice = null;
+        this.pendingMaxPrice = null;
         const minInput = document.getElementById('filter-price-min');
         const maxInput = document.getElementById('filter-price-max');
         if (minInput) minInput.value = '';
@@ -513,11 +539,11 @@ const app = {
 
         const chips = [];
         if (this.selectedCategory) {
-            chips.push(`<button type="button" class="filter-pill active" onclick='app.setCategoryFilter(${JSON.stringify(this.selectedCategory)})'>📂 ${this.escapeHTML(this.selectedCategory)}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick='app.togglePendingCategory(${JSON.stringify(this.selectedCategory)}); app.applyCurrentFiltersAndClose();'>🍽️ ${this.escapeHTML(this.selectedCategory)}</button>`);
         }
-        if (this.selectedFilter) {
-            chips.push(`<button type="button" class="filter-pill active" onclick='app.setActiveFilter(${JSON.stringify(this.selectedFilter)})'>${this.escapeHTML(this.getFilterIcon(this.selectedFilter))} ${this.escapeHTML(this.getFilterLabel(this.selectedFilter))}</button>`);
-        }
+        this.selectedFilters.forEach(filter => {
+            chips.push(`<button type="button" class="filter-pill active" onclick='app.togglePendingFilter(${JSON.stringify(filter)}); app.applyCurrentFiltersAndClose();'>${this.escapeHTML(this.getFilterIcon(filter))} ${this.escapeHTML(this.getFilterLabel(filter))}</button>`);
+        });
         if (this.minPrice != null || this.maxPrice != null) {
             const priceLabel = this.minPrice != null && this.maxPrice != null
                 ? `${this.formatPrice(this.minPrice)} – ${this.formatPrice(this.maxPrice)}`
@@ -540,14 +566,26 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
+        const orderedOptions = [...options].sort((a, b) => {
+            const aSelected = this.pendingSelectedFilters.includes(a);
+            const bSelected = this.pendingSelectedFilters.includes(b);
+            if (aSelected !== bSelected) return aSelected ? -1 : 1;
+            return a.localeCompare(b);
+        });
+        const orderedCategories = [...categories].sort((a, b) => {
+            const aSelected = this.pendingSelectedCategory === a;
+            const bSelected = this.pendingSelectedCategory === b;
+            if (aSelected !== bSelected) return aSelected ? -1 : 1;
+            return a.localeCompare(b);
+        });
         
-        const categoryHtml = categories.length ? `
+        const categoryHtml = orderedCategories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                    ${categories.map(category => `
-                        <button type="button" class="filter-option-btn ${this.selectedCategory === category ? 'active' : ''}" onclick='app.setCategoryFilter(${JSON.stringify(category)})'>
-                            <span class="filter-option-label"><span class="filter-option-icon">📂</span><span>${this.escapeHTML(category)}</span></span>
+                <div class="filter-option-grid">
+                    ${orderedCategories.map(category => `
+                        <button type="button" class="filter-option-btn ${this.pendingSelectedCategory === category ? 'active' : ''}" onclick='app.togglePendingCategory(${JSON.stringify(category)})'>
+                            <span class="filter-option-label"><span class="filter-option-icon">🍽️</span><span>${this.escapeHTML(category)}</span></span>
                             <span class="filter-count-badge">${this.getCategoryDishCount(category)}</span>
                         </button>
                     `).join('')}
@@ -555,13 +593,14 @@ const app = {
             </div>
         ` : '';
 
-        const tagsHtml = options.length ? `
+        const tagsHtml = orderedOptions.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                    ${options.map(opt => `
-                        <button type="button" class="filter-pill ${this.selectedFilter === opt ? 'active' : ''}" onclick='app.setActiveFilter(${JSON.stringify(opt)})'>
-                            ${this.escapeHTML(this.getFilterIcon(opt))} ${this.escapeHTML(this.getFilterLabel(opt))}
+                <div class="filter-option-grid">
+                    ${orderedOptions.map(opt => `
+                        <button type="button" class="filter-pill filter-chip-card ${this.pendingSelectedFilters.includes(opt) ? 'active' : ''}" onclick='app.togglePendingFilter(${JSON.stringify(opt)})'>
+                            <span class="filter-chip-icon">${this.escapeHTML(this.getFilterIcon(opt))}</span>
+                            <span>${this.escapeHTML(this.getFilterLabel(opt))}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -572,19 +611,19 @@ const app = {
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
                 <div class="filter-price-row">
-                    <input type="number" id="filter-price-min" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mín')}" value="${this.minPrice != null ? this.minPrice : ''}" oninput="app.minPrice = this.value ? parseFloat(this.value) : null">
-                    <input type="number" id="filter-price-max" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máx')}" value="${this.maxPrice != null ? this.maxPrice : ''}" oninput="app.maxPrice = this.value ? parseFloat(this.value) : null">
+                    <input type="number" id="filter-price-min" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mín')}" value="${this.pendingMinPrice != null ? this.pendingMinPrice : ''}" oninput="app.setPendingPriceFilter('min', this.value)">
+                    <input type="number" id="filter-price-max" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máx')}" value="${this.pendingMaxPrice != null ? this.pendingMaxPrice : ''}" oninput="app.setPendingPriceFilter('max', this.value)">
                 </div>
             </div>
         `;
 
-        const activeCount = [this.selectedCategory, this.selectedFilter].filter(Boolean).length + (this.minPrice != null || this.maxPrice != null ? 1 : 0);
-        const footerLabel = activeCount > 0 ? `${t.filterButtonTitle || 'Filtrar'} (${activeCount})` : (t.filterButtonTitle || 'Filtrar');
+        const activeCount = [this.pendingSelectedCategory].filter(Boolean).length + this.pendingSelectedFilters.length + (this.pendingMinPrice != null || this.pendingMaxPrice != null ? 1 : 0);
+        const footerLabel = activeCount > 0 ? `${t.filterApply || 'Aplicar filtros'} (${activeCount})` : (t.filterApply || 'Aplicar filtros');
         const heroHtml = `
             <div class="filter-hero-card">
                 <div>
                     <div class="filter-hero-eyebrow">${this.escapeHTML(t.filterButtonTitle || 'Filtrar platos')}</div>
-                    <div class="filter-hero-title">${activeCount > 0 ? `${activeCount} filtros activos` : 'Refina la vista del menú'}</div>
+                    <div class="filter-hero-title">${activeCount > 0 ? `${activeCount} filtros listos` : 'Refina la vista del menú'}</div>
                 </div>
                 ${activeCount > 0 ? `<button type="button" class="filter-hero-clear" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>` : ''}
             </div>
@@ -601,8 +640,9 @@ const app = {
             const categoryName = this.getCurrentCategoryNameForDish(dish);
             if (categoryName !== this.selectedCategory) return false;
         }
-        if (this.selectedFilter) {
-            if (!this.getDishFilterValues(dish).includes(this.selectedFilter)) return false;
+        if (this.selectedFilters.length) {
+            const dishValues = new Set(this.getDishFilterValues(dish));
+            if (!this.selectedFilters.every(filter => dishValues.has(filter))) return false;
         }
         if (this.minPrice != null && typeof dish.precio === 'number' && dish.precio < this.minPrice) return false;
         if (this.maxPrice != null && typeof dish.precio === 'number' && dish.precio > this.maxPrice) return false;
