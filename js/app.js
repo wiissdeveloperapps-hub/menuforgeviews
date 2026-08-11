@@ -13,19 +13,20 @@ const app = {
     cart: [],
     whatsapp: { enabled: false, phone: '', msgLang: 'es' },
     tables: [],
-    selectedFilter: null,
-    showFilterBar: false,
-    filterOptions: [],
+    selectedFilters: [],
+    
+    // Variables para el borrador del modal premium
+    pendingSelectedFilters: [],
+    pendingSelectedCategory: null,
+    pendingMinPrice: null,
+    pendingMaxPrice: null,
+    tempPriceLevel: null,
+    
     orderNotes: '',
     selectedQuickNotes: [],
     dailySelections: {},
     toastTimer: null,
     confirmationCallback: null,
-    selectedFilters: [],
-    pendingSelectedFilters: [],
-    pendingSelectedCategory: null,
-    pendingMinPrice: null,
-    pendingMaxPrice: null,
     
     sessionTimestamp: Date.now(),
 
@@ -77,7 +78,6 @@ const app = {
         filterModal: document.getElementById('filter-modal'),
         filterModalTitle: document.getElementById('filter-modal-title'),
         filterModalOptions: document.getElementById('filter-modal-options'),
-        filterApplyBtn: document.getElementById('filter-apply-btn'),
         sendOrderBtn: document.getElementById('send-order-btn'),
         confModal: document.getElementById('confirmation-modal')
     },
@@ -247,14 +247,6 @@ const app = {
         this.dom.filterToggleBtn.title = t.filterButtonTitle || 'Filtrar platos';
         this.dom.filterToggleBtn.setAttribute('aria-label', t.filterToggleAriaLabel || t.filterButtonTitle || 'Filtrar platos');
         this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
-        if (this.dom.filterApplyBtn) {
-            this.dom.filterApplyBtn.textContent = t.filterApply || 'Filtrar';
-        }
-        
-        const minInput = document.getElementById('filter-price-min');
-        const maxInput = document.getElementById('filter-price-max');
-        if (minInput) minInput.value = this.minPrice != null ? this.minPrice : '';
-        if (maxInput) maxInput.value = this.maxPrice != null ? this.maxPrice : '';
         
         this.dom.cartModalTitle.textContent = t.cartTitle;
         this.dom.orderNotesLabel.textContent = t.notesLabel || 'Observaciones';
@@ -367,10 +359,19 @@ const app = {
     toggleFilterPanel() {
         const options = this.getAvailableFilterOptions();
         if (!options.length && !this.getAvailableCategories().length) return;
+        
+        // Copia el estado real a los borradores
         this.pendingSelectedFilters = [...this.selectedFilters];
         this.pendingSelectedCategory = this.selectedCategory;
         this.pendingMinPrice = this.minPrice;
         this.pendingMaxPrice = this.maxPrice;
+        
+        // Sincroniza el nivel del Segmented Control visualmente
+        if (this.minPrice == null && this.maxPrice === 10) this.tempPriceLevel = 1;
+        else if (this.minPrice === 10 && this.maxPrice === 20) this.tempPriceLevel = 2;
+        else if (this.minPrice === 20 && this.maxPrice == null) this.tempPriceLevel = 3;
+        else this.tempPriceLevel = null;
+
         this.renderFilterModal();
         this.dom.filterModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -397,16 +398,14 @@ const app = {
         this.selectedCategory = null;
         this.minPrice = null;
         this.maxPrice = null;
+        
         this.pendingSelectedFilters = [];
         this.pendingSelectedCategory = null;
         this.pendingMinPrice = null;
         this.pendingMaxPrice = null;
-        this.dom.searchInput.value = '';
+        this.tempPriceLevel = null;
         
-        const minInput = document.getElementById('filter-price-min');
-        const maxInput = document.getElementById('filter-price-max');
-        if (minInput) minInput.value = '';
-        if (maxInput) maxInput.value = '';
+        this.dom.searchInput.value = '';
     },
 
     closeFilterModal(event, force = false) {
@@ -428,13 +427,27 @@ const app = {
         this.renderFilterModal();
     },
 
-    setPendingPriceFilter(type, value) {
-        const parsed = value === '' || value == null ? null : parseFloat(value);
-        if (type === 'min') {
-            this.pendingMinPrice = Number.isFinite(parsed) ? parsed : null;
+    setPriceLevel(level) {
+        if (this.tempPriceLevel === level) {
+            this.tempPriceLevel = null;
+            this.pendingMinPrice = null;
+            this.pendingMaxPrice = null;
         } else {
-            this.pendingMaxPrice = Number.isFinite(parsed) ? parsed : null;
+            this.tempPriceLevel = level;
+            if (level === 1) { this.pendingMinPrice = null; this.pendingMaxPrice = 10; }
+            else if (level === 2) { this.pendingMinPrice = 10; this.pendingMaxPrice = 20; }
+            else if (level === 3) { this.pendingMinPrice = 20; this.pendingMaxPrice = null; }
         }
+        this.renderFilterModal();
+    },
+
+    clearTempFilters() {
+        this.pendingSelectedFilters = [];
+        this.pendingSelectedCategory = null;
+        this.pendingMinPrice = null;
+        this.pendingMaxPrice = null;
+        this.tempPriceLevel = null;
+        this.renderFilterModal();
     },
 
     applyCurrentFiltersAndClose() {
@@ -442,23 +455,10 @@ const app = {
         this.selectedCategory = this.pendingSelectedCategory;
         this.minPrice = this.pendingMinPrice;
         this.maxPrice = this.pendingMaxPrice;
+        
         this.refreshCurrentView();
         this.renderFilterBar();
         this.closeFilterModal({ target: this.dom.filterModal }, true);
-    },
-
-    resetPriceFilter() {
-        this.minPrice = null;
-        this.maxPrice = null;
-        this.pendingMinPrice = null;
-        this.pendingMaxPrice = null;
-        const minInput = document.getElementById('filter-price-min');
-        const maxInput = document.getElementById('filter-price-max');
-        if (minInput) minInput.value = '';
-        if (maxInput) maxInput.value = '';
-        this.refreshCurrentView();
-        this.renderFilterBar();
-        this.renderFilterModal();
     },
 
     normalizeFilterValue(value) {
@@ -515,7 +515,7 @@ const app = {
                 });
             });
         });
-        return [...options].filter(Boolean).sort();
+        return [...options].filter(Boolean);
     },
 
     getAvailableCategories() {
@@ -539,16 +539,16 @@ const app = {
 
         const chips = [];
         if (this.selectedCategory) {
-            chips.push(`<button type="button" class="filter-pill active" onclick='app.togglePendingCategory(${JSON.stringify(this.selectedCategory)}); app.applyCurrentFiltersAndClose();'>🍽️ ${this.escapeHTML(this.selectedCategory)}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick='app.selectedCategory = null; app.pendingSelectedCategory = null; app.refreshCurrentView(); app.renderFilterBar();'>🍽️ ${this.escapeHTML(this.selectedCategory)}</button>`);
         }
         this.selectedFilters.forEach(filter => {
-            chips.push(`<button type="button" class="filter-pill active" onclick='app.togglePendingFilter(${JSON.stringify(filter)}); app.applyCurrentFiltersAndClose();'>${this.escapeHTML(this.getFilterIcon(filter))} ${this.escapeHTML(this.getFilterLabel(filter))}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick='app.selectedFilters = app.selectedFilters.filter(f => f !== ${JSON.stringify(filter)}); app.pendingSelectedFilters = [...app.selectedFilters]; app.refreshCurrentView(); app.renderFilterBar();'>${this.escapeHTML(this.getFilterIcon(filter))} ${this.escapeHTML(this.getFilterLabel(filter))}</button>`);
         });
         if (this.minPrice != null || this.maxPrice != null) {
             const priceLabel = this.minPrice != null && this.maxPrice != null
                 ? `${this.formatPrice(this.minPrice)} – ${this.formatPrice(this.maxPrice)}`
                 : this.maxPrice != null ? `≤ ${this.formatPrice(this.maxPrice)}` : `≥ ${this.formatPrice(this.minPrice)}`;
-            chips.push(`<button type="button" class="filter-pill active" onclick="app.resetPriceFilter()">💸 ${this.escapeHTML(priceLabel)}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick="app.minPrice = null; app.maxPrice = null; app.tempPriceLevel = null; app.pendingMinPrice = null; app.pendingMaxPrice = null; app.refreshCurrentView(); app.renderFilterBar();">💸 ${this.escapeHTML(priceLabel)}</button>`);
         }
 
         if (!chips.length) return;
@@ -556,7 +556,7 @@ const app = {
         this.dom.filterBarContainer.innerHTML = `
             <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
                 ${chips.join('')}
-                <button type="button" class="filter-pill" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
+                <button type="button" class="filter-pill filter-btn-clear-inline" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>
             </div>
         `;
         this.dom.filterBarContainer.style.display = 'flex';
@@ -564,88 +564,131 @@ const app = {
 
     renderFilterModal() {
         const t = I18N[this.currentLang] || I18N['es'];
-        const options = this.getAvailableFilterOptions();
         const categories = this.getAvailableCategories();
-        const orderedOptions = [...options].sort((a, b) => {
-            const aSelected = this.pendingSelectedFilters.includes(a);
-            const bSelected = this.pendingSelectedFilters.includes(b);
-            if (aSelected !== bSelected) return aSelected ? -1 : 1;
-            return a.localeCompare(b);
-        });
-        const orderedCategories = [...categories].sort((a, b) => {
-            const aSelected = this.pendingSelectedCategory === a;
-            const bSelected = this.pendingSelectedCategory === b;
-            if (aSelected !== bSelected) return aSelected ? -1 : 1;
-            return a.localeCompare(b);
-        });
         
-        const categoryHtml = orderedCategories.length ? `
+        // Iconos elegantes para las categorías más comunes
+        const categoryIcons = { 'Desayunos': '☕', 'Comidas': '☀️', 'Meriendas': '🧁', 'Cenas': '🌙', 'Postres': '🍰', 'Bebidas': '🥤', 'Entrantes': '🥗', 'Principales': '🥩' };
+        
+        const categoryHtml = categories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
-                <div class="filter-option-grid">
-                    ${orderedCategories.map(category => `
-                        <button type="button" class="filter-option-btn ${this.pendingSelectedCategory === category ? 'active' : ''}" onclick='app.togglePendingCategory(${JSON.stringify(category)})'>
-                            <span class="filter-option-label"><span class="filter-option-icon">🍽️</span><span>${this.escapeHTML(category)}</span></span>
-                            <span class="filter-count-badge">${this.getCategoryDishCount(category)}</span>
+                <div class="filter-grid-2">
+                    ${categories.map(category => {
+                        const isActive = this.pendingSelectedCategory === category;
+                        const icon = categoryIcons[category] || '🍽️';
+                        return `
+                        <button type="button" class="filter-option-btn ${isActive ? 'active' : ''}" onclick='app.togglePendingCategory(${JSON.stringify(category)})'>
+                            <span class="filter-option-label"><span class="filter-option-icon">${icon}</span><span>${this.escapeHTML(category)}</span></span>
+                            <span class="filter-count-badge" style="${isActive ? 'background: rgba(255,255,255,0.25); color: inherit;' : ''}">${this.getCategoryDishCount(category)}</span>
                         </button>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
             </div>
         ` : '';
 
-        const tagsHtml = orderedOptions.length ? `
+        // Todos los tags posibles del diccionario
+        const allTagKeys = Object.keys(FILTER_DICTIONARY);
+        const availableTags = this.getAvailableFilterOptions();
+        
+        // Orden: Primero los disponibles, luego por orden alfabético
+        const orderedTags = allTagKeys.sort((a, b) => {
+            const aAvail = availableTags.includes(a);
+            const bAvail = availableTags.includes(b);
+            if (aAvail !== bAvail) return aAvail ? -1 : 1;
+            return this.getFilterLabel(a).localeCompare(this.getFilterLabel(b));
+        });
+
+        const tagsHtml = `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterTagsTitle || 'Etiquetas y alergias')}</div>
-                <div class="filter-option-grid">
-                    ${orderedOptions.map(opt => `
-                        <button type="button" class="filter-pill filter-chip-card ${this.pendingSelectedFilters.includes(opt) ? 'active' : ''}" onclick='app.togglePendingFilter(${JSON.stringify(opt)})'>
-                            <span class="filter-chip-icon">${this.escapeHTML(this.getFilterIcon(opt))}</span>
-                            <span>${this.escapeHTML(this.getFilterLabel(opt))}</span>
-                        </button>
-                    `).join('')}
+                <div class="filter-option-grid" style="display:flex; flex-wrap: wrap;">
+                    ${orderedTags.map(opt => {
+                        const isAvailable = availableTags.includes(opt);
+                        const isActive = this.pendingSelectedFilters.includes(opt);
+                        if(isAvailable) {
+                            return `
+                            <button type="button" class="filter-pill filter-chip-card ${isActive ? 'active' : ''}" onclick='app.togglePendingFilter(${JSON.stringify(opt)})'>
+                                <span class="filter-chip-icon">${this.escapeHTML(this.getFilterIcon(opt))}</span>
+                                <span>${this.escapeHTML(this.getFilterLabel(opt))}</span>
+                            </button>
+                            `;
+                        } else {
+                            // Chip deshabilitado para lo que no existe en el menú actual
+                            return `
+                            <button type="button" class="filter-pill filter-chip-card disabled-chip" disabled>
+                                <span class="filter-chip-icon" style="filter: grayscale(100%); opacity: 0.5;">${this.escapeHTML(this.getFilterIcon(opt))}</span>
+                                <span style="opacity: 0.5;">${this.escapeHTML(this.getFilterLabel(opt))}</span>
+                            </button>
+                            `;
+                        }
+                    }).join('')}
                 </div>
             </div>
-        ` : '';
+        `;
 
         const priceHtml = `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
-                <div class="filter-price-row">
-                    <input type="number" id="filter-price-min" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mín')}" value="${this.pendingMinPrice != null ? this.pendingMinPrice : ''}" oninput="app.setPendingPriceFilter('min', this.value)">
-                    <input type="number" id="filter-price-max" class="filter-price-input" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máx')}" value="${this.pendingMaxPrice != null ? this.pendingMaxPrice : ''}" oninput="app.setPendingPriceFilter('max', this.value)">
+                <div class="segmented-control">
+                    <button type="button" class="segment-btn ${this.tempPriceLevel === 1 ? 'active' : ''}" onclick="app.setPriceLevel(1)">€</button>
+                    <button type="button" class="segment-btn ${this.tempPriceLevel === 2 ? 'active' : ''}" onclick="app.setPriceLevel(2)">€€</button>
+                    <button type="button" class="segment-btn ${this.tempPriceLevel === 3 ? 'active' : ''}" onclick="app.setPriceLevel(3)">€€€</button>
+                </div>
+                <div class="price-legend">
+                    <span>&lt; 10€</span>
+                    <span>10€ - 20€</span>
+                    <span>&gt; 20€</span>
                 </div>
             </div>
         `;
+
+        // Cálculo dinámico para previsualizar los resultados en el botón
+        let matchingDishesCount = 0;
+        (this.data?.menus || []).forEach(m => {
+            const trans = m.traducciones?.[this.currentLang] || m.traducciones?.[Object.keys(m.traducciones || {})[0]];
+            (trans?.categorias || []).forEach(c => {
+                (c.platos || []).forEach(p => {
+                    if (this.shouldShowDish(p, true)) matchingDishesCount++;
+                });
+            });
+        });
 
         const activeCount = [this.pendingSelectedCategory].filter(Boolean).length + this.pendingSelectedFilters.length + (this.pendingMinPrice != null || this.pendingMaxPrice != null ? 1 : 0);
-        const footerLabel = activeCount > 0 ? `${t.filterApply || 'Aplicar filtros'} (${activeCount})` : (t.filterApply || 'Aplicar filtros');
-        const heroHtml = `
-            <div class="filter-hero-card">
-                <div>
-                    <div class="filter-hero-eyebrow">${this.escapeHTML(t.filterButtonTitle || 'Filtrar platos')}</div>
-                    <div class="filter-hero-title">${activeCount > 0 ? `${activeCount} filtros listos` : 'Refina la vista del menú'}</div>
-                </div>
-                ${activeCount > 0 ? `<button type="button" class="filter-hero-clear" onclick="app.clearSearchAndFilters(); app.refreshCurrentView(); app.renderFilterBar();">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>` : ''}
-            </div>
-        `;
         
-        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${heroHtml}${categoryHtml}${tagsHtml}${priceHtml}</div>`;
+        this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
+        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${categoryHtml}${tagsHtml}${priceHtml}</div>`;
         
-        const footerButton = document.querySelector('#filter-modal .filter-cta-btn.primary');
-        if (footerButton) footerButton.textContent = footerLabel;
+        const modalFooter = document.querySelector('#filter-modal .filter-modal-footer');
+        if (modalFooter) {
+            modalFooter.innerHTML = `
+                ${activeCount > 0 
+                    ? `<button type="button" class="filter-btn-clear-link" onclick="app.clearTempFilters()">${this.escapeHTML(t.filterClear || 'Limpiar')}</button>` 
+                    : `<div style="width: 80px;"></div>`
+                }
+                <button type="button" class="filter-cta-btn primary" onclick="app.applyCurrentFiltersAndClose()">
+                    ${this.escapeHTML(t.applyFilters || 'Mostrar resultados')} (${matchingDishesCount})
+                </button>
+            `;
+        }
     },
 
-    shouldShowDish(dish) {
-        if (this.selectedCategory) {
+    shouldShowDish(dish, isTemp = false) {
+        const cat = isTemp ? this.pendingSelectedCategory : this.selectedCategory;
+        const filters = isTemp ? this.pendingSelectedFilters : this.selectedFilters;
+        const minP = isTemp ? this.pendingMinPrice : this.minPrice;
+        const maxP = isTemp ? this.pendingMaxPrice : this.maxPrice;
+
+        if (cat) {
             const categoryName = this.getCurrentCategoryNameForDish(dish);
-            if (categoryName !== this.selectedCategory) return false;
+            if (categoryName !== cat) return false;
         }
-        if (this.selectedFilters.length) {
+        if (filters && filters.length > 0) {
             const dishValues = new Set(this.getDishFilterValues(dish));
-            if (!this.selectedFilters.every(filter => dishValues.has(filter))) return false;
+            if (!filters.every(filter => dishValues.has(filter))) return false;
         }
-        if (this.minPrice != null && typeof dish.precio === 'number' && dish.precio < this.minPrice) return false;
-        if (this.maxPrice != null && typeof dish.precio === 'number' && dish.precio > this.maxPrice) return false;
+        if (minP != null && typeof dish.precio === 'number' && dish.precio < minP) return false;
+        if (maxP != null && typeof dish.precio === 'number' && dish.precio > maxP) return false;
         return true;
     },
 
@@ -998,7 +1041,7 @@ const app = {
                 const translatedName = this.getCategoryName(cat.key, cat.nombre);
                 if (translatedName !== categoryName) return;
                 (cat.platos || []).forEach(dish => {
-                    if (this.shouldShowDish(dish)) count += 1;
+                    if (this.shouldShowDish(dish, false)) count += 1;
                 });
             });
         });
@@ -1287,6 +1330,9 @@ const app = {
 
         menus.forEach((menu, index) => {
             const menuName = this.getMenuTitle(menu);
+            const isDaily = this.isDailyMenu(menu);
+            const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
+            
             const breakClass = index > 0 ? 'pdf-page-break' : '';
             printHTML += `<div class="pdf-page-section ${breakClass}">`;
             
@@ -1302,6 +1348,7 @@ const app = {
                 </div>
                 <div class="pdf-menu-title-box">
                     <span>${this.escapeHTML(menuName)}</span>
+                    ${isDaily && menu.precio > 0 ? `<br><span style="font-size: 0.8em; font-weight: normal; color: #555;">Total Menú: ${globalPrice}</span>` : ''}
                 </div>
             `;
             
@@ -1319,7 +1366,10 @@ const app = {
                     
                     if (cat.platos) {
                         cat.platos.forEach(dish => {
-                            const priceFormatted = this.formatPrice(dish.precio);
+                            const isDishZero = !dish.precio || dish.precio === 0;
+                            // En menú diario ocultamos los platos que tengan valor cero para no mostrar 0,00€
+                            const hidePrice = isDaily && isDishZero;
+                            const priceFormatted = hidePrice ? '' : this.formatPrice(dish.precio);
                             const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
                             
                             printHTML += `
@@ -1329,8 +1379,7 @@ const app = {
                                         <p class="pdf-dish-name">${this.escapeHTML(dish.nombre)}</p>
                                         ${dish.descripcion ? `<p class="pdf-dish-desc">${this.escapeHTML(dish.descripcion)}</p>` : ''}
                                     </div>
-                                    <div class="pdf-dish-dots"></div>
-                                    <div class="pdf-dish-price">${priceFormatted}</div>
+                                    ${!hidePrice ? `<div class="pdf-dish-dots"></div><div class="pdf-dish-price">${priceFormatted}</div>` : ''}
                                 </div>
                             `;
                         });

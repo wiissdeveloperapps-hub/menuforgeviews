@@ -69,7 +69,7 @@
 <div id="print-container"></div>
 
 <div id="dish-modal" class="modal-overlay" onclick="app.closeModal(event)">
-    <div class="modal-content">
+    <div class="modal-content dish-modal-content">
         <button id="modal-close" class="modal-close" onclick="app.closeModal(event, true)">✕</button>
         <div id="modal-img-wrapper" class="modal-img-wrapper">
             <img id="modal-img" class="modal-img" src="" alt="">
@@ -94,9 +94,7 @@
             <button type="button" class="filter-modal-close" onclick="app.closeFilterModal(event, true)">✕</button>
         </div>
         <div id="filter-modal-options" class="filter-modal-list"></div>
-        <div class="filter-modal-footer">
-            <button type="button" id="filter-apply-btn" class="filter-cta-btn primary" onclick="app.applyCurrentFiltersAndClose()"></button>
-        </div>
+        <div class="filter-modal-footer"></div>
     </div>
 </div>
 
@@ -129,7 +127,7 @@
 </div>
 
 <div id="cart-modal" class="modal-overlay" onclick="app.closeCart(event)">
-    <div class="modal-content">
+    <div class="modal-content cart-modal-content">
         <button class="modal-close" onclick="app.closeCart(event, true)">✕</button>
         <div class="modal-body" style="text-align: left;">
             <h3 id="cart-modal-title" class="modal-title" style="text-align: center;"></h3>
