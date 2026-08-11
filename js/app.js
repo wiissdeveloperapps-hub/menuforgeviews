@@ -20,7 +20,6 @@ const app = {
     pendingSelectedCategory: null,
     pendingMinPrice: null,
     pendingMaxPrice: null,
-    tempPriceLevel: null,
     
     orderNotes: '',
     selectedQuickNotes: [],
@@ -107,7 +106,6 @@ const app = {
                 try {
                     this.data = JSON.parse(cachedDataStr);
                     this.setupUI(); 
-                    
                     this.revalidateDataInBackground(hash, localCacheKey);
                 } catch (e) {
                     await this.loadFreshData(hash, localCacheKey);
@@ -126,9 +124,7 @@ const app = {
     async loadFreshData(hash, cacheKey) {
         const rawJsonData = await this.downloadData(hash);
         this.data = this.formatDataToStandard(rawJsonData);
-        
         try { localStorage.setItem(cacheKey, JSON.stringify(this.data)); } catch(e) {}
-        
         this.setupUI();
     },
 
@@ -136,14 +132,12 @@ const app = {
         try {
             const freshJsonData = await this.downloadData(hash);
             const processedFreshData = this.formatDataToStandard(freshJsonData);
-
             const newString = JSON.stringify(processedFreshData);
             const oldString = JSON.stringify(this.data);
 
             if (newString !== oldString) {
                 this.data = processedFreshData;
                 try { localStorage.setItem(cacheKey, newString); } catch(e) {}
-                
                 this.updateUITexts();
                 this.refreshCurrentView();
             }
@@ -360,18 +354,11 @@ const app = {
         const options = this.getAvailableFilterOptions();
         if (!options.length && !this.getAvailableCategories().length) return;
         
-        // Copia el estado real a los borradores
         this.pendingSelectedFilters = [...this.selectedFilters];
         this.pendingSelectedCategory = this.selectedCategory;
         this.pendingMinPrice = this.minPrice;
         this.pendingMaxPrice = this.maxPrice;
         
-        // Sincroniza el nivel del Segmented Control visualmente
-        if (this.minPrice == null && this.maxPrice === 10) this.tempPriceLevel = 1;
-        else if (this.minPrice === 10 && this.maxPrice === 20) this.tempPriceLevel = 2;
-        else if (this.minPrice === 20 && this.maxPrice == null) this.tempPriceLevel = 3;
-        else this.tempPriceLevel = null;
-
         this.renderFilterModal();
         this.dom.filterModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -403,7 +390,6 @@ const app = {
         this.pendingSelectedCategory = null;
         this.pendingMinPrice = null;
         this.pendingMaxPrice = null;
-        this.tempPriceLevel = null;
         
         this.dom.searchInput.value = '';
     },
@@ -427,18 +413,11 @@ const app = {
         this.renderFilterModal();
     },
 
-    setPriceLevel(level) {
-        if (this.tempPriceLevel === level) {
-            this.tempPriceLevel = null;
-            this.pendingMinPrice = null;
-            this.pendingMaxPrice = null;
-        } else {
-            this.tempPriceLevel = level;
-            if (level === 1) { this.pendingMinPrice = null; this.pendingMaxPrice = 10; }
-            else if (level === 2) { this.pendingMinPrice = 10; this.pendingMaxPrice = 20; }
-            else if (level === 3) { this.pendingMinPrice = 20; this.pendingMaxPrice = null; }
-        }
-        this.renderFilterModal();
+    updateTempPrice(type, value) {
+        const val = parseFloat(value);
+        if (type === 'min') this.pendingMinPrice = isNaN(val) ? null : val;
+        if (type === 'max') this.pendingMaxPrice = isNaN(val) ? null : val;
+        this.updateFilterModalFooter();
     },
 
     clearTempFilters() {
@@ -446,7 +425,6 @@ const app = {
         this.pendingSelectedCategory = null;
         this.pendingMinPrice = null;
         this.pendingMaxPrice = null;
-        this.tempPriceLevel = null;
         this.renderFilterModal();
     },
 
@@ -548,7 +526,7 @@ const app = {
             const priceLabel = this.minPrice != null && this.maxPrice != null
                 ? `${this.formatPrice(this.minPrice)} – ${this.formatPrice(this.maxPrice)}`
                 : this.maxPrice != null ? `≤ ${this.formatPrice(this.maxPrice)}` : `≥ ${this.formatPrice(this.minPrice)}`;
-            chips.push(`<button type="button" class="filter-pill active" onclick="app.minPrice = null; app.maxPrice = null; app.tempPriceLevel = null; app.pendingMinPrice = null; app.pendingMaxPrice = null; app.refreshCurrentView(); app.renderFilterBar();">💸 ${this.escapeHTML(priceLabel)}</button>`);
+            chips.push(`<button type="button" class="filter-pill active" onclick="app.minPrice = null; app.maxPrice = null; app.pendingMinPrice = null; app.pendingMaxPrice = null; app.refreshCurrentView(); app.renderFilterBar();">💸 ${this.escapeHTML(priceLabel)}</button>`);
         }
 
         if (!chips.length) return;
@@ -566,7 +544,6 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         const categories = this.getAvailableCategories();
         
-        // Iconos elegantes para las categorías más comunes
         const categoryIcons = { 'Desayunos': '☕', 'Comidas': '☀️', 'Meriendas': '🧁', 'Cenas': '🌙', 'Postres': '🍰', 'Bebidas': '🥤', 'Entrantes': '🥗', 'Principales': '🥩' };
         
         const categoryHtml = categories.length ? `
@@ -587,11 +564,9 @@ const app = {
             </div>
         ` : '';
 
-        // Todos los tags posibles del diccionario
         const allTagKeys = Object.keys(FILTER_DICTIONARY);
         const availableTags = this.getAvailableFilterOptions();
         
-        // Orden: Primero los disponibles, luego por orden alfabético
         const orderedTags = allTagKeys.sort((a, b) => {
             const aAvail = availableTags.includes(a);
             const bAvail = availableTags.includes(b);
@@ -614,7 +589,6 @@ const app = {
                             </button>
                             `;
                         } else {
-                            // Chip deshabilitado para lo que no existe en el menú actual
                             return `
                             <button type="button" class="filter-pill filter-chip-card disabled-chip" disabled>
                                 <span class="filter-chip-icon" style="filter: grayscale(100%); opacity: 0.5;">${this.escapeHTML(this.getFilterIcon(opt))}</span>
@@ -630,20 +604,21 @@ const app = {
         const priceHtml = `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterPriceTitle || 'Rango de precio')}</div>
-                <div class="segmented-control">
-                    <button type="button" class="segment-btn ${this.tempPriceLevel === 1 ? 'active' : ''}" onclick="app.setPriceLevel(1)">€</button>
-                    <button type="button" class="segment-btn ${this.tempPriceLevel === 2 ? 'active' : ''}" onclick="app.setPriceLevel(2)">€€</button>
-                    <button type="button" class="segment-btn ${this.tempPriceLevel === 3 ? 'active' : ''}" onclick="app.setPriceLevel(3)">€€€</button>
-                </div>
-                <div class="price-legend">
-                    <span>&lt; 10€</span>
-                    <span>10€ - 20€</span>
-                    <span>&gt; 20€</span>
+                <div class="price-input-group">
+                    <input type="number" inputmode="decimal" class="price-input" placeholder="${this.escapeHTML(t.filterMinPrice || 'Mínimo')}" value="${this.pendingMinPrice !== null ? this.pendingMinPrice : ''}" oninput="app.updateTempPrice('min', this.value)">
+                    <span class="price-separator">-</span>
+                    <input type="number" inputmode="decimal" class="price-input" placeholder="${this.escapeHTML(t.filterMaxPrice || 'Máximo')}" value="${this.pendingMaxPrice !== null ? this.pendingMaxPrice : ''}" oninput="app.updateTempPrice('max', this.value)">
                 </div>
             </div>
         `;
+        
+        this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
+        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${categoryHtml}${tagsHtml}${priceHtml}</div>`;
+        this.updateFilterModalFooter();
+    },
 
-        // Cálculo dinámico para previsualizar los resultados en el botón
+    updateFilterModalFooter() {
+        const t = I18N[this.currentLang] || I18N['es'];
         let matchingDishesCount = 0;
         (this.data?.menus || []).forEach(m => {
             const trans = m.traducciones?.[this.currentLang] || m.traducciones?.[Object.keys(m.traducciones || {})[0]];
@@ -655,9 +630,6 @@ const app = {
         });
 
         const activeCount = [this.pendingSelectedCategory].filter(Boolean).length + this.pendingSelectedFilters.length + (this.pendingMinPrice != null || this.pendingMaxPrice != null ? 1 : 0);
-        
-        this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
-        this.dom.filterModalOptions.innerHTML = `<div class="filter-accordion">${categoryHtml}${tagsHtml}${priceHtml}</div>`;
         
         const modalFooter = document.querySelector('#filter-modal .filter-modal-footer');
         if (modalFooter) {
@@ -907,7 +879,7 @@ const app = {
             if (missing.length > 0) {
                 this.confirmationCallback = () => this.addDailyMenuToCart(menu, button, true);
                 this.openConfirmation(
-                    t.confirmationTitle || "Continuar incompleto?", 
+                    t.confirmationTitle || "Continuar incomplet?", 
                     (t.incompleteOrderMsg || "Falta: {list}. ¿Continuar?").replace('{list}', missing.join(', '))
                 );
                 return;
@@ -1331,6 +1303,7 @@ const app = {
         menus.forEach((menu, index) => {
             const menuName = this.getMenuTitle(menu);
             const isDaily = this.isDailyMenu(menu);
+            // El menú diario es el único que muestra precio global
             const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
             
             const breakClass = index > 0 ? 'pdf-page-break' : '';
@@ -1361,10 +1334,11 @@ const app = {
 
             if (trans && trans.categorias) {
                 trans.categorias.forEach(cat => {
-                    const catName = this.getCategoryName(cat.key, cat.nombre);
-                    printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
-                    
-                    if (cat.platos) {
+                    // Verificamos si hay platos antes de dibujar el título de la categoría
+                    if(cat.platos && cat.platos.length > 0) {
+                        const catName = this.getCategoryName(cat.key, cat.nombre);
+                        printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
+                        
                         cat.platos.forEach(dish => {
                             const isDishZero = !dish.precio || dish.precio === 0;
                             // En menú diario ocultamos los platos que tengan valor cero para no mostrar 0,00€
@@ -1390,7 +1364,18 @@ const app = {
         });
 
         this.dom.printContainer.innerHTML = printHTML;
-        setTimeout(() => { window.print(); }, 100);
+
+        // Técnica para evitar impresión en blanco en Android: ocultar explícitamente la interfaz con una clase.
+        document.body.classList.add('is-printing');
+
+        setTimeout(() => { 
+            window.print(); 
+            // Limpiamos y restauramos el DOM un instante después para asegurar que funcione en móvil.
+            setTimeout(() => {
+                document.body.classList.remove('is-printing');
+                this.dom.printContainer.innerHTML = '';
+            }, 1000);
+        }, 600);
     },
 
     openModal(safeDataStr) {
