@@ -201,7 +201,8 @@ body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
     display: flex; align-items: center; gap: 12px; margin-top: 6px;
 }
 .price-input {
-    flex: 1; padding: 12px 14px; border-radius: 14px;
+    flex: 1; min-width: 0; width: 100%; box-sizing: border-box; /* <- ARREGLO APLICADO AQUI */
+    padding: 12px 10px; border-radius: 14px;
     border: 1px solid var(--border-light); background-color: var(--card-light);
     color: var(--text-light); font-size: 1.05em; font-family: inherit;
     outline: none; transition: all 0.3s ease; text-align: center;
@@ -363,69 +364,3 @@ body.dark-mode #cookie-banner { background: rgba(18, 18, 21, 0.9); }
 .cookie-text { font-size: 0.85em; margin-right: 15px; color: var(--text-muted-light); }
 .btn-cookie { background: var(--accent-gradient); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transition: transform 0.2s; }
 .btn-cookie:hover { transform: scale(1.03); }
-
-#print-container { display: none; }
-
-/* --- CSS CLASE IS-PRINTING (El arregla PDFs en Android) --- */
-body.is-printing #header-container,
-body.is-printing #main-content,
-body.is-printing .modal-overlay,
-body.is-printing #cart-fab,
-body.is-printing #cookie-banner {
-    display: none !important;
-}
-body.is-printing #print-container {
-    display: block !important;
-}
-
-@media print {
-    body { background-color: white !important; }
-    
-    .pdf-page-section { 
-        page-break-after: always; 
-        padding: 20px; 
-        font-family: 'Outfit', sans-serif; 
-        position: relative; 
-    }
-    .pdf-watermark-bg { 
-        position: absolute; 
-        top: 50%; left: 50%; transform: translate(-50%, -50%); 
-        opacity: 0.05; width: 80%; max-width: 500px; 
-        z-index: -1; pointer-events: none; 
-    }
-    .pdf-header-top { text-align: center; margin-bottom: 30px; }
-    .pdf-header-top img { max-width: 80px; margin-bottom: 10px; border-radius: 50%; }
-    .pdf-header-top h1 { font-size: 24px; margin: 0 0 5px 0; color: #000; }
-    .pdf-header-top p { font-size: 14px; margin: 0; color: #555; }
-    
-    .pdf-menu-title-box { 
-        background: #f1f5f9; padding: 10px; text-align: center; 
-        font-size: 18px; font-weight: bold; margin-bottom: 20px; 
-        border-radius: 8px; 
-        -webkit-print-color-adjust: exact; print-color-adjust: exact; 
-    }
-    .pdf-cat-title { 
-        font-size: 20px; font-weight: bold; margin: 20px 0 10px 0; 
-        color: #333; border-bottom: 2px solid #ddd; padding-bottom: 5px; 
-    }
-    
-    .pdf-dish-row { 
-        display: flex; align-items: flex-end; margin-bottom: 12px; 
-        page-break-inside: avoid; 
-    }
-    .pdf-dish-thumb { 
-        width: 40px; height: 40px; object-fit: cover; 
-        border-radius: 6px; margin-right: 12px; 
-    }
-    .pdf-dish-info { flex-grow: 1; margin-right: 10px; }
-    .pdf-dish-name { margin: 0; font-size: 16px; font-weight: bold; color: #000; }
-    .pdf-dish-desc { margin: 4px 0 0 0; font-size: 12px; color: #666; }
-    .pdf-dish-dots { 
-        flex-grow: 1; border-bottom: 1px dotted #ccc; 
-        margin: 0 10px 4px 10px; 
-    }
-    .pdf-dish-price { 
-        font-size: 16px; font-weight: bold; white-space: nowrap; 
-        margin-bottom: 2px; color: #000;
-    }
-}

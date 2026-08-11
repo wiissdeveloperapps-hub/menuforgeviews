@@ -1303,7 +1303,6 @@ const app = {
         menus.forEach((menu, index) => {
             const menuName = this.getMenuTitle(menu);
             const isDaily = this.isDailyMenu(menu);
-            // El menú diario es el único que muestra precio global
             const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
             
             const breakClass = index > 0 ? 'pdf-page-break' : '';
@@ -1334,14 +1333,12 @@ const app = {
 
             if (trans && trans.categorias) {
                 trans.categorias.forEach(cat => {
-                    // Verificamos si hay platos antes de dibujar el título de la categoría
                     if(cat.platos && cat.platos.length > 0) {
                         const catName = this.getCategoryName(cat.key, cat.nombre);
                         printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
                         
                         cat.platos.forEach(dish => {
                             const isDishZero = !dish.precio || dish.precio === 0;
-                            // En menú diario ocultamos los platos que tengan valor cero para no mostrar 0,00€
                             const hidePrice = isDaily && isDishZero;
                             const priceFormatted = hidePrice ? '' : this.formatPrice(dish.precio);
                             const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
@@ -1363,19 +1360,60 @@ const app = {
             printHTML += `</div>`;
         });
 
-        this.dom.printContainer.innerHTML = printHTML;
+        // TÉCNICA DEFINITIVA PARA ANDROID: Imprimir desde un iFrame invisible
+        let iframe = document.getElementById('pdf-print-frame');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'pdf-print-frame';
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            document.body.appendChild(iframe);
+        }
 
-        // Técnica para evitar impresión en blanco en Android: ocultar explícitamente la interfaz con una clase.
-        document.body.classList.add('is-printing');
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${this.escapeHTML(rInfo.nombre || 'Menu')}</title>
+                <meta charset="utf-8">
+                <style>
+                    @page { margin: 10mm; }
+                    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 0; margin: 0; background: #fff; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                    .pdf-page-section { page-break-after: always; padding: 10px; position: relative; }
+                    .pdf-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; width: 80%; max-width: 500px; z-index: -1; pointer-events: none; }
+                    .pdf-header-top { text-align: center; margin-bottom: 25px; }
+                    .pdf-header-top img { max-width: 80px; margin-bottom: 10px; border-radius: 50%; }
+                    .pdf-header-top h1 { font-size: 22px; margin: 0 0 5px 0; color: #000; }
+                    .pdf-header-top p { font-size: 13px; margin: 0; color: #555; }
+                    .pdf-menu-title-box { background: #f1f5f9; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 20px; border-radius: 8px; }
+                    .pdf-cat-title { font-size: 18px; font-weight: bold; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
+                    .pdf-dish-row { display: flex; align-items: flex-end; margin-bottom: 10px; page-break-inside: avoid; }
+                    .pdf-dish-thumb { width: 35px; height: 35px; object-fit: cover; border-radius: 6px; margin-right: 12px; }
+                    .pdf-dish-info { flex-grow: 1; margin-right: 10px; }
+                    .pdf-dish-name { margin: 0; font-size: 15px; font-weight: bold; color: #000; }
+                    .pdf-dish-desc { margin: 4px 0 0 0; font-size: 11px; color: #666; }
+                    .pdf-dish-dots { flex-grow: 1; border-bottom: 1px dotted #ccc; margin: 0 10px 4px 10px; }
+                    .pdf-dish-price { font-size: 15px; font-weight: bold; white-space: nowrap; margin-bottom: 2px; color: #000; }
+                </style>
+            </head>
+            <body>
+                ${printHTML}
+            </body>
+            </html>
+        `);
+        doc.close();
 
-        setTimeout(() => { 
-            window.print(); 
-            // Limpiamos y restauramos el DOM un instante después para asegurar que funcione en móvil.
-            setTimeout(() => {
-                document.body.classList.remove('is-printing');
-                this.dom.printContainer.innerHTML = '';
-            }, 1000);
-        }, 600);
+        // Dar tiempo a que el WebView cargue las imágenes y procese el DOM del iFrame
+        setTimeout(() => {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        }, 750);
     },
 
     openModal(safeDataStr) {
