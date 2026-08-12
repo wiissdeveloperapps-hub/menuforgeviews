@@ -1317,7 +1317,7 @@ const app = {
                 
                 <div class="pdf-menu-title-box">
                     <span>${this.escapeHTML(menuName)}</span>
-                    ${isDaily && menu.precio > 0 ? `<br><span style="font-size: 0.85em; font-weight: normal; color: #475569;">Total Menú: ${globalPrice}</span>` : ''}
+                    ${isDaily && menu.precio > 0 ? `<br><span style="font-size: 0.85em; font-weight: normal; color: #475569;">Total: ${globalPrice}</span>` : ''}
                 </div>
             `;
             
@@ -1355,10 +1355,10 @@ const app = {
                 });
             }
 
-            // Pie de página con publicidad discreta de tu app
+            // Pie de página traducido desde I18N
             printHTML += `
                 <div class="pdf-brand-footer">
-                    <span>Menú digital interactivo generado con <strong>MenuForge App</strong></span>
+                    <span>${t.pdfFooter || 'Menú digital interactivo generado con <strong>MenuForge App</strong>'}</span>
                 </div>
             `;
 
@@ -1388,7 +1388,6 @@ const app = {
                 <title>${this.escapeHTML(rInfo.nombre || 'Menú')}</title>
                 <meta charset="utf-8">
                 <style>
-                    /* margin: 0 fuerza al navegador a eliminar la URL, fecha, hora y números de página nativos */
                     @page { 
                         size: A4; 
                         margin: 0; 
@@ -1408,7 +1407,6 @@ const app = {
                         print-color-adjust: exact; 
                     }
 
-                    /* Usamos padding interno para simular los márgenes de página sin activar los headers del navegador */
                     .pdf-page-section { 
                         position: relative; 
                         padding: 12mm 15mm 12mm 15mm;
@@ -1473,7 +1471,6 @@ const app = {
                         break-after: avoid;
                     }
 
-                    /* Control de saltos de página para platos */
                     .pdf-dish-row { 
                         display: flex; 
                         align-items: baseline; 
@@ -1522,7 +1519,6 @@ const app = {
                         color: #0f172a; 
                     }
 
-                    /* Pie de marca sutil al final de la página */
                     .pdf-brand-footer {
                         margin-top: auto;
                         padding-top: 15px;
