@@ -1305,22 +1305,19 @@ const app = {
             const isDaily = this.isDailyMenu(menu);
             const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
             
-            const breakClass = index > 0 ? 'pdf-page-break' : '';
+            const breakClass = index < menus.length - 1 ? 'pdf-page-break' : '';
             printHTML += `<div class="pdf-page-section ${breakClass}">`;
-            
-            if (rInfo.logoBase64) {
-                printHTML += `<img src="${rInfo.logoBase64}" class="pdf-watermark-bg" onerror="this.style.display='none'">`;
-            }
 
             printHTML += `
                 <div class="pdf-header-top">
                     ${rInfo.logoBase64 ? `<img src="${rInfo.logoBase64}" onerror="this.style.display='none'">` : ''}
                     <h1>${this.escapeHTML(rInfo.nombre || t.defaultRestaurant)}</h1>
-                    <p>${this.escapeHTML(rInfo.direccion || '')} &bull; ${this.escapeHTML(rInfo.telefono || '')}</p>
+                    ${rInfo.direccion || rInfo.telefono ? `<p>${this.escapeHTML(rInfo.direccion || '')} ${rInfo.direccion && rInfo.telefono ? '&bull;' : ''} ${this.escapeHTML(rInfo.telefono || '')}</p>` : ''}
                 </div>
+                
                 <div class="pdf-menu-title-box">
                     <span>${this.escapeHTML(menuName)}</span>
-                    ${isDaily && menu.precio > 0 ? `<br><span style="font-size: 0.8em; font-weight: normal; color: #555;">Total Menú: ${globalPrice}</span>` : ''}
+                    ${isDaily && menu.precio > 0 ? `<br><span style="font-size: 0.85em; font-weight: normal; color: #475569;">Total Menú: ${globalPrice}</span>` : ''}
                 </div>
             `;
             
@@ -1333,7 +1330,7 @@ const app = {
 
             if (trans && trans.categorias) {
                 trans.categorias.forEach(cat => {
-                    if(cat.platos && cat.platos.length > 0) {
+                    if (cat.platos && cat.platos.length > 0) {
                         const catName = this.getCategoryName(cat.key, cat.nombre);
                         printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
                         
@@ -1357,10 +1354,18 @@ const app = {
                     }
                 });
             }
+
+            // Pie de página con publicidad discreta de tu app
+            printHTML += `
+                <div class="pdf-brand-footer">
+                    <span>Menú digital interactivo generado con <strong>MenuForge App</strong></span>
+                </div>
+            `;
+
             printHTML += `</div>`;
         });
 
-        // TÉCNICA DEFINITIVA PARA ANDROID: Imprimir desde un iFrame invisible
+        // Creación/reutilización del iFrame oculto
         let iframe = document.getElementById('pdf-print-frame');
         if (!iframe) {
             iframe = document.createElement('iframe');
@@ -1380,26 +1385,153 @@ const app = {
             <!DOCTYPE html>
             <html>
             <head>
-                <title>${this.escapeHTML(rInfo.nombre || 'Menu')}</title>
+                <title>${this.escapeHTML(rInfo.nombre || 'Menú')}</title>
                 <meta charset="utf-8">
                 <style>
-                    @page { margin: 10mm; }
-                    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 0; margin: 0; background: #fff; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                    .pdf-page-section { page-break-after: always; padding: 10px; position: relative; }
-                    .pdf-watermark-bg {display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.02; width: 80%; max-width: 500px; z-index: -1; pointer-events: none; }
-                    .pdf-header-top { text-align: center; margin-bottom: 25px; }
-                    .pdf-header-top img { max-width: 80px; margin-bottom: 10px; border-radius: 50%; }
-                    .pdf-header-top h1 { font-size: 22px; margin: 0 0 5px 0; color: #000; }
-                    .pdf-header-top p { font-size: 13px; margin: 0; color: #555; }
-                    .pdf-menu-title-box { background: #f1f5f9; padding: 10px; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 20px; border-radius: 8px; }
-                    .pdf-cat-title { font-size: 18px; font-weight: bold; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
-                    .pdf-dish-row { display: flex; align-items: flex-end; margin-bottom: 10px; page-break-inside: avoid; }
-                    .pdf-dish-thumb { width: 35px; height: 35px; object-fit: cover; border-radius: 6px; margin-right: 12px; }
-                    .pdf-dish-info { flex-grow: 1; margin-right: 10px; }
-                    .pdf-dish-name { margin: 0; font-size: 15px; font-weight: bold; color: #000; }
-                    .pdf-dish-desc { margin: 4px 0 0 0; font-size: 11px; color: #666; }
-                    .pdf-dish-dots { flex-grow: 1; border-bottom: 1px dotted #ccc; margin: 0 10px 4px 10px; }
-                    .pdf-dish-price { font-size: 15px; font-weight: bold; white-space: nowrap; margin-bottom: 2px; color: #000; }
+                    /* Configuración de márgenes para eliminar la URL, hora y paginación del navegador */
+                    @page { 
+                        size: A4; 
+                        margin: 12mm 15mm 15mm 15mm; 
+                    }
+                    
+                    body { 
+                        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+                        padding: 0; 
+                        margin: 0; 
+                        background: #ffffff; 
+                        color: #0f172a; 
+                        -webkit-print-color-adjust: exact; 
+                        print-color-adjust: exact; 
+                    }
+
+                    .pdf-page-section { 
+                        position: relative; 
+                        min-height: 95vh;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    
+                    .pdf-page-break { 
+                        page-break-after: always; 
+                        break-after: page;
+                    }
+
+                    .pdf-header-top { 
+                        text-align: center; 
+                        margin-bottom: 16px; 
+                    }
+                    
+                    .pdf-header-top img { 
+                        max-width: 70px; 
+                        max-height: 70px;
+                        margin-bottom: 8px; 
+                        border-radius: 50%; 
+                        object-fit: cover;
+                    }
+                    
+                    .pdf-header-top h1 { 
+                        font-size: 22px; 
+                        margin: 0 0 4px 0; 
+                        color: #0f172a; 
+                        font-weight: 800;
+                    }
+                    
+                    .pdf-header-top p { 
+                        font-size: 12px; 
+                        margin: 0; 
+                        color: #64748b; 
+                    }
+
+                    .pdf-menu-title-box { 
+                        background: #f8fafc; 
+                        border: 1px solid #e2e8f0;
+                        padding: 8px 14px; 
+                        text-align: center; 
+                        font-size: 15px; 
+                        font-weight: 800; 
+                        margin-bottom: 18px; 
+                        border-radius: 10px; 
+                        color: #334155;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                    }
+
+                    .pdf-cat-title { 
+                        font-size: 16px; 
+                        font-weight: 800; 
+                        margin: 20px 0 10px 0; 
+                        color: #1e293b; 
+                        border-bottom: 2px solid #4f46e5; 
+                        padding-bottom: 4px; 
+                        page-break-after: avoid;
+                        break-after: avoid;
+                    }
+
+                    /* Control de saltos de página para platos */
+                    .pdf-dish-row { 
+                        display: flex; 
+                        align-items: baseline; 
+                        margin-bottom: 10px; 
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+
+                    .pdf-dish-thumb { 
+                        width: 38px; 
+                        height: 38px; 
+                        object-fit: cover; 
+                        border-radius: 8px; 
+                        margin-right: 10px; 
+                        flex-shrink: 0;
+                    }
+
+                    .pdf-dish-info { 
+                        flex-grow: 1; 
+                    }
+
+                    .pdf-dish-name { 
+                        margin: 0; 
+                        font-size: 14px; 
+                        font-weight: 700; 
+                        color: #0f172a; 
+                    }
+
+                    .pdf-dish-desc { 
+                        margin: 2px 0 0 0; 
+                        font-size: 11px; 
+                        color: #64748b; 
+                        line-height: 1.3;
+                    }
+
+                    .pdf-dish-dots { 
+                        flex-grow: 1; 
+                        border-bottom: 1px dotted #cbd5e1; 
+                        margin: 0 8px 4px 8px; 
+                    }
+
+                    .pdf-dish-price { 
+                        font-size: 14px; 
+                        font-weight: 800; 
+                        white-space: nowrap; 
+                        color: #0f172a; 
+                    }
+
+                    /* Pie de marca sutil */
+                    .pdf-brand-footer {
+                        margin-top: auto;
+                        padding-top: 15px;
+                        padding-bottom: 5px;
+                        text-align: center;
+                        font-size: 10px;
+                        color: #94a3b8;
+                        border-top: 1px dashed #e2e8f0;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+
+                    .pdf-brand-footer strong {
+                        color: #6366f1;
+                    }
                 </style>
             </head>
             <body>
@@ -1409,11 +1541,10 @@ const app = {
         `);
         doc.close();
 
-        // Dar tiempo a que el WebView cargue las imágenes y procese el DOM del iFrame
         setTimeout(() => {
             iframe.contentWindow.focus();
             iframe.contentWindow.print();
-        }, 750);
+        }, 600);
     },
 
     openModal(safeDataStr) {
