@@ -1386,7 +1386,7 @@ const app = {
                     @page { margin: 10mm; }
                     body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 0; margin: 0; background: #fff; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                     .pdf-page-section { page-break-after: always; padding: 10px; position: relative; }
-                    .pdf-watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; width: 80%; max-width: 500px; z-index: -1; pointer-events: none; }
+                    .pdf-watermark-bg {display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.02; width: 80%; max-width: 500px; z-index: -1; pointer-events: none; }
                     .pdf-header-top { text-align: center; margin-bottom: 25px; }
                     .pdf-header-top img { max-width: 80px; margin-bottom: 10px; border-radius: 50%; }
                     .pdf-header-top h1 { font-size: 22px; margin: 0 0 5px 0; color: #000; }
