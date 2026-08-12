@@ -1388,12 +1388,16 @@ const app = {
                 <title>${this.escapeHTML(rInfo.nombre || 'Menú')}</title>
                 <meta charset="utf-8">
                 <style>
-                    /* Configuración de márgenes para eliminar la URL, hora y paginación del navegador */
+                    /* margin: 0 fuerza al navegador a eliminar la URL, fecha, hora y números de página nativos */
                     @page { 
                         size: A4; 
-                        margin: 12mm 15mm 15mm 15mm; 
+                        margin: 0; 
                     }
                     
+                    * {
+                        box-sizing: border-box;
+                    }
+
                     body { 
                         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
                         padding: 0; 
@@ -1404,9 +1408,11 @@ const app = {
                         print-color-adjust: exact; 
                     }
 
+                    /* Usamos padding interno para simular los márgenes de página sin activar los headers del navegador */
                     .pdf-page-section { 
                         position: relative; 
-                        min-height: 95vh;
+                        padding: 12mm 15mm 12mm 15mm;
+                        min-height: 100vh;
                         display: flex;
                         flex-direction: column;
                     }
@@ -1422,8 +1428,8 @@ const app = {
                     }
                     
                     .pdf-header-top img { 
-                        max-width: 70px; 
-                        max-height: 70px;
+                        max-width: 65px; 
+                        max-height: 65px;
                         margin-bottom: 8px; 
                         border-radius: 50%; 
                         object-fit: cover;
@@ -1459,7 +1465,7 @@ const app = {
                     .pdf-cat-title { 
                         font-size: 16px; 
                         font-weight: 800; 
-                        margin: 20px 0 10px 0; 
+                        margin: 18px 0 10px 0; 
                         color: #1e293b; 
                         border-bottom: 2px solid #4f46e5; 
                         padding-bottom: 4px; 
@@ -1477,8 +1483,8 @@ const app = {
                     }
 
                     .pdf-dish-thumb { 
-                        width: 38px; 
-                        height: 38px; 
+                        width: 36px; 
+                        height: 36px; 
                         object-fit: cover; 
                         border-radius: 8px; 
                         margin-right: 10px; 
@@ -1516,7 +1522,7 @@ const app = {
                         color: #0f172a; 
                     }
 
-                    /* Pie de marca sutil */
+                    /* Pie de marca sutil al final de la página */
                     .pdf-brand-footer {
                         margin-top: auto;
                         padding-top: 15px;
