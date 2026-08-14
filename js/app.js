@@ -1538,15 +1538,31 @@ const app = {
             </head>
             <body>
                 ${printHTML}
+                
+                <script>
+                    // SOLUCIÓN AL BLOQUEO DE ANDROID PRINT MANAGER:
+                    // Esperar a que TODAS las imágenes del PDF estén completamente cargadas 
+                    // o hayan fallado antes de lanzar window.print().
+                    const images = Array.from(document.images);
+                    
+                    Promise.all(images.map(img => {
+                        if (img.complete) return Promise.resolve();
+                        return new Promise(resolve => {
+                            img.onload = resolve;
+                            img.onerror = resolve; // Si falla, que continúe y no bloquee el sistema
+                        });
+                    })).then(() => {
+                        // Pequeño retardo de seguridad tras cargar todo
+                        setTimeout(() => {
+                            window.focus();
+                            window.print();
+                        }, 250);
+                    });
+                </script>
             </body>
             </html>
         `);
         doc.close();
-
-        setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-        }, 600);
     },
 
     openModal(safeDataStr) {
