@@ -879,7 +879,7 @@ const app = {
             if (missing.length > 0) {
                 this.confirmationCallback = () => this.addDailyMenuToCart(menu, button, true);
                 this.openConfirmation(
-                    t.confirmationTitle || "Continuar incompleto?", 
+                    t.confirmationTitle || "Continuar incomplet?", 
                     (t.incompleteOrderMsg || "Falta: {list}. ¿Continuar?").replace('{list}', missing.join(', '))
                 );
                 return;
@@ -1305,9 +1305,7 @@ const app = {
             const isDaily = this.isDailyMenu(menu);
             const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
             
-            // Evitar salto de página en el último elemento para prevenir páginas en blanco extra
-            const isLastMenu = index === menus.length - 1;
-            const breakClass = !isLastMenu ? 'pdf-page-break' : '';
+            const breakClass = index < menus.length - 1 ? 'pdf-page-break' : '';
             printHTML += `<div class="pdf-page-section ${breakClass}">`;
 
             printHTML += `
@@ -1331,7 +1329,7 @@ const app = {
             const images = menu.recursos?.imagenes || {};
 
             if (trans && trans.categorias) {
-                trans.categorias.forEach((cat, catIdx) => {
+                trans.categorias.forEach(cat => {
                     if (cat.platos && cat.platos.length > 0) {
                         const catName = this.getCategoryName(cat.key, cat.nombre);
                         printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
@@ -1357,6 +1355,7 @@ const app = {
                 });
             }
 
+            // Pie de página traducido desde I18N
             printHTML += `
                 <div class="pdf-brand-footer">
                     <span>${t.pdfFooter || 'Menú digital interactivo generado con <strong>MenuForge App</strong>'}</span>
@@ -1366,95 +1365,204 @@ const app = {
             printHTML += `</div>`;
         });
 
-        // Estilos limpios y directos para impresión nativa sin páginas en blanco sobrantes
-        let printStyleEl = document.getElementById('dynamic-print-styles');
-        if (!printStyleEl) {
-            printStyleEl = document.createElement('style');
-            printStyleEl.id = 'dynamic-print-styles';
-            printStyleEl.media = 'print';
-            document.head.appendChild(printStyleEl);
+        // Creación/reutilización del iFrame oculto
+        let iframe = document.getElementById('pdf-print-frame');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'pdf-print-frame';
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            document.body.appendChild(iframe);
         }
 
-        printStyleEl.textContent = `
-            @media print {
-                body * { visibility: hidden !important; }
-                #print-container, #print-container * { visibility: visible !important; }
-                #print-container {
-                    position: absolute !important;
-                    left: 0 !important;
-                    top: 0 !important;
-                    width: 100% !important;
-                    background: #ffffff !important;
-                    display: block !important;
-                }
-                .pdf-page-section {
-                    display: block !important;
-                    page-break-after: always !important;
-                    break-after: page !important;
-                    margin: 0 !important;
-                    padding: 10mm 15mm !important;
-                    box-shadow: none !important;
-                }
-                .pdf-page-section.pdf-page-break {
-                    page-break-after: always !important;
-                    break-after: page !important;
-                }
-                .pdf-page-section:last-child {
-                    page-break-after: avoid !important;
-                    break-after: avoid !important;
-                }
-            }
-        `;
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${this.escapeHTML(rInfo.nombre || 'Menú')}</title>
+                <meta charset="utf-8">
+                <style>
+                    @page { 
+                        size: A4; 
+                        margin: 0; 
+                    }
+                    
+                    * {
+                        box-sizing: border-box;
+                    }
 
-        // Estilos CSS visuales para el contenedor en pantalla (mientras prepara el print)
-        const screenStyles = `
-            .pdf-page-section {
-                background: #ffffff;
-                max-width: 210mm;
-                margin: 20px auto;
-                padding: 12mm 15mm;
-                box-sizing: border-box;
-            }
-            .pdf-header-top { text-align: center; margin-bottom: 16px; }
-            .pdf-header-top img { max-width: 65px; max-height: 65px; margin-bottom: 8px; border-radius: 50%; object-fit: cover; }
-            .pdf-header-top h1 { font-size: 22px; margin: 0 0 4px 0; color: #0f172a; font-weight: 800; }
-            .pdf-header-top p { font-size: 12px; margin: 0; color: #64748b; }
-            .pdf-menu-title-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; text-align: center; font-size: 15px; font-weight: 800; margin-bottom: 18px; border-radius: 10px; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; }
-            .pdf-cat-title { font-size: 16px; font-weight: 800; margin: 18px 0 10px 0; color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 4px; }
-            .pdf-dish-row { display: flex; align-items: baseline; margin-bottom: 10px; }
-            .pdf-dish-thumb { width: 36px; height: 36px; object-fit: cover; border-radius: 8px; margin-right: 10px; flex-shrink: 0; }
-            .pdf-dish-info { flex-grow: 1; }
-            .pdf-dish-name { margin: 0; font-size: 14px; font-weight: 700; color: #0f172a; }
-            .pdf-dish-desc { margin: 2px 0 0 0; font-size: 11px; color: #64748b; line-height: 1.3; }
-            .pdf-dish-dots { flex-grow: 1; border-bottom: 1px dotted #cbd5e1; margin: 0 8px 4px 8px; }
-            .pdf-dish-price { font-size: 14px; font-weight: 800; white-space: nowrap; color: #0f172a; }
-            .pdf-brand-footer { margin-top: 25px; padding-top: 15px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px dashed #e2e8f0; }
-            .pdf-brand-footer strong { color: #6366f1; }
-        `;
+                    body { 
+                        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+                        padding: 0; 
+                        margin: 0; 
+                        background: #ffffff; 
+                        color: #0f172a; 
+                        -webkit-print-color-adjust: exact; 
+                        print-color-adjust: exact; 
+                    }
 
-        let styleTag = document.getElementById('print-screen-styles');
-        if (!styleTag) {
-            styleTag = document.createElement('style');
-            styleTag.id = 'print-screen-styles';
-            document.head.appendChild(styleTag);
-        }
-        styleTag.textContent = screenStyles;
+                    .pdf-page-section { 
+                        position: relative; 
+                        padding: 12mm 15mm 12mm 15mm;
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    
+                    .pdf-page-break { 
+                        page-break-after: always; 
+                        break-after: page;
+                    }
 
-        if (this.dom.printContainer) {
-            this.dom.printContainer.innerHTML = printHTML;
-            this.dom.printContainer.style.display = 'block';
-        }
+                    .pdf-header-top { 
+                        text-align: center; 
+                        margin-bottom: 16px; 
+                    }
+                    
+                    .pdf-header-top img { 
+                        max-width: 65px; 
+                        max-height: 65px;
+                        margin-bottom: 8px; 
+                        border-radius: 50%; 
+                        object-fit: cover;
+                    }
+                    
+                    .pdf-header-top h1 { 
+                        font-size: 22px; 
+                        margin: 0 0 4px 0; 
+                        color: #0f172a; 
+                        font-weight: 800;
+                    }
+                    
+                    .pdf-header-top p { 
+                        font-size: 12px; 
+                        margin: 0; 
+                        color: #64748b; 
+                    }
 
-        // Lanzar directamente el diálogo de impresión nativo del navegador
-        setTimeout(() => {
-            window.print();
-            setTimeout(() => {
-                if (this.dom.printContainer) {
-                    this.dom.printContainer.innerHTML = '';
-                    this.dom.printContainer.style.display = 'none';
-                }
-            }, 300);
-        }, 200);
+                    .pdf-menu-title-box { 
+                        background: #f8fafc; 
+                        border: 1px solid #e2e8f0;
+                        padding: 8px 14px; 
+                        text-align: center; 
+                        font-size: 15px; 
+                        font-weight: 800; 
+                        margin-bottom: 18px; 
+                        border-radius: 10px; 
+                        color: #334155;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                    }
+
+                    .pdf-cat-title { 
+                        font-size: 16px; 
+                        font-weight: 800; 
+                        margin: 18px 0 10px 0; 
+                        color: #1e293b; 
+                        border-bottom: 2px solid #4f46e5; 
+                        padding-bottom: 4px; 
+                        page-break-after: avoid;
+                        break-after: avoid;
+                    }
+
+                    .pdf-dish-row { 
+                        display: flex; 
+                        align-items: baseline; 
+                        margin-bottom: 10px; 
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+
+                    .pdf-dish-thumb { 
+                        width: 36px; 
+                        height: 36px; 
+                        object-fit: cover; 
+                        border-radius: 8px; 
+                        margin-right: 10px; 
+                        flex-shrink: 0;
+                    }
+
+                    .pdf-dish-info { 
+                        flex-grow: 1; 
+                    }
+
+                    .pdf-dish-name { 
+                        margin: 0; 
+                        font-size: 14px; 
+                        font-weight: 700; 
+                        color: #0f172a; 
+                    }
+
+                    .pdf-dish-desc { 
+                        margin: 2px 0 0 0; 
+                        font-size: 11px; 
+                        color: #64748b; 
+                        line-height: 1.3;
+                    }
+
+                    .pdf-dish-dots { 
+                        flex-grow: 1; 
+                        border-bottom: 1px dotted #cbd5e1; 
+                        margin: 0 8px 4px 8px; 
+                    }
+
+                    .pdf-dish-price { 
+                        font-size: 14px; 
+                        font-weight: 800; 
+                        white-space: nowrap; 
+                        color: #0f172a; 
+                    }
+
+                    .pdf-brand-footer {
+                        margin-top: auto;
+                        padding-top: 15px;
+                        padding-bottom: 5px;
+                        text-align: center;
+                        font-size: 10px;
+                        color: #94a3b8;
+                        border-top: 1px dashed #e2e8f0;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+
+                    .pdf-brand-footer strong {
+                        color: #6366f1;
+                    }
+                </style>
+            </head>
+            <body>
+                ${printHTML}
+                
+                <script>
+                    // SOLUCIÓN AL BLOQUEO DE ANDROID PRINT MANAGER:
+                    // Esperar a que TODAS las imágenes del PDF estén completamente cargadas 
+                    // o hayan fallado antes de lanzar window.print().
+                    const images = Array.from(document.images);
+                    
+                    Promise.all(images.map(img => {
+                        if (img.complete) return Promise.resolve();
+                        return new Promise(resolve => {
+                            img.onload = resolve;
+                            img.onerror = resolve; // Si falla, que continúe y no bloquee el sistema
+                        });
+                    })).then(() => {
+                        // Pequeño retardo de seguridad tras cargar todo
+                        setTimeout(() => {
+                            window.focus();
+                            window.print();
+                        }, 250);
+                    });
+                </script>
+            </body>
+            </html>
+        `);
+        doc.close();
     },
 
     openModal(safeDataStr) {
