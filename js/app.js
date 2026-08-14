@@ -879,7 +879,7 @@ const app = {
             if (missing.length > 0) {
                 this.confirmationCallback = () => this.addDailyMenuToCart(menu, button, true);
                 this.openConfirmation(
-                    t.confirmationTitle || "Continuar incomplet?", 
+                    t.confirmationTitle || "Continuar incompleto?", 
                     (t.incompleteOrderMsg || "Falta: {list}. ¿Continuar?").replace('{list}', missing.join(', '))
                 );
                 return;
@@ -1355,7 +1355,6 @@ const app = {
                 });
             }
 
-            // Pie de página traducido desde I18N
             printHTML += `
                 <div class="pdf-brand-footer">
                     <span>${t.pdfFooter || 'Menú digital interactivo generado con <strong>MenuForge App</strong>'}</span>
@@ -1365,204 +1364,105 @@ const app = {
             printHTML += `</div>`;
         });
 
-        // Creación/reutilización del iFrame oculto
-        let iframe = document.getElementById('pdf-print-frame');
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.id = 'pdf-print-frame';
-            iframe.style.position = 'fixed';
-            iframe.style.right = '0';
-            iframe.style.bottom = '0';
-            iframe.style.width = '0';
-            iframe.style.height = '0';
-            iframe.style.border = '0';
-            document.body.appendChild(iframe);
-        }
+        // Barra superior interactiva para la vista previa (se oculta automáticamente al imprimir)
+        const previewToolbar = `
+            <div class="print-preview-toolbar">
+                <button type="button" class="print-toolbar-btn btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+                <button type="button" class="print-toolbar-btn btn-close" onclick="app.closePrintPreview()">✕ Cerrar Vista</button>
+            </div>
+        `;
 
-        const doc = iframe.contentWindow.document;
-        doc.open();
-        doc.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>${this.escapeHTML(rInfo.nombre || 'Menú')}</title>
-                <meta charset="utf-8">
-                <style>
-                    @page { 
-                        size: A4; 
-                        margin: 0; 
-                    }
-                    
-                    * {
-                        box-sizing: border-box;
-                    }
-
-                    body { 
-                        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-                        padding: 0; 
-                        margin: 0; 
-                        background: #ffffff; 
-                        color: #0f172a; 
-                        -webkit-print-color-adjust: exact; 
-                        print-color-adjust: exact; 
-                    }
-
-                    .pdf-page-section { 
-                        position: relative; 
-                        padding: 12mm 15mm 12mm 15mm;
-                        min-height: 100vh;
-                        display: flex;
-                        flex-direction: column;
-                    }
-                    
-                    .pdf-page-break { 
-                        page-break-after: always; 
-                        break-after: page;
-                    }
-
-                    .pdf-header-top { 
-                        text-align: center; 
-                        margin-bottom: 16px; 
-                    }
-                    
-                    .pdf-header-top img { 
-                        max-width: 65px; 
-                        max-height: 65px;
-                        margin-bottom: 8px; 
-                        border-radius: 50%; 
-                        object-fit: cover;
-                    }
-                    
-                    .pdf-header-top h1 { 
-                        font-size: 22px; 
-                        margin: 0 0 4px 0; 
-                        color: #0f172a; 
-                        font-weight: 800;
-                    }
-                    
-                    .pdf-header-top p { 
-                        font-size: 12px; 
-                        margin: 0; 
-                        color: #64748b; 
-                    }
-
-                    .pdf-menu-title-box { 
-                        background: #f8fafc; 
-                        border: 1px solid #e2e8f0;
-                        padding: 8px 14px; 
-                        text-align: center; 
-                        font-size: 15px; 
-                        font-weight: 800; 
-                        margin-bottom: 18px; 
-                        border-radius: 10px; 
-                        color: #334155;
-                        text-transform: uppercase;
-                        letter-spacing: 0.05em;
-                    }
-
-                    .pdf-cat-title { 
-                        font-size: 16px; 
-                        font-weight: 800; 
-                        margin: 18px 0 10px 0; 
-                        color: #1e293b; 
-                        border-bottom: 2px solid #4f46e5; 
-                        padding-bottom: 4px; 
-                        page-break-after: avoid;
-                        break-after: avoid;
-                    }
-
-                    .pdf-dish-row { 
-                        display: flex; 
-                        align-items: baseline; 
-                        margin-bottom: 10px; 
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                    }
-
-                    .pdf-dish-thumb { 
-                        width: 36px; 
-                        height: 36px; 
-                        object-fit: cover; 
-                        border-radius: 8px; 
-                        margin-right: 10px; 
-                        flex-shrink: 0;
-                    }
-
-                    .pdf-dish-info { 
-                        flex-grow: 1; 
-                    }
-
-                    .pdf-dish-name { 
-                        margin: 0; 
-                        font-size: 14px; 
-                        font-weight: 700; 
-                        color: #0f172a; 
-                    }
-
-                    .pdf-dish-desc { 
-                        margin: 2px 0 0 0; 
-                        font-size: 11px; 
-                        color: #64748b; 
-                        line-height: 1.3;
-                    }
-
-                    .pdf-dish-dots { 
-                        flex-grow: 1; 
-                        border-bottom: 1px dotted #cbd5e1; 
-                        margin: 0 8px 4px 8px; 
-                    }
-
-                    .pdf-dish-price { 
-                        font-size: 14px; 
-                        font-weight: 800; 
-                        white-space: nowrap; 
-                        color: #0f172a; 
-                    }
-
-                    .pdf-brand-footer {
-                        margin-top: auto;
-                        padding-top: 15px;
-                        padding-bottom: 5px;
-                        text-align: center;
-                        font-size: 10px;
-                        color: #94a3b8;
-                        border-top: 1px dashed #e2e8f0;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                    }
-
-                    .pdf-brand-footer strong {
-                        color: #6366f1;
-                    }
-                </style>
-            </head>
-            <body>
+        const fullContainerContent = `
+            <style>
+                @media print {
+                    .print-preview-toolbar { display: none !important; }
+                    body { background: #ffffff !important; }
+                    .pdf-page-section { padding: 12mm 15mm !important; box-shadow: none !important; margin: 0 !important; }
+                }
+                .print-preview-toolbar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background: #1e293b;
+                    color: #fff;
+                    padding: 12px 20px;
+                    display: flex;
+                    justify-content: center;
+                    gap: 16px;
+                    z-index: 99999;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                }
+                .print-toolbar-btn {
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 14px;
+                    border: none;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .btn-print { background: #4f46e5; color: #fff; }
+                .btn-close { background: #334155; color: #cbd5e1; }
+                .print-preview-wrapper {
+                    padding-top: 65px;
+                    background: #e2e8f0;
+                    min-height: 100vh;
+                    padding-bottom: 40px;
+                }
+                .pdf-page-section {
+                    background: #ffffff;
+                    max-width: 210mm;
+                    margin: 20px auto;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    border-radius: 4px;
+                    position: relative;
+                    padding: 12mm 15mm;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .pdf-page-break {
+                    page-break-after: always;
+                    break-after: page;
+                    margin-bottom: 20px;
+                }
+                .pdf-header-top { text-align: center; margin-bottom: 16px; }
+                .pdf-header-top img { max-width: 65px; max-height: 65px; margin-bottom: 8px; border-radius: 50%; object-fit: cover; }
+                .pdf-header-top h1 { font-size: 22px; margin: 0 0 4px 0; color: #0f172a; font-weight: 800; }
+                .pdf-header-top p { font-size: 12px; margin: 0; color: #64748b; }
+                .pdf-menu-title-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; text-align: center; font-size: 15px; font-weight: 800; margin-bottom: 18px; border-radius: 10px; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; }
+                .pdf-cat-title { font-size: 16px; font-weight: 800; margin: 18px 0 10px 0; color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 4px; page-break-after: avoid; break-after: avoid; }
+                .pdf-dish-row { display: flex; align-items: baseline; margin-bottom: 10px; page-break-inside: avoid; break-inside: avoid; }
+                .pdf-dish-thumb { width: 36px; height: 36px; object-fit: cover; border-radius: 8px; margin-right: 10px; flex-shrink: 0; }
+                .pdf-dish-info { flex-grow: 1; }
+                .pdf-dish-name { margin: 0; font-size: 14px; font-weight: 700; color: #0f172a; }
+                .pdf-dish-desc { margin: 2px 0 0 0; font-size: 11px; color: #64748b; line-height: 1.3; }
+                .pdf-dish-dots { flex-grow: 1; border-bottom: 1px dotted #cbd5e1; margin: 0 8px 4px 8px; }
+                .pdf-dish-price { font-size: 14px; font-weight: 800; white-space: nowrap; color: #0f172a; }
+                .pdf-brand-footer { margin-top: auto; padding-top: 15px; padding-bottom: 5px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px dashed #e2e8f0; page-break-inside: avoid; break-inside: avoid; }
+                .pdf-brand-footer strong { color: #6366f1; }
+            </style>
+            ${previewToolbar}
+            <div class="print-preview-wrapper">
                 ${printHTML}
-                
-                <script>
-                    // SOLUCIÓN AL BLOQUEO DE ANDROID PRINT MANAGER:
-                    // Esperar a que TODAS las imágenes del PDF estén completamente cargadas 
-                    // o hayan fallado antes de lanzar window.print().
-                    const images = Array.from(document.images);
-                    
-                    Promise.all(images.map(img => {
-                        if (img.complete) return Promise.resolve();
-                        return new Promise(resolve => {
-                            img.onload = resolve;
-                            img.onerror = resolve; // Si falla, que continúe y no bloquee el sistema
-                        });
-                    })).then(() => {
-                        // Pequeño retardo de seguridad tras cargar todo
-                        setTimeout(() => {
-                            window.focus();
-                            window.print();
-                        }, 250);
-                    });
-                </script>
-            </body>
-            </html>
-        `);
-        doc.close();
+            </div>
+        `;
+
+        if (this.dom.printContainer) {
+            this.dom.printContainer.innerHTML = fullContainerContent;
+            this.dom.printContainer.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    },
+
+    closePrintPreview() {
+        if (this.dom.printContainer) {
+            this.dom.printContainer.innerHTML = '';
+            this.dom.printContainer.style.display = 'none';
+            document.body.style.overflow = '';
+        }
     },
 
     openModal(safeDataStr) {
