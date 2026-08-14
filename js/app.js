@@ -1305,7 +1305,9 @@ const app = {
             const isDaily = this.isDailyMenu(menu);
             const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
             
-            const breakClass = index < menus.length - 1 ? 'pdf-page-break' : '';
+            // Evitar salto de página en el último elemento para prevenir páginas en blanco extra
+            const isLastMenu = index === menus.length - 1;
+            const breakClass = !isLastMenu ? 'pdf-page-break' : '';
             printHTML += `<div class="pdf-page-section ${breakClass}">`;
 
             printHTML += `
@@ -1329,7 +1331,7 @@ const app = {
             const images = menu.recursos?.imagenes || {};
 
             if (trans && trans.categorias) {
-                trans.categorias.forEach(cat => {
+                trans.categorias.forEach((cat, catIdx) => {
                     if (cat.platos && cat.platos.length > 0) {
                         const catName = this.getCategoryName(cat.key, cat.nombre);
                         printHTML += `<div class="pdf-cat-title">${this.escapeHTML(catName)}</div>`;
@@ -1364,105 +1366,95 @@ const app = {
             printHTML += `</div>`;
         });
 
-        // Barra superior interactiva para la vista previa (se oculta automáticamente al imprimir)
-        const previewToolbar = `
-            <div class="print-preview-toolbar">
-                <button type="button" class="print-toolbar-btn btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-                <button type="button" class="print-toolbar-btn btn-close" onclick="app.closePrintPreview()">✕ Cerrar Vista</button>
-            </div>
-        `;
+        // Estilos limpios y directos para impresión nativa sin páginas en blanco sobrantes
+        let printStyleEl = document.getElementById('dynamic-print-styles');
+        if (!printStyleEl) {
+            printStyleEl = document.createElement('style');
+            printStyleEl.id = 'dynamic-print-styles';
+            printStyleEl.media = 'print';
+            document.head.appendChild(printStyleEl);
+        }
 
-        const fullContainerContent = `
-            <style>
-                @media print {
-                    .print-preview-toolbar { display: none !important; }
-                    body { background: #ffffff !important; }
-                    .pdf-page-section { padding: 12mm 15mm !important; box-shadow: none !important; margin: 0 !important; }
-                }
-                .print-preview-toolbar {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    background: #1e293b;
-                    color: #fff;
-                    padding: 12px 20px;
-                    display: flex;
-                    justify-content: center;
-                    gap: 16px;
-                    z-index: 99999;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                }
-                .print-toolbar-btn {
-                    padding: 8px 16px;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    font-size: 14px;
-                    border: none;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-                .btn-print { background: #4f46e5; color: #fff; }
-                .btn-close { background: #334155; color: #cbd5e1; }
-                .print-preview-wrapper {
-                    padding-top: 65px;
-                    background: #e2e8f0;
-                    min-height: 100vh;
-                    padding-bottom: 40px;
+        printStyleEl.textContent = `
+            @media print {
+                body * { visibility: hidden !important; }
+                #print-container, #print-container * { visibility: visible !important; }
+                #print-container {
+                    position: absolute !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    background: #ffffff !important;
+                    display: block !important;
                 }
                 .pdf-page-section {
-                    background: #ffffff;
-                    max-width: 210mm;
-                    margin: 20px auto;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                    border-radius: 4px;
-                    position: relative;
-                    padding: 12mm 15mm;
-                    display: flex;
-                    flex-direction: column;
+                    display: block !important;
+                    page-break-after: always !important;
+                    break-after: page !important;
+                    margin: 0 !important;
+                    padding: 10mm 15mm !important;
+                    box-shadow: none !important;
                 }
-                .pdf-page-break {
-                    page-break-after: always;
-                    break-after: page;
-                    margin-bottom: 20px;
+                .pdf-page-section.pdf-page-break {
+                    page-break-after: always !important;
+                    break-after: page !important;
                 }
-                .pdf-header-top { text-align: center; margin-bottom: 16px; }
-                .pdf-header-top img { max-width: 65px; max-height: 65px; margin-bottom: 8px; border-radius: 50%; object-fit: cover; }
-                .pdf-header-top h1 { font-size: 22px; margin: 0 0 4px 0; color: #0f172a; font-weight: 800; }
-                .pdf-header-top p { font-size: 12px; margin: 0; color: #64748b; }
-                .pdf-menu-title-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; text-align: center; font-size: 15px; font-weight: 800; margin-bottom: 18px; border-radius: 10px; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; }
-                .pdf-cat-title { font-size: 16px; font-weight: 800; margin: 18px 0 10px 0; color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 4px; page-break-after: avoid; break-after: avoid; }
-                .pdf-dish-row { display: flex; align-items: baseline; margin-bottom: 10px; page-break-inside: avoid; break-inside: avoid; }
-                .pdf-dish-thumb { width: 36px; height: 36px; object-fit: cover; border-radius: 8px; margin-right: 10px; flex-shrink: 0; }
-                .pdf-dish-info { flex-grow: 1; }
-                .pdf-dish-name { margin: 0; font-size: 14px; font-weight: 700; color: #0f172a; }
-                .pdf-dish-desc { margin: 2px 0 0 0; font-size: 11px; color: #64748b; line-height: 1.3; }
-                .pdf-dish-dots { flex-grow: 1; border-bottom: 1px dotted #cbd5e1; margin: 0 8px 4px 8px; }
-                .pdf-dish-price { font-size: 14px; font-weight: 800; white-space: nowrap; color: #0f172a; }
-                .pdf-brand-footer { margin-top: auto; padding-top: 15px; padding-bottom: 5px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px dashed #e2e8f0; page-break-inside: avoid; break-inside: avoid; }
-                .pdf-brand-footer strong { color: #6366f1; }
-            </style>
-            ${previewToolbar}
-            <div class="print-preview-wrapper">
-                ${printHTML}
-            </div>
+                .pdf-page-section:last-child {
+                    page-break-after: avoid !important;
+                    break-after: avoid !important;
+                }
+            }
         `;
 
-        if (this.dom.printContainer) {
-            this.dom.printContainer.innerHTML = fullContainerContent;
-            this.dom.printContainer.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-    },
+        // Estilos CSS visuales para el contenedor en pantalla (mientras prepara el print)
+        const screenStyles = `
+            .pdf-page-section {
+                background: #ffffff;
+                max-width: 210mm;
+                margin: 20px auto;
+                padding: 12mm 15mm;
+                box-sizing: border-box;
+            }
+            .pdf-header-top { text-align: center; margin-bottom: 16px; }
+            .pdf-header-top img { max-width: 65px; max-height: 65px; margin-bottom: 8px; border-radius: 50%; object-fit: cover; }
+            .pdf-header-top h1 { font-size: 22px; margin: 0 0 4px 0; color: #0f172a; font-weight: 800; }
+            .pdf-header-top p { font-size: 12px; margin: 0; color: #64748b; }
+            .pdf-menu-title-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; text-align: center; font-size: 15px; font-weight: 800; margin-bottom: 18px; border-radius: 10px; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; }
+            .pdf-cat-title { font-size: 16px; font-weight: 800; margin: 18px 0 10px 0; color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 4px; }
+            .pdf-dish-row { display: flex; align-items: baseline; margin-bottom: 10px; }
+            .pdf-dish-thumb { width: 36px; height: 36px; object-fit: cover; border-radius: 8px; margin-right: 10px; flex-shrink: 0; }
+            .pdf-dish-info { flex-grow: 1; }
+            .pdf-dish-name { margin: 0; font-size: 14px; font-weight: 700; color: #0f172a; }
+            .pdf-dish-desc { margin: 2px 0 0 0; font-size: 11px; color: #64748b; line-height: 1.3; }
+            .pdf-dish-dots { flex-grow: 1; border-bottom: 1px dotted #cbd5e1; margin: 0 8px 4px 8px; }
+            .pdf-dish-price { font-size: 14px; font-weight: 800; white-space: nowrap; color: #0f172a; }
+            .pdf-brand-footer { margin-top: 25px; padding-top: 15px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px dashed #e2e8f0; }
+            .pdf-brand-footer strong { color: #6366f1; }
+        `;
 
-    closePrintPreview() {
-        if (this.dom.printContainer) {
-            this.dom.printContainer.innerHTML = '';
-            this.dom.printContainer.style.display = 'none';
-            document.body.style.overflow = '';
+        let styleTag = document.getElementById('print-screen-styles');
+        if (!styleTag) {
+            styleTag = document.createElement('style');
+            styleTag.id = 'print-screen-styles';
+            document.head.appendChild(styleTag);
         }
+        styleTag.textContent = screenStyles;
+
+        if (this.dom.printContainer) {
+            this.dom.printContainer.innerHTML = printHTML;
+            this.dom.printContainer.style.display = 'block';
+        }
+
+        // Lanzar directamente el diálogo de impresión nativo del navegador
+        setTimeout(() => {
+            window.print();
+            setTimeout(() => {
+                if (this.dom.printContainer) {
+                    this.dom.printContainer.innerHTML = '';
+                    this.dom.printContainer.style.display = 'none';
+                }
+            }, 300);
+        }, 200);
     },
 
     openModal(safeDataStr) {
