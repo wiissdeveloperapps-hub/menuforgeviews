@@ -15,7 +15,7 @@ const app = {
     tables: [],
     selectedFilters: [],
     
-    // Variables para el borrador del modal premium
+    // Variables para el borrador del modal de filtros
     pendingSelectedFilters: [],
     pendingSelectedCategory: null,
     pendingMinPrice: null,
@@ -78,7 +78,10 @@ const app = {
         filterModalTitle: document.getElementById('filter-modal-title'),
         filterModalOptions: document.getElementById('filter-modal-options'),
         sendOrderBtn: document.getElementById('send-order-btn'),
-        confModal: document.getElementById('confirmation-modal')
+        confModal: document.getElementById('confirmation-modal'),
+        confTitle: document.getElementById('conf-title'),
+        confBtnCancel: document.getElementById('conf-btn-cancel'),
+        confBtnAccept: document.getElementById('conf-btn-accept')
     },
 
     async init() {
@@ -252,6 +255,12 @@ const app = {
         this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
+
+        if (this.dom.confTitle && !this.dom.confTitle.textContent) {
+            this.dom.confTitle.textContent = t.confDefaultTitle || '¿Estás seguro?';
+        }
+        if (this.dom.confBtnCancel) this.dom.confBtnCancel.textContent = t.btnCancel || 'Cancelar';
+        if (this.dom.confBtnAccept) this.dom.confBtnAccept.textContent = t.btnAccept || 'Continuar';
         
         this.dom.name.textContent = rInfo.nombre || t.defaultRestaurant;
         this.dom.langSelect.setAttribute('aria-label', t.langSelect);
@@ -455,8 +464,9 @@ const app = {
 
     getFilterLabel(value) {
         const key = this.normalizeFilterValue(value);
-        const t = FILTER_DICTIONARY[key] || {};
-        return t[this.currentLang] || t.es || value || 'Etiqueta';
+        const tDict = FILTER_DICTIONARY[key] || {};
+        const t = I18N[this.currentLang] || I18N['es'];
+        return tDict[this.currentLang] || tDict.es || value || t.defaultTag || 'Etiqueta';
     },
 
     getFilterIcon(value) {
@@ -546,7 +556,6 @@ const app = {
         
         const categoryIcons = { 'Desayunos': '☕', 'Comidas': '☀️', 'Meriendas': '🧁', 'Cenas': '🌙', 'Postres': '🍰', 'Bebidas': '🥤', 'Entrantes': '🥗', 'Principales': '🥩' };
         
-        // Modificado a lista de 1 sola columna vertical con ancho completo para que no se corte ningún texto
         const categoryHtml = categories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
@@ -880,8 +889,8 @@ const app = {
             if (missing.length > 0) {
                 this.confirmationCallback = () => this.addDailyMenuToCart(menu, button, true);
                 this.openConfirmation(
-                    t.confirmationTitle || "Continuar incompleto?", 
-                    (t.incompleteOrderMsg || "Falta: {list}. ¿Continuar?").replace('{list}', missing.join(', '))
+                    t.confirmationTitle || "¿Continuar sin selección?", 
+                    (t.incompleteOrderMsg || "Te falta seleccionar: {list}. ¿Seguro que quieres continuar?").replace('{list}', missing.join(', '))
                 );
                 return;
             }
@@ -938,19 +947,26 @@ const app = {
 
     openConfirmation(title, message) {
         const t = I18N[this.currentLang] || I18N['es'];
-        document.getElementById('conf-title').textContent = title;
-        document.getElementById('conf-msg').textContent = message;
+        const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
+        if (!confModal) return;
+
+        const titleEl = document.getElementById('conf-title');
+        const msgEl = document.getElementById('conf-msg');
+        if (titleEl) titleEl.textContent = title || t.confDefaultTitle || '¿Estás seguro?';
+        if (msgEl) msgEl.textContent = message || '';
         
-        const confModal = document.getElementById('confirmation-modal');
-        confModal.querySelectorAll('.secondary')[0].textContent = t.btnCancel;
-        confModal.querySelectorAll('.primary')[0].textContent = t.btnAccept;
+        const cancelBtn = document.getElementById('conf-btn-cancel') || confModal.querySelector('.secondary');
+        const acceptBtn = document.getElementById('conf-btn-accept') || confModal.querySelector('.primary');
+        if (cancelBtn) cancelBtn.textContent = t.btnCancel || 'Cancelar';
+        if (acceptBtn) acceptBtn.textContent = t.btnAccept || 'Continuar';
         
         confModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     },
 
     closeConfirmation() {
-        document.getElementById('confirmation-modal').classList.remove('active');
+        const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
+        if (confModal) confModal.classList.remove('active');
         document.body.style.overflow = '';
         this.confirmationCallback = null;
     },
@@ -1219,6 +1235,7 @@ const app = {
     },
 
     generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex, isDailyMenu = false) {
+        const t = I18N[this.currentLang] || I18N['es'];
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
         const safeName = this.escapeHTML(dish.nombre);
         const safeDesc = this.escapeHTML(dish.descripcion);
@@ -1259,9 +1276,10 @@ const app = {
 
         let bottomRowHTML = '';
         if (isDailyMenu) {
+            const statusLabel = isSelected ? (t.dishSelected || 'Seleccionado') : (t.dishTapToChoose || 'Pulsa para elegir');
             bottomRowHTML = `
             <div class="dish-bottom-row">
-                <div class="dish-price" style="font-size:0.85em; color:var(--text-muted-light);">${isSelected ? 'Seleccionado' : 'Pulsa para elegir'}</div>
+                <div class="dish-price" style="font-size:0.85em; color:var(--text-muted-light);">${statusLabel}</div>
                 ${actionButton}
             </div>`;
         } else {

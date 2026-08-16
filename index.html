@@ -16,7 +16,7 @@
 <body>
 
 <div id="friendly-toast">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     <span id="toast-text"></span>
 </div>
 
@@ -50,7 +50,7 @@
             <div class="search-container">
                 <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 <input type="text" id="search-input" class="search-input" oninput="app.handleSearch(this.value)">
-                <button type="button" id="filter-toggle-btn" class="filter-toggle-btn" onclick="app.toggleFilterPanel()" aria-label="Filtrar platos">
+                <button type="button" id="filter-toggle-btn" class="filter-toggle-btn" onclick="app.toggleFilterPanel()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M7 12h10"/><path d="M10 19h4"/></svg>
                 </button>
             </div>
@@ -101,11 +101,11 @@
 <div id="confirmation-modal" class="modal-overlay" onclick="app.closeConfirmation()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-body" style="text-align: center;">
-            <h3 id="conf-title" class="modal-title">¿Estás seguro?</h3>
+            <h3 id="conf-title" class="modal-title"></h3>
             <p id="conf-msg" style="color: var(--text-muted-light); margin-bottom: 20px;"></p>
             <div style="display: flex; gap: 10px;">
-                <button type="button" class="filter-cta-btn secondary" onclick="app.closeConfirmation()">Cancelar</button>
-                <button type="button" class="filter-cta-btn primary" onclick="app.confirmAction()">Continuar</button>
+                <button type="button" id="conf-btn-cancel" class="filter-cta-btn secondary" onclick="app.closeConfirmation()"></button>
+                <button type="button" id="conf-btn-accept" class="filter-cta-btn primary" onclick="app.confirmAction()"></button>
             </div>
         </div>
     </div>
