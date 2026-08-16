@@ -1487,7 +1487,7 @@ const app = {
             if (this.dom.toast) this.dom.toast.classList.add('show');
             setTimeout(() => this.dom.toast?.classList.remove('show'), 3000);
         });
-    }
+    },
 
     openModal(safeDataStr) {
         const data = JSON.parse(decodeURIComponent(safeDataStr));
