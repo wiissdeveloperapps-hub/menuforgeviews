@@ -957,8 +957,43 @@ const app = {
         
         const cancelBtn = document.getElementById('conf-btn-cancel') || confModal.querySelector('.secondary');
         const acceptBtn = document.getElementById('conf-btn-accept') || confModal.querySelector('.primary');
-        if (cancelBtn) cancelBtn.textContent = t.btnCancel || 'Cancelar';
-        if (acceptBtn) acceptBtn.textContent = t.btnAccept || 'Continuar';
+        
+        // Restauramos los botones a su estado original (por si venían de openAlert)
+        if (cancelBtn) {
+            cancelBtn.style.display = 'block';
+            cancelBtn.textContent = t.btnCancel || 'Cancelar';
+        }
+        if (acceptBtn) {
+            acceptBtn.textContent = t.btnAccept || 'Continuar';
+            acceptBtn.onclick = () => app.confirmAction();
+        }
+        
+        confModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    },
+
+    // -------------------------------------------------------------
+    // NUEVA FUNCIÓN: openAlert reutilizando el modal de confirmación
+    // -------------------------------------------------------------
+    openAlert(title, message) {
+        const t = I18N[this.currentLang] || I18N['es'];
+        const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
+        if (!confModal) return;
+
+        const titleEl = document.getElementById('conf-title');
+        const msgEl = document.getElementById('conf-msg');
+        if (titleEl) titleEl.textContent = title || t.errorTitle || 'Aviso';
+        if (msgEl) msgEl.textContent = message || '';
+        
+        const cancelBtn = document.getElementById('conf-btn-cancel') || confModal.querySelector('.secondary');
+        const acceptBtn = document.getElementById('conf-btn-accept') || confModal.querySelector('.primary');
+        
+        // Ocultamos el botón secundario y modificamos el primario para que solo cierre
+        if (cancelBtn) cancelBtn.style.display = 'none';
+        if (acceptBtn) {
+            acceptBtn.textContent = t.cookieBtn || 'Aceptar'; 
+            acceptBtn.onclick = () => app.closeConfirmation();
+        }
         
         confModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1318,14 +1353,12 @@ const app = {
         const menus = this.getPrintableMenus();
         const t = I18N[this.currentLang] || I18N['es'];
         
-        // Mensaje traducido dinámicamente según el idioma seleccionado
         const loadingMsg = t.generatingPdf || 'Generando PDF, por favor espera...';
         
         const overlay = document.createElement('div');
         overlay.id = 'pdf-loading-overlay';
         overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.9); color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:999999;';
         
-        // Añadidas fuentes CJK (PingFang SC, Microsoft YaHei, Noto Sans CJK SC) al CSS del modal
         overlay.innerHTML = `
             <style>
                 @keyframes pdf-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -1646,11 +1679,97 @@ const app = {
         this.dom.cartTotalPrice.textContent = this.formatPrice(total);
     },
 
-    sendOrder() {
+    // -------------------------------------------------------------
+    // FUNCIONES GPS Y ACTUALIZACIÓN DE SENDORDER
+    // -------------------------------------------------------------
+    getUserLocation() {
+        const t = I18N[this.currentLang] || I18N['es'];
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject(new Error(t.locationNotSupported || 'Geolocalización no soportada.'));
+            } else {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        resolve({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        });
+                    },
+                    (error) => {
+                        let errorMsg = t.locationError || 'Error al obtener la ubicación.';
+                        if (error.code === error.PERMISSION_DENIED) {
+                            errorMsg = t.locationDenied || 'Se denegó el acceso a la ubicación. Es necesario para verificar la distancia.';
+                        }
+                        reject(new Error(errorMsg));
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            }
+        });
+    },
+
+    calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371e3; // Radio de la Tierra en metros
+        const p1 = lat1 * Math.PI/180;
+        const p2 = lat2 * Math.PI/180;
+        const dp = (lat2-lat1) * Math.PI/180;
+        const dl = (lon2-lon1) * Math.PI/180;
+
+        const a = Math.sin(dp/2) * Math.sin(dp/2) +
+                  Math.cos(p1) * Math.cos(p2) *
+                  Math.sin(dl/2) * Math.sin(dl/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c; 
+    },
+
+    async sendOrder() {
         const selectedTable = this.dom.tableSelector.value;
         const t_wa = I18N_WHATSAPP[this.whatsapp.msgLang] || I18N_WHATSAPP['es'];
-        if (!selectedTable) { alert(t_wa.noTable); return; }
+        const t = I18N[this.currentLang] || I18N['es'];
+        
+        if (!selectedTable) { 
+            // Utilizamos el nuevo openAlert en lugar de alert()
+            this.openAlert(t.errorTitle || 'Error', t_wa.noTable); 
+            return; 
+        }
         if (this.cart.length === 0) return;
+
+        // --- VALIDACIÓN GPS ---
+        const rInfo = this.data?.restaurantInfo || {};
+        const waConfig = rInfo.whatsappOrderConfig || {};
+        const isDistanceRestrictionEnabled = waConfig.maxDistanceEnabled ?? rInfo.maxDistanceEnabled ?? false;
+        
+        if (isDistanceRestrictionEnabled && rInfo.latitud && rInfo.longitud) {
+            const maxMeters = waConfig.maxDistanceMeters ?? rInfo.maxDistanceMeters ?? 50;
+            
+            try {
+                const originalBtnText = this.dom.sendOrderBtn.textContent;
+                this.dom.sendOrderBtn.textContent = t.calculatingDistance || 'Verificando tu ubicación...';
+                this.dom.sendOrderBtn.disabled = true;
+                this.dom.sendOrderBtn.style.opacity = '0.7';
+
+                const userCoords = await this.getUserLocation();
+                const distance = this.calculateDistance(userCoords.lat, userCoords.lng, rInfo.latitud, rInfo.longitud);
+
+                this.dom.sendOrderBtn.textContent = originalBtnText;
+                this.dom.sendOrderBtn.disabled = false;
+                this.dom.sendOrderBtn.style.opacity = '1';
+
+                if (distance > maxMeters) {
+                    const errorMsg = (t.distanceExceeded || 'Debes estar a menos de {meters} metros.').replace('{meters}', maxMeters);
+                    this.openAlert(t.gpsErrorTitle || 'Fuera de rango', errorMsg);
+                    return; 
+                }
+            } catch (error) {
+                this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
+                this.dom.sendOrderBtn.disabled = false;
+                this.dom.sendOrderBtn.style.opacity = '1';
+                
+                this.openAlert(t.gpsErrorTitle || 'Error de ubicación', error.message);
+                return;
+            }
+        }
+        // ----------------------
 
         const orderItems = this.cart.map(item => {
             const nameForWhatsapp = item.nombre_wa || item.nombre;
@@ -1719,7 +1838,7 @@ const app = {
     slugify(text) {
         if (!text) return '';
         return text.toString().toLowerCase()
-            .replace(/\s+/g, '-')        
+            .replace(/\s+/g, '-')       
             .replace(/[^\w\-]+/g, '')      
             .replace(/\-\-+/g, '-')        
             .replace(/^-+/, '')            

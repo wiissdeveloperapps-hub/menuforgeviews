@@ -12,7 +12,14 @@ const I18N = {
         applyFilters: "Mostrar resultados",
         pdfFooter: "Menú digital interactivo generado con <strong>MenuForge App</strong>",
         dailyMenuAdd: "Añadir", orderIntro: "🛎️ Nuevo pedido", orderSection: "🧾 Pedido:", orderNotes: "📝 Notas:", orderTotal: "💳 Total:", generatingPdf: "Generando PDF, por favor espera...", pdfError: "Error al generar el PDF",
-        dishSelected: "Seleccionado", dishTapToChoose: "Pulsa para elegir", defaultTag: "Etiqueta"
+        dishSelected: "Seleccionado", dishTapToChoose: "Pulsa para elegir", defaultTag: "Etiqueta",
+        // Nuevas traducciones para GPS
+        gpsErrorTitle: "Ubicación requerida",
+        calculatingDistance: "Verificando ubicación...",
+        distanceExceeded: "📍 Estás demasiado lejos. Para pedir debes estar a menos de {meters} metros del restaurante.",
+        locationDenied: "Permiso de ubicación denegado. Es necesario para enviar pedidos.",
+        locationError: "Error al obtener tu ubicación. Inténtalo de nuevo.",
+        locationNotSupported: "Tu navegador no soporta geolocalización."
     },
     en: { 
         search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", notesLabel: "Notes", notesPlaceholder: "Add details for the kitchen", filterButtonTitle: "Filter dishes", quickNotePocoHecho: "Lightly cooked", quickNoteSinSal: "No salt", quickNoteSalsaAparte: "Sauce on the side", quickNoteSinPicante: "No spice", quickNoteSinGluten: "Gluten-free", quickNoteSinCebolla: "No onion", quickNoteSinTomate: "No tomato", quickNoteSinAceite: "No oil", quickNoteSinQueso: "No cheese", quickNoteSinNueces: "No nuts", quickNoteSinAlergenicos: "No allergens", quickNoteMuyHecho: "Well done", quickNoteConSalsa: "With sauce", quickNoteExtraPicante: "Extra spicy", quickNoteSinCilantro: "No cilantro", quickNoteSinPepinillos: "No pickles", filterCategoriesTitle: "Categories", filterTagsTitle: "Tags and allergens", filterPriceTitle: "Price range", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Clear", filterActive: "Active", filterAvailable: "Available", filterUnavailable: "Unavailable",
@@ -27,7 +34,13 @@ const I18N = {
         applyFilters: "Show results",
         pdfFooter: "Interactive digital menu generated with <strong>MenuForge App</strong>",
         dailyMenuAdd: "Add", orderIntro: "🛎️ New order", orderSection: "🧾 Order:", orderNotes: "📝 Notes:", orderTotal: "💳 Total:", generatingPdf: "Generating PDF, please wait...", pdfError: "Error generating PDF",
-        dishSelected: "Selected", dishTapToChoose: "Tap to select", defaultTag: "Tag"
+        dishSelected: "Selected", dishTapToChoose: "Tap to select", defaultTag: "Tag",
+        gpsErrorTitle: "Location Required",
+        calculatingDistance: "Verifying location...",
+        distanceExceeded: "📍 You are too far. To order, you must be within {meters} meters of the restaurant.",
+        locationDenied: "Location access denied. It is required to send orders.",
+        locationError: "Error getting your location. Please try again.",
+        locationNotSupported: "Your browser does not support geolocation."
     },
     fr: { 
         search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", notesLabel: "Observations", notesPlaceholder: "Ajoutez des détails pour la cuisine", filterButtonTitle: "Filtrer les plats", quickNotePocoHecho: "Peu cuit", quickNoteSinSal: "Sans sel", quickNoteSalsaAparte: "Sauce séparée", quickNoteSinPicante: "Sans épice", quickNoteSinGluten: "Sans gluten", quickNoteSinCebolla: "Sans oignon", quickNoteSinTomate: "Sans tomate", quickNoteSinAceite: "Sans huile", quickNoteSinQueso: "Sans fromage", quickNoteSinNueces: "Sans noix", quickNoteSinAlergenicos: "Sans allergènes", quickNoteMuyHecho: "Bien cuit", quickNoteConSalsa: "Avec sauce", quickNoteExtraPicante: "Très épicé", quickNoteSinCilantro: "Sans coriandre", quickNoteSinPepinillos: "Sans cornichons", filterCategoriesTitle: "Catégories", filterTagsTitle: "Étiquettes et allergènes", filterPriceTitle: "Fourchette de prix", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Effacer", filterActive: "Actif", filterAvailable: "Disponible", filterUnavailable: "Indisponible",
@@ -42,7 +55,13 @@ const I18N = {
         applyFilters: "Afficher les résultats",
         pdfFooter: "Menu numérique interactif généré avec <strong>MenuForge App</strong>",
         dailyMenuAdd: "Ajouter", orderIntro: "🛎️ Nouvelle commande", orderSection: "🧾 Commande :", orderNotes: "📝 Notes :", orderTotal: "💳 Total :", generatingPdf: "Génération du PDF, veuillez patienter...", pdfError: "Erreur lors de la génération du PDF",
-        dishSelected: "Sélectionné", dishTapToChoose: "Appuyez pour choisir", defaultTag: "Étiquette"
+        dishSelected: "Sélectionné", dishTapToChoose: "Appuyez pour choisir", defaultTag: "Étiquette",
+        gpsErrorTitle: "Position requise",
+        calculatingDistance: "Vérification de la position...",
+        distanceExceeded: "📍 Vous êtes trop loin. Vous devez être à moins de {meters} mètres du restaurant.",
+        locationDenied: "L'accès à la position est refusé. Il est nécessaire pour commander.",
+        locationError: "Erreur lors de l'obtention de votre position.",
+        locationNotSupported: "Votre navigateur ne prend pas en charge la géolocalisation."
     },
     it: { 
         search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", notesLabel: "Osservazioni", notesPlaceholder: "Aggiungi dettagli per la cucina", filterButtonTitle: "Filtra i piatti", quickNotePocoHecho: "Poco cotto", quickNoteSinSal: "Senza sale", quickNoteSalsaAparte: "Salsa a parte", quickNoteSinPicante: "Senza piccante", quickNoteSinGluten: "Senza glutine", quickNoteSinCebolla: "Senza cipolla", quickNoteSinTomate: "Senza pomodoro", quickNoteSinAceite: "Senza olio", quickNoteSinQueso: "Senza formaggio", quickNoteSinNueces: "Senza noci", quickNoteSinAlergenicos: "Senza allergeni", quickNoteMuyHecho: "Ben cotto", quickNoteConSalsa: "Con salsa", quickNoteExtraPicante: "Molto piccante", quickNoteSinCilantro: "Senza coriandolo", quickNoteSinPepinillos: "Senza sottaceti", filterCategoriesTitle: "Categorie", filterTagsTitle: "Etichette e allergeni", filterPriceTitle: "Intervallo di prezzo", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Cancella", filterActive: "Attivo", filterAvailable: "Disponibile", filterUnavailable: "Non disponibile",
@@ -57,7 +76,13 @@ const I18N = {
         applyFilters: "Mostra risultati",
         pdfFooter: "Menu digitale interattivo generato con <strong>MenuForge App</strong>",
         dailyMenuAdd: "Aggiungi", orderIntro: "🛎️ Nuovo ordine", orderSection: "🧾 Ordine:", orderNotes: "📝 Note:", orderTotal: "💳 Totale:", generatingPdf: "Generazione PDF in corso, attendere...", pdfError: "Errore durante la generazione del PDF",
-        dishSelected: "Selezionato", dishTapToChoose: "Premi per scegliere", defaultTag: "Etichetta"
+        dishSelected: "Selezionato", dishTapToChoose: "Premi per scegliere", defaultTag: "Etichetta",
+        gpsErrorTitle: "Posizione richiesta",
+        calculatingDistance: "Verifica della posizione...",
+        distanceExceeded: "📍 Sei troppo lontano. Devi trovarti a meno di {meters} metri dal ristorante.",
+        locationDenied: "Accesso alla posizione negato. È necessario per ordinare.",
+        locationError: "Errore durante il recupero della posizione.",
+        locationNotSupported: "Il tuo browser non supporta la geolocalizzazione."
     },
     de: { 
         search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", notesLabel: "Anmerkungen", notesPlaceholder: "Fügen Sie Details für die Küche hinzu", filterButtonTitle: "Gerichte filtern", quickNotePocoHecho: "Leicht gegart", quickNoteSinSal: "Ohne Salz", quickNoteSalsaAparte: "Soße separat", quickNoteSinPicante: "Nicht scharf", quickNoteSinGluten: "Glutenfrei", quickNoteSinCebolla: "Ohne Zwiebeln", quickNoteSinTomate: "Ohne Tomaten", quickNoteSinAceite: "Ohne Öl", quickNoteSinQueso: "Ohne Käse", quickNoteSinNueces: "Ohne Nüsse", quickNoteSinAlergenicos: "Ohne Allergene", quickNoteMuyHecho: "Gut durchgebraten", quickNoteConSalsa: "Mit Sauce", quickNoteExtraPicante: "Extra scharf", quickNoteSinCilantro: "Ohne Koriander", quickNoteSinPepinillos: "Ohne Gewürzgurken", filterCategoriesTitle: "Kategorien", filterTagsTitle: "Schilder und Allergene", filterPriceTitle: "Preisspanne", filterMinPrice: "Min", filterMaxPrice: "Max", filterClear: "Löschen", filterActive: "Aktiv", filterAvailable: "Verfügbar", filterUnavailable: "Nicht verfügbar",
@@ -72,7 +97,13 @@ const I18N = {
         applyFilters: "Ergebnisse anzeigen",
         pdfFooter: "Interaktives digitales Menü erstellt mit <strong>MenuForge App</strong>",
         dailyMenuAdd: "Hinzufügen", orderIntro: "🛎️ Neue Bestellung", orderSection: "🧾 Bestellung:", orderNotes: "📝 Anmerkungen:", orderTotal: "💳 Gesamt:", generatingPdf: "PDF wird erstellt, bitte warten...", pdfError: "Fehler bei der PDF-Erstellung",
-        dishSelected: "Ausgewählt", dishTapToChoose: "Tippen zum Auswählen", defaultTag: "Etikett"
+        dishSelected: "Ausgewählt", dishTapToChoose: "Tippen zum Auswählen", defaultTag: "Etikett",
+        gpsErrorTitle: "Standort erforderlich",
+        calculatingDistance: "Standort wird überprüft...",
+        distanceExceeded: "📍 Sie sind zu weit entfernt. Sie müssen sich im Umkreis von {meters} Metern befinden.",
+        locationDenied: "Standortzugriff verweigert. Erforderlich für Bestellungen.",
+        locationError: "Fehler beim Abrufen Ihres Standorts.",
+        locationNotSupported: "Ihr Browser unterstützt keine Geolokalisierung."
     },
     pt: { 
         search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", notesLabel: "Observações", notesPlaceholder: "Adicione detalhes para a cozinha", filterButtonTitle: "Filtrar pratos", quickNotePocoHecho: "Pouco cozido", quickNoteSinSal: "Sem sal", quickNoteSalsaAparte: "Molho à parte", quickNoteSinPicante: "Sem picante", quickNoteSinGluten: "Sem glúten", quickNoteSinCebolla: "Sem cebola", quickNoteSinTomate: "Sem tomate", quickNoteSinAceite: "Sem óleo", quickNoteSinQueso: "Sem queijo", quickNoteSinNueces: "Sem nozes", quickNoteSinAlergenicos: "Sem alérgenos", quickNoteMuyHecho: "Bem cozido", quickNoteConSalsa: "Com molho", quickNoteExtraPicante: "Extra picante", quickNoteSinCilantro: "Sem coentro", quickNoteSinPepinillos: "Sem picles", filterCategoriesTitle: "Categorias", filterTagsTitle: "Etiquetas e alergénios", filterPriceTitle: "Faixa de preço", filterMinPrice: "Mín", filterMaxPrice: "Máx", filterClear: "Limpar", filterActive: "Ativo", filterAvailable: "Disponível", filterUnavailable: "Indisponível",
@@ -87,7 +118,13 @@ const I18N = {
         applyFilters: "Mostrar resultados",
         pdfFooter: "Menu digital interativo gerado com <strong>MenuForge App</strong>",
         dailyMenuAdd: "Adicionar", orderIntro: "🛎️ Novo pedido", orderSection: "🧾 Pedido:", orderNotes: "📝 Notas:", orderTotal: "💳 Total:", generatingPdf: "Gerando PDF, aguarde...", pdfError: "Erro ao gerar PDF",
-        dishSelected: "Selecionado", dishTapToChoose: "Toque para escolher", defaultTag: "Etiqueta"
+        dishSelected: "Selecionado", dishTapToChoose: "Toque para escolher", defaultTag: "Etiqueta",
+        gpsErrorTitle: "Localização obrigatória",
+        calculatingDistance: "Verificando localização...",
+        distanceExceeded: "📍 Você está muito longe. Para pedir, deve estar a menos de {meters} metros.",
+        locationDenied: "Acesso à localização negado. Necessário para enviar pedidos.",
+        locationError: "Erro ao obter sua localização.",
+        locationNotSupported: "Seu navegador não suporta geolocalização."
     },
     cn: { 
         search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", notesLabel: "备注", notesPlaceholder: "为厨房添加详细说明", filterButtonTitle: "筛选菜品", quickNotePocoHecho: "稍微熟一点", quickNoteSinSal: "少盐", quickNoteSalsaAparte: "酱汁分开", quickNoteSinPicante: "不辣", quickNoteSinGluten: "无麸质", quickNoteSinCebolla: "不加洋葱", quickNoteSinTomate: "不加番茄", quickNoteSinAceite: "不加油", quickNoteSinQueso: "不加奶酪", quickNoteSinNueces: "无坚果", quickNoteSinAlergenicos: "无过敏原", quickNoteMuyHecho: "做得很熟", quickNoteConSalsa: "加酱", quickNoteExtraPicante: "特别辣", quickNoteSinCilantro: "不加香菜", quickNoteSinPepinillos: "不加泡菜", filterCategoriesTitle: "类别", filterTagsTitle: "标签和过敏原", filterPriceTitle: "价格范围", filterMinPrice: "最低", filterMaxPrice: "最高", filterClear: "清除", filterActive: "已选", filterAvailable: "可用", filterUnavailable: "不可用",
@@ -102,7 +139,13 @@ const I18N = {
         applyFilters: "显示结果",
         pdfFooter: "使用 <strong>MenuForge App</strong> 生成的互动数字菜单",
         dailyMenuAdd: "添加", orderIntro: "🛎️ 新订单", orderSection: "🧾 订单：", orderNotes: "📝 备注：", orderTotal: "💳 总计：", generatingPdf: "正在生成 PDF，请稍候...", pdfError: "生成 PDF 时出错",
-        dishSelected: "已选择", dishTapToChoose: "点击选择", defaultTag: "标签"
+        dishSelected: "已选择", dishTapToChoose: "点击选择", defaultTag: "标签",
+        gpsErrorTitle: "需要位置信息",
+        calculatingDistance: "正在验证位置...",
+        distanceExceeded: "📍 距离太远。下单必须在餐厅 {meters} 米以内。",
+        locationDenied: "位置访问被拒绝。下单需要获取位置。",
+        locationError: "获取位置时出错。请重试。",
+        locationNotSupported: "您的浏览器不支持地理位置。"
     },
     sa: { 
         search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", notesLabel: "ملاحظات", notesPlaceholder: "أضف تفاصيل للمطبخ", filterButtonTitle: "تصفية الأطباق", quickNotePocoHecho: "مطبوخ قليلاً", quickNoteSinSal: "بدون ملح", quickNoteSalsaAparte: "صلصة على حدة", quickNoteSinPicante: "بدون فلفل", quickNoteSinGluten: "خالي من الغلوتين", quickNoteSinCebolla: "بدون بصل", quickNoteSinTomate: "بدون طماطم", quickNoteSinAceite: "بدون زيت", quickNoteSinQueso: "بدون جبن", quickNoteSinNueces: "بدون مكسرات", quickNoteSinAlergenicos: "بدون مسببات", quickNoteMuyHecho: "مُشوي جيدًا", quickNoteConSalsa: "مع الصلصة", quickNoteExtraPicante: "حار جدًا", quickNoteSinCilantro: "بدون كزبرة", quickNoteSinPepinillos: "بدون مخللات", filterCategoriesTitle: "الفئات", filterTagsTitle: "الوسوم والمسببات", filterPriceTitle: "نطاق السعر", filterMinPrice: "الحد الأدنى", filterMaxPrice: "الحد الأقصى", filterClear: "مسح", filterActive: "نشط", filterAvailable: "متاح", filterUnavailable: "غير متاح",
@@ -117,7 +160,13 @@ const I18N = {
         applyFilters: "إظهار النتائج",
         pdfFooter: "قائمة رقمية تفاعلية تم إنشاؤها بواسطة <strong>MenuForge App</strong>",
         dailyMenuAdd: "إضافة", orderIntro: "🛎️ طلب جديد", orderSection: "🧾 الطلب:", orderNotes: "📝 الملاحظات:", orderTotal: "💳 المجموع:", generatingPdf: "جاري إنشاء ملف PDF، يرجى الانتظار...", pdfError: "حدث خطأ أثناء إنشاء ملف PDF",
-        dishSelected: "تم الاختيار", dishTapToChoose: "اضغط للاختيار", defaultTag: "وسم"
+        dishSelected: "تم الاختيار", dishTapToChoose: "اضغط للاختيار", defaultTag: "وسم",
+        gpsErrorTitle: "الموقع مطلوب",
+        calculatingDistance: "جاري التحقق من الموقع...",
+        distanceExceeded: "📍 أنت بعيد جداً. لتقديم الطلب يجب أن تكون ضمن مسافة {meters} متر.",
+        locationDenied: "تم رفض الوصول للموقع. مطلوب لإرسال الطلبات.",
+        locationError: "حدث خطأ أثناء الحصول على موقعك. حاول مرة أخرى.",
+        locationNotSupported: "متصفحك لا يدعم تحديد الموقع."
     }
 };
 
