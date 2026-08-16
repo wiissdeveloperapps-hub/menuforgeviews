@@ -1313,22 +1313,33 @@ const app = {
         return menus;
     },
 
-    async printFullMenu() {
+  async printFullMenu() {
         const rInfo = this.data?.restaurantInfo || {};
         const menus = this.getPrintableMenus();
         const t = I18N[this.currentLang] || I18N['es'];
         
+        // Mensaje traducido dinámicamente según el idioma seleccionado
         const loadingMsg = t.generatingPdf || 'Generando PDF, por favor espera...';
+        
         const overlay = document.createElement('div');
         overlay.id = 'pdf-loading-overlay';
         overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.9); color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:999999;';
+        
+        // Añadidas fuentes CJK (PingFang SC, Microsoft YaHei, Noto Sans CJK SC) al CSS del modal
         overlay.innerHTML = `
             <style>
                 @keyframes pdf-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 .pdf-spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid #4f46e5; border-radius: 50%; animation: pdf-spin 1s linear infinite; margin-bottom: 20px; }
+                .pdf-loading-title {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+                    margin: 0;
+                    font-size: 1.2rem;
+                    text-align: center;
+                    padding: 0 20px;
+                }
             </style>
             <div class="pdf-spinner"></div>
-            <h2 style="font-family: sans-serif; margin:0; font-size: 1.2rem;">${loadingMsg}</h2>
+            <h2 class="pdf-loading-title">${this.escapeHTML(loadingMsg)}</h2>
         `;
         document.body.appendChild(overlay);
         document.body.style.overflow = 'hidden';
@@ -1352,16 +1363,23 @@ const app = {
                 });
             } catch (e) {
                 removeOverlay();
-                if (this.dom.toastText) this.dom.toastText.textContent = t.pdfError || 'Error al cargar generador PDF';
+                if (this.dom.toastText) this.dom.toastText.textContent = t.pdfError || 'Error';
                 if (this.dom.toast) this.dom.toast.classList.add('show');
                 setTimeout(() => this.dom.toast?.classList.remove('show'), 3000);
                 return;
             }
         }
 
+        const langAttr = this.currentLang === 'cn' ? 'zh-CN' : (this.currentLang === 'sa' ? 'ar' : this.currentLang);
+
         let printHTML = `
             <style>
-                .pdf-wrapper { font-family: sans-serif; color: #0f172a; background: #fff; padding: 5mm; }
+                .pdf-wrapper { 
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif; 
+                    color: #0f172a; 
+                    background: #fff; 
+                    padding: 5mm; 
+                }
                 .pdf-page-section { page-break-after: always; margin-bottom: 20px; }
                 .pdf-page-section:last-child { page-break-after: avoid; margin-bottom: 0; }
                 .pdf-header-top { text-align: center; margin-bottom: 20px; }
@@ -1379,11 +1397,16 @@ const app = {
                 .pdf-dish-price { font-size: 15px; font-weight: 800; white-space: nowrap; margin-top: 2px; color: #0f172a; }
                 .pdf-brand-footer { margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px dashed #e2e8f0; padding-top: 15px; page-break-inside: avoid; }
             </style>
-            <div class="pdf-wrapper">
+            <div class="pdf-wrapper" lang="${langAttr}">
         `;
 
         menus.forEach((menu) => {
-            const menuName = this.getMenuTitle(menu);
+            let trans = menu.traducciones?.[this.currentLang];
+            if (!trans && menu.traducciones) {
+                trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
+            }
+
+            const menuName = trans?.nombreCarta || this.getMenuTitle(menu);
             const isDaily = this.isDailyMenu(menu);
             const globalPrice = isDaily ? this.formatPrice(typeof menu.precio === 'number' ? menu.precio : 0) : null;
             
@@ -1401,11 +1424,6 @@ const app = {
                     ${isDaily && menu.precio > 0 ? `<br><span style="font-size: 0.85em; font-weight: normal; color: #475569;">Total: ${globalPrice}</span>` : ''}
                 </div>
             `;
-            
-            let trans = null;
-            if (menu.traducciones) {
-                trans = menu.traducciones[this.currentLang] || menu.traducciones[Object.keys(menu.traducciones)[0]];
-            }
             
             const images = menu.recursos?.imagenes || {};
 
@@ -1469,7 +1487,7 @@ const app = {
             if (this.dom.toast) this.dom.toast.classList.add('show');
             setTimeout(() => this.dom.toast?.classList.remove('show'), 3000);
         });
-    },
+    }
 
     openModal(safeDataStr) {
         const data = JSON.parse(decodeURIComponent(safeDataStr));
