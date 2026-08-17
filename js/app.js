@@ -972,10 +972,13 @@ const app = {
         document.body.style.overflow = 'hidden';
     },
 
-    openAlert(title, message) {
+   openAlert(title, message) {
         const t = I18N[this.currentLang] || I18N['es'];
         const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
         if (!confModal) return;
+
+        // Opcional: cerramos el carrito para que el error no quede oculto por debajo
+        this.dom.cartModal.classList.remove('active');
 
         const titleEl = document.getElementById('conf-title');
         const msgEl = document.getElementById('conf-msg');
@@ -985,13 +988,17 @@ const app = {
         const cancelBtn = document.getElementById('conf-btn-cancel') || confModal.querySelector('.secondary');
         const acceptBtn = document.getElementById('conf-btn-accept') || confModal.querySelector('.primary');
         
-        // Ocultamos el botón secundario y modificamos el primario para que solo cierre
         if (cancelBtn) cancelBtn.style.display = 'none';
         if (acceptBtn) {
             acceptBtn.textContent = t.cookieBtn || 'Aceptar'; 
-            acceptBtn.onclick = () => app.closeConfirmation();
+            acceptBtn.onclick = () => {
+                app.closeConfirmation();
+                // Si quieres que al cerrar la alerta vuelva a abrir el carrito para que el usuario seleccione la mesa fácilmente:
+                app.openCart();
+            };
         }
         
+        confModal.style.zIndex = "999999"; // Asegura prioridad máxima en pantalla
         confModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     },
@@ -1611,11 +1618,16 @@ const app = {
         let tableOptions = `<option value="">-- ${t.tableSelectDefault} --</option>`;
         this.renderQuickNotes();
         
-        // --- CAMBIO APLICADO: Campo de notas en solo lectura ---
+        // --- CAMBIO: Campo de notas en solo lectura con estilo gris atenuado ---
         this.dom.orderNotesInput.readOnly = true;
+        this.dom.orderNotesInput.style.backgroundColor = 'var(--bg-input-disabled, #f1f5f9)';
+        this.dom.orderNotesInput.style.color = 'var(--text-muted, #64748b)';
+        this.dom.orderNotesInput.style.cursor = 'not-allowed';
+        
         this.dom.orderNotesInput.value = this.orderNotes;
         this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
         
+        // Resto del código de renderCartModal...
         const displayLang = this.currentLang;
         const valueLang = this.whatsapp.msgLang;
 
