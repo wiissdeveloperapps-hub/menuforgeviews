@@ -972,9 +972,6 @@ const app = {
         document.body.style.overflow = 'hidden';
     },
 
-    // -------------------------------------------------------------
-    // NUEVA FUNCIÓN: openAlert reutilizando el modal de confirmación
-    // -------------------------------------------------------------
     openAlert(title, message) {
         const t = I18N[this.currentLang] || I18N['es'];
         const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
@@ -1348,7 +1345,7 @@ const app = {
         return menus;
     },
 
-  async printFullMenu() {
+    async printFullMenu() {
         const rInfo = this.data?.restaurantInfo || {};
         const menus = this.getPrintableMenus();
         const t = I18N[this.currentLang] || I18N['es'];
@@ -1613,8 +1610,12 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         let tableOptions = `<option value="">-- ${t.tableSelectDefault} --</option>`;
         this.renderQuickNotes();
+        
+        // --- CAMBIO APLICADO: Campo de notas en solo lectura ---
+        this.dom.orderNotesInput.readOnly = true;
         this.dom.orderNotesInput.value = this.orderNotes;
         this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
+        
         const displayLang = this.currentLang;
         const valueLang = this.whatsapp.msgLang;
 
@@ -1679,9 +1680,6 @@ const app = {
         this.dom.cartTotalPrice.textContent = this.formatPrice(total);
     },
 
-    // -------------------------------------------------------------
-    // FUNCIONES GPS Y ACTUALIZACIÓN DE SENDORDER
-    // -------------------------------------------------------------
     getUserLocation() {
         const t = I18N[this.currentLang] || I18N['es'];
         return new Promise((resolve, reject) => {
@@ -1733,7 +1731,6 @@ const app = {
         }
         if (this.cart.length === 0) return;
 
-        // Función encapsulada para procesar y enviar el pedido a WhatsApp
         const processWhatsAppOrder = () => {
             const orderItems = this.cart.map(item => {
                 const nameForWhatsapp = item.nombre_wa || item.nombre;
@@ -1751,7 +1748,6 @@ const app = {
             window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
         };
 
-        // --- VALIDACIÓN GPS CON CONFIRMACIÓN PREVIA ---
         const rInfo = this.data?.restaurantInfo || {};
         const waConfig = rInfo.whatsappOrderConfig || {};
         const isDistanceRestrictionEnabled = waConfig.maxDistanceEnabled ?? rInfo.maxDistanceEnabled ?? false;
@@ -1759,11 +1755,9 @@ const app = {
         if (isDistanceRestrictionEnabled && rInfo.latitud && rInfo.longitud) {
             const maxMeters = waConfig.maxDistanceMeters ?? rInfo.maxDistanceMeters ?? 50;
             
-            // Textos amigables para el modal de confirmación
             const promptTitle = t.locationPromptTitle || 'Verificar ubicación';
             const promptMsg = (t.locationPromptMsg || 'Para realizar el pedido es necesario comprobar que estás a menos de {meters} metros del restaurante. ¿Deseas activar la localización para enviar el pedido?').replace('{meters}', maxMeters);
 
-            // Preparamos el callback que se ejecutará SOLO si el usuario pulsa "Continuar"
             this.confirmationCallback = async () => {
                 try {
                     const originalBtnText = this.dom.sendOrderBtn.textContent;
@@ -1784,7 +1778,6 @@ const app = {
                         return; 
                     }
                     
-                    // Si pasa la validación de distancia, enviamos el pedido
                     processWhatsAppOrder();
 
                 } catch (error) {
@@ -1796,13 +1789,10 @@ const app = {
                 }
             };
 
-            // Abrimos el modal de confirmación
             this.openConfirmation(promptTitle, promptMsg);
-            return; // Detenemos la ejecución aquí hasta que el usuario decida en el modal
+            return; 
         }
-        // ----------------------------------------------
 
-        // Si la restricción de GPS no está activa, enviamos directamente
         processWhatsAppOrder();
     },
 
