@@ -1728,13 +1728,30 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         
         if (!selectedTable) { 
-            // Utilizamos el nuevo openAlert en lugar de alert()
             this.openAlert(t.errorTitle || 'Error', t_wa.noTable); 
             return; 
         }
         if (this.cart.length === 0) return;
 
-        // --- VALIDACIÓN GPS ---
+        // Función encapsulada para procesar y enviar el pedido a WhatsApp
+        const processWhatsAppOrder = () => {
+            const orderItems = this.cart.map(item => {
+                const nameForWhatsapp = item.nombre_wa || item.nombre;
+                let itemStr = t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
+                
+                if (item.tipo === 'daily-menu' && item.selectedDishesWa) {
+                    item.selectedDishesWa.forEach(sel => {
+                        itemStr += `\n    - ${sel.category}: ${sel.dish}`;
+                    });
+                }
+                return itemStr;
+            }).join('\n');
+
+            const message = this.buildOrderMessage(selectedTable, orderItems, t_wa);
+            window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
+        };
+
+        // --- VALIDACIÓN GPS CON CONFIRMACIÓN PREVIA ---
         const rInfo = this.data?.restaurantInfo || {};
         const waConfig = rInfo.whatsappOrderConfig || {};
         const isDistanceRestrictionEnabled = waConfig.maxDistanceEnabled ?? rInfo.maxDistanceEnabled ?? false;
@@ -1742,49 +1759,51 @@ const app = {
         if (isDistanceRestrictionEnabled && rInfo.latitud && rInfo.longitud) {
             const maxMeters = waConfig.maxDistanceMeters ?? rInfo.maxDistanceMeters ?? 50;
             
-            try {
-                const originalBtnText = this.dom.sendOrderBtn.textContent;
-                this.dom.sendOrderBtn.textContent = t.calculatingDistance || 'Verificando tu ubicación...';
-                this.dom.sendOrderBtn.disabled = true;
-                this.dom.sendOrderBtn.style.opacity = '0.7';
+            // Textos amigables para el modal de confirmación
+            const promptTitle = t.locationPromptTitle || 'Verificar ubicación';
+            const promptMsg = (t.locationPromptMsg || 'Para realizar el pedido es necesario comprobar que estás a menos de {meters} metros del restaurante. ¿Deseas activar la localización para enviar el pedido?').replace('{meters}', maxMeters);
 
-                const userCoords = await this.getUserLocation();
-                const distance = this.calculateDistance(userCoords.lat, userCoords.lng, rInfo.latitud, rInfo.longitud);
+            // Preparamos el callback que se ejecutará SOLO si el usuario pulsa "Continuar"
+            this.confirmationCallback = async () => {
+                try {
+                    const originalBtnText = this.dom.sendOrderBtn.textContent;
+                    this.dom.sendOrderBtn.textContent = t.calculatingDistance || 'Verificando tu ubicación...';
+                    this.dom.sendOrderBtn.disabled = true;
+                    this.dom.sendOrderBtn.style.opacity = '0.7';
 
-                this.dom.sendOrderBtn.textContent = originalBtnText;
-                this.dom.sendOrderBtn.disabled = false;
-                this.dom.sendOrderBtn.style.opacity = '1';
+                    const userCoords = await this.getUserLocation();
+                    const distance = this.calculateDistance(userCoords.lat, userCoords.lng, rInfo.latitud, rInfo.longitud);
 
-                if (distance > maxMeters) {
-                    const errorMsg = (t.distanceExceeded || 'Debes estar a menos de {meters} metros.').replace('{meters}', maxMeters);
-                    this.openAlert(t.gpsErrorTitle || 'Fuera de rango', errorMsg);
-                    return; 
+                    this.dom.sendOrderBtn.textContent = originalBtnText;
+                    this.dom.sendOrderBtn.disabled = false;
+                    this.dom.sendOrderBtn.style.opacity = '1';
+
+                    if (distance > maxMeters) {
+                        const errorMsg = (t.distanceExceeded || 'Debes estar a menos de {meters} metros.').replace('{meters}', maxMeters);
+                        this.openAlert(t.gpsErrorTitle || 'Fuera de rango', errorMsg);
+                        return; 
+                    }
+                    
+                    // Si pasa la validación de distancia, enviamos el pedido
+                    processWhatsAppOrder();
+
+                } catch (error) {
+                    this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
+                    this.dom.sendOrderBtn.disabled = false;
+                    this.dom.sendOrderBtn.style.opacity = '1';
+                    
+                    this.openAlert(t.gpsErrorTitle || 'Error de ubicación', error.message);
                 }
-            } catch (error) {
-                this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
-                this.dom.sendOrderBtn.disabled = false;
-                this.dom.sendOrderBtn.style.opacity = '1';
-                
-                this.openAlert(t.gpsErrorTitle || 'Error de ubicación', error.message);
-                return;
-            }
+            };
+
+            // Abrimos el modal de confirmación
+            this.openConfirmation(promptTitle, promptMsg);
+            return; // Detenemos la ejecución aquí hasta que el usuario decida en el modal
         }
-        // ----------------------
+        // ----------------------------------------------
 
-        const orderItems = this.cart.map(item => {
-            const nameForWhatsapp = item.nombre_wa || item.nombre;
-            let itemStr = t_wa.item.replace('{quantity}', item.quantity).replace('{name}', nameForWhatsapp);
-            
-            if (item.tipo === 'daily-menu' && item.selectedDishesWa) {
-                item.selectedDishesWa.forEach(sel => {
-                    itemStr += `\n    - ${sel.category}: ${sel.dish}`;
-                });
-            }
-            return itemStr;
-        }).join('\n');
-
-        const message = this.buildOrderMessage(selectedTable, orderItems, t_wa);
-        window.open(`https://wa.me/${this.whatsapp.phone}?text=${encodeURIComponent(message)}`, '_blank');
+        // Si la restricción de GPS no está activa, enviamos directamente
+        processWhatsAppOrder();
     },
 
     updateFlag() { 
