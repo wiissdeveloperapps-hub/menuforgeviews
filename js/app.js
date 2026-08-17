@@ -15,7 +15,6 @@ const app = {
     tables: [],
     selectedFilters: [],
     
-    // Variables para el borrador del modal de filtros
     pendingSelectedFilters: [],
     pendingSelectedCategory: null,
     pendingMinPrice: null,
@@ -958,7 +957,6 @@ const app = {
         const cancelBtn = document.getElementById('conf-btn-cancel') || confModal.querySelector('.secondary');
         const acceptBtn = document.getElementById('conf-btn-accept') || confModal.querySelector('.primary');
         
-        // Restauramos los botones a su estado original (por si venían de openAlert)
         if (cancelBtn) {
             cancelBtn.style.display = 'block';
             cancelBtn.textContent = t.btnCancel || 'Cancelar';
@@ -972,12 +970,11 @@ const app = {
         document.body.style.overflow = 'hidden';
     },
 
-   openAlert(title, message) {
+    openAlert(title, message) {
         const t = I18N[this.currentLang] || I18N['es'];
         const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
         if (!confModal) return;
 
-        // Opcional: cerramos el carrito para que el error no quede oculto por debajo
         this.dom.cartModal.classList.remove('active');
 
         const titleEl = document.getElementById('conf-title');
@@ -993,12 +990,11 @@ const app = {
             acceptBtn.textContent = t.cookieBtn || 'Aceptar'; 
             acceptBtn.onclick = () => {
                 app.closeConfirmation();
-                // Si quieres que al cerrar la alerta vuelva a abrir el carrito para que el usuario seleccione la mesa fácilmente:
                 app.openCart();
             };
         }
         
-        confModal.style.zIndex = "999999"; // Asegura prioridad máxima en pantalla
+        confModal.style.zIndex = "999999";
         confModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     },
@@ -1618,7 +1614,6 @@ const app = {
         let tableOptions = `<option value="">-- ${t.tableSelectDefault} --</option>`;
         this.renderQuickNotes();
         
-        // --- CAMBIO: Campo de notas en solo lectura con estilo gris atenuado ---
         this.dom.orderNotesInput.readOnly = true;
         this.dom.orderNotesInput.style.backgroundColor = 'var(--bg-input-disabled, #f1f5f9)';
         this.dom.orderNotesInput.style.color = 'var(--text-muted, #64748b)';
@@ -1627,7 +1622,6 @@ const app = {
         this.dom.orderNotesInput.value = this.orderNotes;
         this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
         
-        // Resto del código de renderCartModal...
         const displayLang = this.currentLang;
         const valueLang = this.whatsapp.msgLang;
 
@@ -1719,7 +1713,7 @@ const app = {
     },
 
     calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; // Radio de la Tierra en metros
+        const R = 6371e3;
         const p1 = lat1 * Math.PI/180;
         const p2 = lat2 * Math.PI/180;
         const dp = (lat2-lat1) * Math.PI/180;
@@ -1768,7 +1762,7 @@ const app = {
             const maxMeters = waConfig.maxDistanceMeters ?? rInfo.maxDistanceMeters ?? 50;
             
             const promptTitle = t.locationPromptTitle || 'Verificar ubicación';
-            const promptMsg = (t.locationPromptMsg || 'Para realizar el pedido es necesario comprobar que estás a menos de {meters} metros del restaurante. ¿Deseas activar la localización para enviar el pedido?').replace('{meters}', maxMeters);
+            const promptMsg = (t.locationPromptMsg || 'Para realizar el pedido es necesario comprobar que estás a menos de {meters} metros du restaurante. ¿Deseas activar la localización para enviar el pedido?').replace('{meters}', maxMeters);
 
             this.confirmationCallback = async () => {
                 try {
@@ -1859,7 +1853,7 @@ const app = {
     slugify(text) {
         if (!text) return '';
         return text.toString().toLowerCase()
-            .replace(/\s+/g, '-')       
+            .replace(/\s+/g, '-')        
             .replace(/[^\w\-]+/g, '')      
             .replace(/\-\-+/g, '-')        
             .replace(/^-+/, '')            
