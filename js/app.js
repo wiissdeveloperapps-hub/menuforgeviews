@@ -708,11 +708,82 @@ const app = {
 
     getQuickNoteLabel(note, lang) {
         const dictionary = I18N[lang] || I18N['es'];
+        
+        // 1. Si tiene ID directo en el diccionario de traducciones
         const translationKey = note?.id ? NOTE_TRANSLATION_KEYS[note.id] : '';
         const translatedByKey = translationKey ? dictionary[translationKey] : '';
         if (translatedByKey) return translatedByKey;
+
+        // 2. Si tiene traducciones específicas incrustadas
         if (note?.traducciones?.[lang]) return note.traducciones[lang];
-        if (note?.label) return note.label;
+
+        // 3. Traductor automático / Fallback inteligente para etiquetas de texto plano comunes
+        const rawLabel = (note?.label || note?.displayLabel || note?.recipientLabel || (typeof note === 'string' ? note : '')).trim();
+        if (rawLabel) {
+            const normalizedTextMap = {
+                "poco hecho": "quickNotePocoHecho",
+                "sin sal": "quickNoteSinSal",
+                "salsa aparte": "quickNoteSalsaAparte",
+                "sin picante": "quickNoteSinPicante",
+                "sin gluten": "quickNoteSinGluten",
+                "sin cebolla": "quickNoteSinCebolla",
+                "sin tomate": "quickNoteSinTomate",
+                "sin aceite": "quickNoteSinAceite",
+                "sin queso": "quickNoteSinQueso",
+                "sin nueces": "quickNoteSinNueces",
+                "sin alérgenicos": "quickNoteSinAlergenicos",
+                "muy hecho": "quickNoteMuyHecho",
+                "con salsa": "quickNoteConSalsa",
+                "extra picante": "quickNoteExtraPicante",
+                "sin cilantro": "quickNoteSinCilantro",
+                "sin pepinillos": "quickNoteSinPepinillos",
+                "al punto menos": "quickNoteAlPuntoMenos",
+                "al punto": "quickNoteAlPunto",
+                "al punto más": "quickNoteAlPuntoMas",
+                "limpio de espinas": "quickNoteLimpioEspinas",
+                "sin piel": "quickNoteSinPiel",
+                "cortado en trozos pequeños": "quickNoteTrozosPequenos",
+                "poca sal": "quickNotePocaSal",
+                "poco picante": "quickNotePocoPicante",
+                "extra de salsa": "quickNoteExtraSalsa",
+                "sin aliñar": "quickNoteSinAlinar",
+                "sin vinagre": "quickNoteSinVinagre",
+                "sin ajo": "quickNoteSinAjo",
+                "sin mayonesa": "quickNoteSinMayonesa",
+                "sin kétchup": "quickNoteSinKetchup",
+                "sin mostaza": "quickNoteSinMostaza",
+                "para compartir al centro": "quickNoteCompartirCentro",
+                "traer platos extra": "quickNotePlatosExtra",
+                "cortado por la mitad": "quickNoteCortadoMitad",
+                "pan muy tostado": "quickNotePanMuyTostado",
+                "pan poco tostado": "quickNotePanPocoTostado",
+                "con hielo": "quickNoteConHielo",
+                "poco hielo": "quickNotePocoHielo",
+                "sin hielo": "quickNoteSinHielo",
+                "del tiempo": "quickNoteDelTiempo",
+                "muy frío": "quickNoteMuyFrio",
+                "con sacarina": "quickNoteConSacarina",
+                "sin azúcar": "quickNoteSinAzucar",
+                "con leche fría": "quickNoteConLecheFria",
+                "con leche templada": "quickNoteConLecheTemplada",
+                "traer primero lo de los niños": "quickNoteNinosPrimero",
+                "traer todo a la vez": "quickNoteTodoALaVez",
+                "para llevar": "quickNoteParaLlevar",
+                "con cubiertos": "quickNoteConCubiertos",
+                "sin cubiertos": "quickNoteSinCubiertos",
+                "sin pimiento": "quickNoteSinPimiento",
+                "sin champiñones": "quickNoteSinChampiniones",
+                "sin aceitunas": "quickNoteSinAceitunas"
+            };
+
+            const lowerKey = rawLabel.toLowerCase();
+            const mappedKey = normalizedTextMap[lowerKey];
+            if (mappedKey && dictionary[mappedKey]) {
+                return dictionary[mappedKey];
+            }
+            return rawLabel; // Si es una nota totalmente personalizada escrita a mano
+        }
+
         return '';
     },
 
@@ -949,6 +1020,9 @@ const app = {
         const confModal = this.dom.confModal || document.getElementById('confirmation-modal');
         if (!confModal) return;
 
+        // Cerrar el carrito para que no tape el modal de confirmación de geolocalización
+        this.dom.cartModal.classList.remove('active');
+
         const titleEl = document.getElementById('conf-title');
         const msgEl = document.getElementById('conf-msg');
         if (titleEl) titleEl.textContent = title || t.confDefaultTitle || '¿Estás seguro?';
@@ -966,6 +1040,7 @@ const app = {
             acceptBtn.onclick = () => app.confirmAction();
         }
         
+        confModal.style.zIndex = "999999";
         confModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     },
