@@ -11,6 +11,36 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        /* Clases para los elementos no disponibles / deshabilitados */
+        .disabled-item {
+            opacity: 0.55;
+            filter: grayscale(85%);
+            pointer-events: none; /* Deshabilita cualquier clic */
+        }
+        .unavailable-badge {
+            display: inline-block;
+            background-color: #ef4444; /* Rojo */
+            color: #ffffff;
+            font-size: 0.75em;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            vertical-align: middle;
+            font-weight: 700;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+        .menu-card.disabled-item .menu-card-img {
+            filter: grayscale(100%) blur(1px);
+        }
+        .menu-card.disabled-item .menu-card-title {
+            color: #e2e8f0;
+        }
+    </style>
 </head>
 
 <body>

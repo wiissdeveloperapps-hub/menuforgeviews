@@ -1097,7 +1097,7 @@ const app = {
             return;
         }
 
-        if (menus.length === 1 && !this.searchQuery) {
+        if (menus.length === 1 && !this.searchQuery && menus[0].disponible !== false) {
             this.navigateToMenu(menus[0].id);
             this.dom.btnBack.style.display = 'none';
             return;
@@ -1105,16 +1105,18 @@ const app = {
 
         let html = '<div class="menu-grid">';
         menus.forEach(menu => {
+            const isAvailable = menu.disponible !== false;
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
             const noCacheImg = `${coverImg}?t=${this.sessionTimestamp}`;
             const menuName = this.getMenuTitle(menu);
 
             html += `
-                <div class="menu-card fade-in-slide" onclick="app.navigateToMenu('${menu.id}')">
+                <div class="menu-card fade-in-slide ${isAvailable ? '' : 'disabled-item'}" ${isAvailable ? `onclick="app.navigateToMenu('${menu.id}')"` : ''}>
                     <img class="menu-card-img" src="${noCacheImg}" alt="${this.escapeHTML(menuName)}" loading="lazy">
                     <div class="menu-card-overlay">
                         <h2 class="menu-card-title">${this.escapeHTML(menuName)}</h2>
+                        ${!isAvailable ? `<div class="unavailable-badge" style="position: absolute; top: 12px; right: 12px; z-index: 10;">${this.escapeHTML(t.filterUnavailable || 'No disponible')}</div>` : ''}
                     </div>
                 </div>
             `;
@@ -1149,7 +1151,7 @@ const app = {
 
     renderMenu(menuId) {
         const menu = this.data.menus.find(m => m.id === menuId);
-        if (!menu) return this.navigateHome();
+        if (!menu || menu.disponible === false) return this.navigateHome();
         const t = I18N[this.currentLang] || I18N['es'];
 
         let trans = menu.traducciones?.[this.currentLang];
@@ -1346,6 +1348,7 @@ const app = {
 
     generateDishCardHTML(dish, images, sourceMenuName, menuId, catIndex, dishIndex, isDailyMenu = false) {
         const t = I18N[this.currentLang] || I18N['es'];
+        const isAvailable = dish.disponible !== false;
         const imgUrl = dish.idImagen ? images[dish.idImagen] : '';
         const safeName = this.escapeHTML(dish.nombre);
         const safeDesc = this.escapeHTML(dish.descripcion);
@@ -1376,7 +1379,9 @@ const app = {
         const safeCartData = encodeURIComponent(JSON.stringify(cartDishData));
 
         let actionButton = '';
-        if (isDailyMenu) {
+        if (!isAvailable) {
+            actionButton = `<div style="font-size: 0.75em; color: #ef4444; font-weight: bold; text-transform: uppercase;">${this.escapeHTML(t.filterUnavailable || 'No disponible')}</div>`;
+        } else if (isDailyMenu) {
             actionButton = `<button class="dish-add-btn ${isSelected ? 'success' : ''}" onclick="event.stopPropagation(); app.selectDailyDish('${menuId}', ${catIndex}, ${dishIndex});">${isSelected ? '✓' : '○'}</button>`;
         } else if (this.whatsapp.enabled) {
             actionButton = `<button class="dish-add-btn" onclick="event.stopPropagation(); app.addToCart('${safeCartData}', event.currentTarget);">+</button>`;
@@ -1386,7 +1391,7 @@ const app = {
 
         let bottomRowHTML = '';
         if (isDailyMenu) {
-            const statusLabel = isSelected ? (t.dishSelected || 'Seleccionado') : (t.dishTapToChoose || 'Pulsa para elegir');
+            const statusLabel = !isAvailable ? (t.filterUnavailable || 'No disponible') : (isSelected ? (t.dishSelected || 'Seleccionado') : (t.dishTapToChoose || 'Pulsa para elegir'));
             bottomRowHTML = `
             <div class="dish-bottom-row">
                 <div class="dish-price" style="font-size:0.85em; color:var(--text-muted-light);">${statusLabel}</div>
@@ -1400,20 +1405,21 @@ const app = {
             </div>`;
         }
 
-        const cardClass = isDailyMenu && isSelected ? 'dish selected-daily-dish' : 'dish';
+        const baseCardClass = isDailyMenu && isSelected ? 'dish selected-daily-dish' : 'dish';
+        const cardClass = isAvailable ? baseCardClass : `${baseCardClass} disabled-item`;
 
         return `
-            <div class="${cardClass}" onclick="${isDailyMenu ? `app.selectDailyDish('${menuId}', ${catIndex}, ${dishIndex})` : `app.openModal('${safeModalData}')`}">
+            <div class="${cardClass}" ${isAvailable ? `onclick="${isDailyMenu ? `app.selectDailyDish('${menuId}', ${catIndex}, ${dishIndex})` : `app.openModal('${safeModalData}')`}"` : ''}>
                 ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy" onerror="this.style.display='none'">` : ''}
                 <div class="dish-details">
-                    <div class="dish-name">${safeName}</div>
+                    <div class="dish-name">${safeName} ${!isAvailable ? `<span class="unavailable-badge">${this.escapeHTML(t.filterUnavailable || 'No disponible')}</span>` : ''}</div>
                     ${safeDesc ? `<p class="dish-desc">${safeDesc}</p>` : ''}
                     ${badgesHTML}
                     ${bottomRowHTML}
                 </div>
             </div>
         `;
-    },
+    }
 
     getPrintableMenus() {
         const menus = this.data?.menus || [];
