@@ -1419,7 +1419,7 @@ const app = {
                 </div>
             </div>
         `;
-    }
+    },
 
     getPrintableMenus() {
         const menus = this.data?.menus || [];
