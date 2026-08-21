@@ -274,9 +274,13 @@ const app = {
             const cleanEmail = this.escapeHTML(rInfo.email);
             iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('email', '${cleanEmail}', '${t.toastEmail}')" title="${t.btnEmail}"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button>`;
         }
-        if (rInfo.direccion) {
-            const cleanDir = this.escapeHTML(rInfo.direccion);
-            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
+      if (rInfo.direccion || (rInfo.latitud && rInfo.longitud)) {
+            // Preferimos lat/lng (exactas, capturadas por GPS o clic en el mapa) sobre el
+            // texto de dirección, que puede no traer el número si OSM no lo tiene catastrado.
+            const hasCoords = typeof rInfo.latitud === 'number' && typeof rInfo.longitud === 'number';
+            const mapsUrl = hasCoords
+                ? `https://www.google.com/maps/search/?api=1&query=${rInfo.latitud},${rInfo.longitud}`
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rInfo.direccion)}`;
             iconsHtml += `<button class="action-icon-btn" onclick="app.triggerContactAction('map', '${mapsUrl}', '${t.toastDir}')" title="${t.btnMap}"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>`;
         }
         this.dom.contactIconsContainer.innerHTML = iconsHtml;
