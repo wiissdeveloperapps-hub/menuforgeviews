@@ -291,6 +291,11 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
 .menu-card:hover .menu-card-img { transform: scale(1.08); }
 .menu-card-title { color: #ffffff; font-size: 1.6em; font-weight: 800; margin: 0; letter-spacing: -0.02em; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
 
+.menu-hero-banner { position: relative; width: 100%; aspect-ratio: 16 / 7; border-radius: var(--radius-main); overflow: hidden; margin-bottom: 28px; box-shadow: var(--shadow-card); }
+.menu-hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.menu-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 55%, transparent 100%); display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box; }
+.menu-hero-overlay h2 { color: #ffffff; font-size: 1.5em; font-weight: 800; margin: 0; letter-spacing: -0.02em; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+
 .category { margin-bottom: 40px; scroll-margin-top: 110px; }
 .category-title { font-size: 1.5em; font-weight: 800; color: var(--text-light); display: inline-block; position: relative; margin-bottom: 20px; letter-spacing: -0.02em; }
 .category-title::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 40px; height: 3px; background: var(--accent-gradient); border-radius: 4px; }

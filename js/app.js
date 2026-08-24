@@ -1,3 +1,16 @@
+// Iconos por "key" de categoría (slug estable del catálogo, independiente del idioma),
+// no por el nombre traducido -antes solo funcionaban en español y solo para 8 categorías fijas-.
+// Se busca primero por el último tramo (p.ej. "cafes" en "bebidas::cafes"), luego por el tramo base.
+const CATEGORY_ICONS = {
+    bebidas: '🥤', bowls: '🥗', carnes: '🥩', desayunos: '🍳', ensaladas: '🥗',
+    entrantes: '🍟', hamburguesas: '🍔', pastas: '🍝', pescados: '🐟', pizzas: '🍕',
+    postres: '🍰', sandwiches: '🥪', sushi: '🍣', tacos: '🌮', wok: '🍜', wraps: '🌯',
+    cafes: '☕', cervezas: '🍺', cocteles: '🍸', refrescos: '🥤',
+    huevos: '🍳', pancakes: '🥞', tostadas: '🍞',
+    primeros: '🍲', segundos: '🍖',
+    desayuno: '🍳', comida: '🍽️', merienda: '🧁', cena: '🌙'
+};
+
 const app = {
     data: null,
     currentLang: 'es',
@@ -521,6 +534,21 @@ const app = {
         return [...categories].sort();
     },
 
+    getCategoryIconForName(categoryName) {
+        const menus = this.getScopedMenusForFilters();
+        for (const menu of menus) {
+            const trans = menu.traducciones?.[this.currentLang] || menu.traducciones?.[Object.keys(menu.traducciones || {})[0]];
+            const cat = (trans?.categorias || []).find(c => String(c.nombre) === categoryName);
+            if (cat?.key) {
+                const parts = String(cat.key).split('::');
+                const subSlug = parts[parts.length - 1];
+                if (CATEGORY_ICONS[subSlug]) return CATEGORY_ICONS[subSlug];
+                if (CATEGORY_ICONS[parts[0]]) return CATEGORY_ICONS[parts[0]];
+            }
+        }
+        return '🍽️';
+    },
+
     renderFilterBar() {
         const t = I18N[this.currentLang] || I18N['es'];
         const options = this.getAvailableFilterOptions();
@@ -557,15 +585,13 @@ const app = {
         const t = I18N[this.currentLang] || I18N['es'];
         const categories = this.getAvailableCategories();
         
-        const categoryIcons = { 'Desayunos': '☕', 'Comidas': '☀️', 'Meriendas': '🧁', 'Cenas': '🌙', 'Postres': '🍰', 'Bebidas': '🥤', 'Entrantes': '🥗', 'Principales': '🥩' };
-        
         const categoryHtml = categories.length ? `
             <div class="filter-section-card">
                 <div class="filter-section-title">${this.escapeHTML(t.filterCategoriesTitle || 'Categorías')}</div>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                     ${categories.map(category => {
                         const isActive = this.pendingSelectedCategory === category;
-                        const icon = categoryIcons[category] || '🍽️';
+                        const icon = this.getCategoryIconForName(category);
                         return `
                         <button type="button" class="filter-option-btn ${isActive ? 'active' : ''}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; text-align: left;" onclick='app.togglePendingCategory(${JSON.stringify(category)})'>
                             <span class="filter-option-label" style="display: flex; align-items: center; gap: 10px; overflow: hidden;"><span class="filter-option-icon">${icon}</span><span style="white-space: normal; word-break: break-word;">${this.escapeHTML(category)}</span></span>
@@ -1111,8 +1137,7 @@ const app = {
         menus.forEach(menu => {
             const isAvailable = menu.disponible !== false;
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
-            const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
-            const noCacheImg = `${coverImg}?t=${this.sessionTimestamp}`;
+            const noCacheImg = menu.imagenPortada || `${DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal}?t=${this.sessionTimestamp}`;
             const menuName = this.getMenuTitle(menu);
 
             html += `
@@ -1181,12 +1206,16 @@ const app = {
             const tipo = (menu.tipoMenu || menu.tipo || 'normal').toLowerCase();
             const coverImg = DEFAULT_COVERS[tipo] || DEFAULT_COVERS.normal;
             
-            const heroImage = (menu.recursos?.imagenes && Object.keys(menu.recursos.imagenes).length > 0)
-                ? Object.values(menu.recursos.imagenes)[0]
-                : coverImg;
-            
+            const heroImage = menu.imagenPortada
+                || ((menu.recursos?.imagenes && Object.keys(menu.recursos.imagenes).length > 0)
+                    ? Object.values(menu.recursos.imagenes)[0]
+                    : coverImg);
+
             const hasHeroImg = heroImage && heroImage.trim() !== '';
-            const heroImageWithCache = hasHeroImg ? `${heroImage}?t=${this.sessionTimestamp}` : '';
+            // Los data: URI no admiten query-string de cache-busting -romperían el base64-, solo se añade a rutas de fichero.
+            const heroImageWithCache = hasHeroImg
+                ? (heroImage.startsWith('data:') ? heroImage : `${heroImage}?t=${this.sessionTimestamp}`)
+                : '';
             
             html += `
                 <div class="daily-menu-shell fade-in-slide" style="margin-bottom: 30px;">
@@ -1202,6 +1231,16 @@ const app = {
                             </div>
                         </div>
                     </div>
+                </div>
+            `;
+        } else if (menu.imagenPortada) {
+            // Menús normal/especial no tenían ningún hueco de portada -solo el selector de
+            // menú-, así que si el hostelero subió una propia se muestra aquí, al entrar.
+            const heroWithCache = menu.imagenPortada.startsWith('data:') ? menu.imagenPortada : `${menu.imagenPortada}?t=${this.sessionTimestamp}`;
+            html += `
+                <div class="menu-hero-banner fade-in-slide">
+                    <img src="${this.escapeHTML(heroWithCache)}" alt="${this.escapeHTML(this.getMenuTitle(menu))}" onerror="this.parentElement.style.display='none'">
+                    <div class="menu-hero-overlay"><h2>${this.escapeHTML(this.getMenuTitle(menu))}</h2></div>
                 </div>
             `;
         }
