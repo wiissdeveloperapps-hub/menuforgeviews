@@ -270,7 +270,7 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
 .category-tabs-container {
     width: 100%; display: none; position: sticky; top: 0; z-index: 90;
     padding: 8px 0 10px; margin-bottom: 12px; backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px); background: var(--surface-soft);
+    -webkit-backdrop-filter: blur(16px); background: transparent;
     border-bottom: 1px solid rgba(148, 163, 184, 0.16);
 }
 .category-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
