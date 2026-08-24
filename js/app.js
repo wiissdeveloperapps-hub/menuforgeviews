@@ -467,12 +467,21 @@ const app = {
     normalizeFilterValue(value) {
         if (!value) return '';
         const normalized = String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        // OJO: "Gluten"/"L\u00e1cteos" (al\u00e9rgeno: lo contiene) NO son lo mismo que "Sin gluten"/"Sin
+        // lactosa" (dieta: libre de) -antes se fusionaban en el mismo icono/etiqueta, mostrando
+        // el significado contrario-. Cada valor que ofrece el wizard tiene aqu\u00ed su propia clave.
         const map = {
-            'sin gluten': 'sin-gluten', 'gluten': 'sin-gluten', 'gluten free': 'sin-gluten',
-            'sin lactosa': 'sin-lactosa', 'lactosa': 'sin-lactosa', 'lacteos': 'sin-lactosa',
-            'vegano': 'vegano', 'vegan': 'vegano', 'vegetariano': 'vegetariano', 'vegetarian': 'vegetariano',
-            'picante': 'picante', 'spicy': 'picante', 'sin frutos secos': 'sin-frutos-secos',
-            'sin soja': 'sin-soja', 'sin huevo': 'sin-huevo', 'pescado': 'pescado', 'marisco': 'marisco',
+            'gluten': 'gluten', 'lacteos': 'lacteos', 'frutos secos': 'frutos-secos', 'soja': 'soja',
+            'huevo': 'huevo', 'pescado': 'pescado', 'marisco': 'marisco', 'crustaceos': 'crustaceos',
+            'moluscos': 'moluscos', 'cacahuetes': 'cacahuetes', 'apio': 'apio', 'mostaza': 'mostaza',
+            'sesamo': 'sesamo', 'sulfitos': 'sulfitos', 'altramuces': 'altramuces', 'fructosa': 'fructosa',
+            'sorbitol': 'sorbitol', 'plv': 'plv', 'glutamato': 'glutamato',
+            'sin gluten': 'sin-gluten', 'sin lactosa': 'sin-lactosa', 'vegano': 'vegano', 'vegetariano': 'vegetariano',
+            'picante': 'picante', 'muy picante': 'muy-picante', 'halal': 'halal', 'sin cerdo': 'sin-cerdo',
+            'kosher': 'kosher', 'keto': 'keto', 'sin azucar anadido': 'sin-azucar-anadido',
+            'bajo en grasas': 'bajo-en-grasas', 'ecologico': 'ecologico', 'km 0': 'km-0',
+            'alto en proteinas': 'alto-en-proteinas', 'menu infantil': 'menu-infantil', 'agridulce': 'agridulce',
+            'comida real': 'comida-real',
             'carnes': 'carnes', 'cafe': 'cafe', 'bebida': 'bebida'
         };
         return map[normalized] || normalized.replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
@@ -487,10 +496,19 @@ const app = {
 
     getFilterIcon(value) {
         const key = this.normalizeFilterValue(value);
+        // Mismos iconos que ya usa el wizard al crear el plato, para que el hostelero reconozca
+        // en la web exactamente lo mismo que eligió al editar.
         const map = {
-            'sin-gluten': '🌾', 'sin-lactosa': '🥛', 'vegano': '🌱', 'vegetariano': '🥕',
-            'picante': '🌶️', 'sin-frutos-secos': '🥜', 'sin-soja': '🌱', 'sin-huevo': '🥚',
-            'pescado': '🐟', 'marisco': '🦐', 'carnes': '🥩', 'cafe': '☕', 'bebida': '🥤'
+            gluten: '🌾', lacteos: '🥛', 'frutos-secos': '🌰', soja: '🌱', huevo: '🥚',
+            pescado: '🐟', marisco: '🦐', crustaceos: '🦀', moluscos: '🐚', cacahuetes: '🥜',
+            apio: '🌿', mostaza: '🌼', sesamo: '🌾', sulfitos: '🧂', altramuces: '🫘',
+            fructosa: '🍎', sorbitol: '🍬', plv: '🌿', glutamato: '🧂',
+            'sin-gluten': '🚫🌾', 'sin-lactosa': '🥛🚫', vegano: '🌱', vegetariano: '🥬',
+            picante: '🌶️', 'muy-picante': '🌶️🌶️', halal: '🕌', 'sin-cerdo': '🐖🚫',
+            kosher: '✡️', keto: '🥑', 'sin-azucar-anadido': '🍭🚫', 'bajo-en-grasas': '🥄',
+            ecologico: '🌿', 'km-0': '📍', 'alto-en-proteinas': '💪', 'menu-infantil': '👶',
+            agridulce: '🍋', 'comida-real': '🍽️',
+            carnes: '🥩', cafe: '☕', bebida: '🥤'
         };
         return map[key] || '🏷️';
     },
@@ -889,17 +907,18 @@ const app = {
     },
 
     buildOrderMessage(selectedTable, orderItems, t_wa) {
-        const t = I18N[this.currentLang] || I18N['es'];
+        // Todo el mensaje debe ir en el idioma del hostelero (t_wa), no en el idioma en el que
+        // el cliente está navegando la carta -si no, el mensaje le llega mezclado en dos idiomas-.
         const total = this.cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
         const notes = (this.selectedQuickNotes.length ? this.selectedQuickNotes : (this.orderNotes ? [{ displayLabel: this.orderNotes, recipientLabel: this.orderNotes }] : [])).map(note => note.recipientLabel || note.displayLabel || '').filter(Boolean);
         const noteText = notes.join(' • ');
 
-        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n${t.orderIntro || '🛎️ Nuevo pedido'}`;
-        message += `\n\n${t.orderSection || '🧾 Pedido:'}\n${orderItems}`;
+        let message = `${t_wa.header.replace('{table}', selectedTable)}\n\n${t_wa.orderIntro || '🛎️ Nuevo pedido'}`;
+        message += `\n\n${t_wa.orderSection || '🧾 Pedido:'}\n${orderItems}`;
         if (noteText) {
-            message += `\n\n${t.orderNotes || '📝 Notas:'} ${noteText}`;
+            message += `\n\n${t_wa.orderNotes || '📝 Notas:'} ${noteText}`;
         }
-        message += `\n\n${t.orderTotal || '💳 Total:'} ${this.formatPrice(total)}`;
+        message += `\n\n${t_wa.orderTotal || '💳 Total:'} ${this.formatPrice(total)}`;
         message += `\n\n${t_wa.footer}`;
         return message;
     },
@@ -1855,11 +1874,14 @@ const app = {
         const t_wa = I18N_WHATSAPP[this.whatsapp.msgLang] || I18N_WHATSAPP['es'];
         const t = I18N[this.currentLang] || I18N['es'];
         
-        if (!selectedTable) { 
-            this.openAlert(t.errorTitle || 'Error', t_wa.noTable); 
-            return; 
+        if (this.cart.length === 0) {
+            this.openAlert(t.errorTitle || 'Error', t.cartEmptySelectMsg || t.cartEmpty);
+            return;
         }
-        if (this.cart.length === 0) return;
+        if (!selectedTable) {
+            this.openAlert(t.errorTitle || 'Error', t_wa.noTable);
+            return;
+        }
 
         const processWhatsAppOrder = () => {
             const orderItems = this.cart.map(item => {
