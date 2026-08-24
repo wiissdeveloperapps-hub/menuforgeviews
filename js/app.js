@@ -203,6 +203,8 @@ const app = {
             this.dom.logo.style.display = 'none';
         }
 
+        this.applyBrandTheme(rInfo);
+
         if (rInfo.whatsappEnabled && rInfo.whatsappPhone && rInfo.tables?.length > 0) {
             this.whatsapp.enabled = true;
             this.whatsapp.phone = rInfo.whatsappPhone;
@@ -1952,6 +1954,24 @@ const app = {
         this.dom.currentFlag.src = `assets/flags/${this.currentLang}.png`; 
     },
     
+    // Mismos presets que THEME_PRESETS en el lado Angular (theme-presets.ts) -mantener en sync-.
+    // Solo cambia el color de acento (variables CSS), no toca layout ni tipografía, para que
+    // cada restaurante no comparta la misma plantilla morada sin ningún esfuerzo.
+    BRAND_THEME_PRESETS: {
+        clasico:  { accent: '#4f46e5', accentDark: '#7c3aed' },
+        playa:    { accent: '#f97316', accentDark: '#fb7185' },
+        asiatico: { accent: '#dc2626', accentDark: '#7c2d12' },
+        natural:  { accent: '#16a34a', accentDark: '#059669' },
+        rustico:  { accent: '#b45309', accentDark: '#ea580c' }
+    },
+
+    applyBrandTheme(rInfo) {
+        const preset = this.BRAND_THEME_PRESETS[rInfo?.temaVisual] || this.BRAND_THEME_PRESETS.clasico;
+        const root = document.documentElement;
+        root.style.setProperty('--accent', preset.accent);
+        root.style.setProperty('--accent-gradient', `linear-gradient(135deg, ${preset.accent} 0%, ${preset.accentDark} 100%)`);
+    },
+
     applyThemePreference() {
         const storedTheme = localStorage.getItem('menuforge-theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
