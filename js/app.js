@@ -984,16 +984,22 @@ const app = {
     getMenuTitle(menu) {
         const t = I18N[this.currentLang] || I18N['es'];
         const tipo = (menu.tipoMenu || menu.tipo || '').toLowerCase();
-        
-        if (tipo === 'diario') return t["menu_diario"] || "📅 Menú del Día";
-        if (tipo === 'especial') return t["menu_especial"] || "⭐ Cartas Especiales";
-        if (tipo === 'normal') return t["menu_normal"] || t.defaultMenu || "📋 Carta Principal";
 
+        // El nombre ya viene traducido por idioma desde la app -incluido el genérico por
+        // defecto si el hostelero no lo ha personalizado-, así que se usa siempre que exista.
+        // Antes esto se ignoraba del todo para normal/diario/especial y SIEMPRE se forzaba la
+        // etiqueta genérica: renombrar la carta no tenía ningún efecto en la web pública.
         let trans = menu.traducciones?.[this.currentLang];
         if (!trans && menu.traducciones) {
             trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
         }
-        return trans?.nombreCarta || menu.nombreCarta || t.defaultMenu;
+        if (trans?.nombreCarta) return trans.nombreCarta;
+
+        if (tipo === 'diario') return t["menu_diario"] || "📅 Menú del Día";
+        if (tipo === 'especial') return t["menu_especial"] || "🕐 Cartas por Horario";
+        if (tipo === 'normal') return t["menu_normal"] || t.defaultMenu || "📋 Carta Principal";
+
+        return menu.nombreCarta || t.defaultMenu;
     },
 
     isDailyMenu(menu) {
@@ -1292,7 +1298,8 @@ const app = {
             const visibleDishes = (cat.platos || []).filter((dish) => this.shouldShowDish(dish));
             if (!visibleDishes.length) continue;
             
-            tabsHtml += `<div class="category-tab" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}<span class="tab-count">${visibleDishes.length}</span></div>`;
+            const isFirstTab = tabsHtml === '';
+            tabsHtml += `<div class="category-tab${isFirstTab ? ' active' : ''}" data-target="${categorySlug}">${this.escapeHTML(translatedCatName)}<span class="tab-count">${visibleDishes.length}</span></div>`;
 
             html += `<div id="${categorySlug}" class="category fade-in-slide">`;
             html += `<h2 class="category-title">${this.escapeHTML(translatedCatName)}</h2>`;
@@ -1319,16 +1326,26 @@ const app = {
         });
 
         if (this.categoryTabsObserver) this.categoryTabsObserver.disconnect();
+        // "threshold: 0.6" exigía ver el 60% de TODA la sección a la vez para marcarla activa.
+        // Con las tarjetas de plato grandes, una categoría con varios platos es más alta que la
+        // pantalla y nunca llega a ese 60% -ninguna pestaña se activaba nunca-. Se usa el patrón
+        // scrollspy estándar: una franja fina cerca de la cabecera, la última categoría cuyo
+        // borde superior la cruza es la activa.
         const observerOptions = {
             root: null,
-            rootMargin: `-${this.dom.header.offsetHeight + 15}px 0px 0px 0px`,
-            threshold: 0.6
+            rootMargin: `-${this.dom.header.offsetHeight + 15}px 0px -70% 0px`,
+            threshold: 0
         };
         this.categoryTabsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
                 const id = entry.target.getAttribute('id');
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                 const tab = document.querySelector(`.category-tab[data-target="${id}"]`);
-                if (tab) tab.classList.toggle('active', entry.isIntersecting);
+                if (tab) {
+                    tab.classList.add('active');
+                    tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
             });
         }, observerOptions);
         
