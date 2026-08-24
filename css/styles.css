@@ -325,6 +325,25 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
     width: 100%;
     box-sizing: border-box;
 }
+
+/* Insignia de venta (Recomendado/Más pedido/Nuevo) que el propio hostelero elige por plato. */
+.dish-highlight-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 3;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.72em;
+    font-weight: 800;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    backdrop-filter: blur(4px);
+}
+.dish:not(:has(.dish-img)) .dish-highlight-badge { position: static; display: inline-flex; margin-bottom: 8px; }
+.badge-recomendado { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.badge-popular { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.badge-nuevo { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 .dish-name { font-size: 1.15em; font-weight: 700; margin: 0 0 5px; color: var(--text-light); letter-spacing: -0.01em; }
 .dish-desc { color: var(--text-muted-light); margin: 0 0 10px; font-size: 0.9em; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .dish-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }

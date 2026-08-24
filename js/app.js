@@ -735,6 +735,19 @@ const app = {
         return '';
     },
 
+    getDestacadoBadgeHTML(dish) {
+        if (!dish.destacado) return '';
+        const t = I18N[this.currentLang] || I18N['es'];
+        const map = {
+            recomendado: { icon: '⭐', label: t.highlightRecommended || 'Recomendado', cls: 'badge-recomendado' },
+            popular:     { icon: '🔥', label: t.highlightPopular || 'Más pedido',      cls: 'badge-popular' },
+            nuevo:       { icon: '🆕', label: t.highlightNew || 'Nuevo',               cls: 'badge-nuevo' }
+        };
+        const cfg = map[dish.destacado];
+        if (!cfg) return '';
+        return `<span class="dish-highlight-badge ${cfg.cls}">${cfg.icon} ${this.escapeHTML(cfg.label)}</span>`;
+    },
+
     getDishBadgesHTML(dish) {
         const badges = [];
         const values = this.getDishFilterValues(dish);
@@ -1471,9 +1484,11 @@ const app = {
 
         const baseCardClass = isDailyMenu && isSelected ? 'dish selected-daily-dish' : 'dish';
         const cardClass = isAvailable ? baseCardClass : `${baseCardClass} disabled-item`;
+        const destacadoHTML = isAvailable ? this.getDestacadoBadgeHTML(dish) : '';
 
         return `
             <div class="${cardClass}" ${isAvailable ? `onclick="${isDailyMenu ? `app.selectDailyDish('${menuId}', ${catIndex}, ${dishIndex})` : `app.openModal('${safeModalData}')`}"` : ''}>
+                ${destacadoHTML}
                 ${imgUrl ? `<img class="dish-img" src="${imgUrl}" loading="lazy" onerror="this.style.display='none'">` : ''}
                 <div class="dish-details">
                     <div class="dish-name">${safeName} ${!isAvailable ? `<span class="unavailable-badge">${this.escapeHTML(t.filterUnavailable || 'No disponible')}</span>` : ''}</div>
