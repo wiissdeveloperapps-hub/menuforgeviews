@@ -266,7 +266,7 @@ const app = {
         this.dom.orderNotesCounter.textContent = `${this.orderNotes.length}/140`;
         this.dom.cartTotalLabel.textContent = t.cartTotal;
         this.dom.cartTableLabel.textContent = t.cartTableLabel;
-        this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
+        this.dom.sendOrderBtn.textContent = t.orderBtn || t_wa.orderBtn;
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
 
@@ -1913,7 +1913,7 @@ const app = {
             return;
         }
         if (!selectedTable) {
-            this.openAlert(t.errorTitle || 'Error', t_wa.noTable);
+            this.openAlert(t.errorTitle || 'Error', t.noTable || t_wa.noTable);
             return;
         }
 
@@ -1967,7 +1967,7 @@ const app = {
                     processWhatsAppOrder();
 
                 } catch (error) {
-                    this.dom.sendOrderBtn.textContent = t_wa.orderBtn;
+                    this.dom.sendOrderBtn.textContent = t.orderBtn || t_wa.orderBtn;
                     this.dom.sendOrderBtn.disabled = false;
                     this.dom.sendOrderBtn.style.opacity = '1';
                     
