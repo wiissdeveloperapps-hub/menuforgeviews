@@ -282,6 +282,8 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
 
 #main-content { padding: 24px 16px; max-width: 850px; margin: 0 auto; min-height: 70vh; padding-bottom: 90px; }
 #loader { text-align: center; padding: 50px; font-size: 1.1em; color: var(--text-muted-light); font-weight: 600; }
+.powered-by-footer { text-align: center; padding: 8px 16px 28px; font-size: 0.75em; font-weight: 500; color: var(--text-muted-light); opacity: 0.6; letter-spacing: 0.01em; }
+.powered-by-footer strong { font-weight: 700; }
 
 /* max en vez de 1fr: si la última fila queda con una sola tarjeta suelta (p.ej. 3 cartas en
    una rejilla de 2 columnas en tablet), esa tarjeta ya no se estira a todo el ancho de la fila. */

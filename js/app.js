@@ -93,7 +93,8 @@ const app = {
         confModal: document.getElementById('confirmation-modal'),
         confTitle: document.getElementById('conf-title'),
         confBtnCancel: document.getElementById('conf-btn-cancel'),
-        confBtnAccept: document.getElementById('conf-btn-accept')
+        confBtnAccept: document.getElementById('conf-btn-accept'),
+        poweredByFooterText: document.getElementById('powered-by-footer-text')
     },
 
     async init() {
@@ -269,6 +270,7 @@ const app = {
         this.dom.sendOrderBtn.textContent = t.orderBtn || t_wa.orderBtn;
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
+        if (this.dom.poweredByFooterText) this.dom.poweredByFooterText.innerHTML = t.poweredByFooter || 'Hecho con <strong>MenuForge</strong>';
 
         if (this.dom.confTitle && !this.dom.confTitle.textContent) {
             this.dom.confTitle.textContent = t.confDefaultTitle || '¿Estás seguro?';
