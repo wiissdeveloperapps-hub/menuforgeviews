@@ -6,8 +6,29 @@
  */
 const fs = require('fs');
 const path = require('path');
-const { minify: minifyJs } = require('terser');
+const JavaScriptObfuscator = require('javascript-obfuscator');
 const CleanCSS = require('clean-css');
+
+// renameGlobals y renameProperties van en false a propósito: el HTML llama a los métodos
+// como texto plano (onclick="app.toggleWifiModal()"), así que si se renombraran esos
+// nombres, esos enganches se romperían. Todo lo demás (variables locales, strings, flujo
+// de control dentro de cada función) sí se ofusca a fondo.
+const OBFUSCATOR_OPTIONS = {
+  compact: true,
+  controlFlowFlattening: true,
+  controlFlowFlatteningThreshold: 0.5,
+  deadCodeInjection: true,
+  deadCodeInjectionThreshold: 0.2,
+  stringArray: true,
+  stringArrayEncoding: ['base64'],
+  stringArrayThreshold: 0.75,
+  identifierNamesGenerator: 'hexadecimal',
+  renameGlobals: false,
+  renameProperties: false,
+  selfDefending: false,
+  debugProtection: false,
+  target: 'browser'
+};
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'docs');
@@ -40,9 +61,8 @@ async function copiarYMinificar(origen, destino) {
 
     if (entrada.name.endsWith('.js')) {
       const codigo = fs.readFileSync(rutaOrigen, 'utf8');
-      const resultado = await minifyJs(codigo, { format: { comments: false } });
-      if (resultado.error) throw resultado.error;
-      fs.writeFileSync(rutaDestino, resultado.code, 'utf8');
+      const resultado = JavaScriptObfuscator.obfuscate(codigo, OBFUSCATOR_OPTIONS);
+      fs.writeFileSync(rutaDestino, resultado.getObfuscatedCode(), 'utf8');
     } else if (entrada.name.endsWith('.css')) {
       const codigo = fs.readFileSync(rutaOrigen, 'utf8');
       const resultado = new CleanCSS({}).minify(codigo);
