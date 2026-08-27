@@ -133,7 +133,7 @@ const app = {
         } catch (error) {
             console.error(error);
             const tErr = I18N[this.currentLang] || I18N['es'];
-            this.dom.content.innerHTML = `<div style="text-align:center; padding: 50px; color: #ef4444;"><h3>${tErr.errorTitle}</h3><p>${error.message}</p></div>`;
+            this.dom.content.innerHTML = `<div style="text-align:center; padding: 50px; color: #ef4444;"><h3>${tErr.errorTitle}</h3><p>${error.message}</p><button type="button" onclick="window.location.reload()" style="margin-top:16px; padding:10px 24px; border:none; border-radius:10px; background:#4f46e5; color:#fff; font-weight:700; font-size:0.95em; cursor:pointer;">${tErr.retryBtn || 'Retry'}</button></div>`;
         }
     },
 
@@ -2079,20 +2079,35 @@ const app = {
     },
 
     async fetchRemote(id, folder) {
-        const workerUrl = window.location.hostname.includes('github.io') || window.location.hostname === 'localhost' 
-            ? 'https://wiissdeveloperapps.dpdns.org' 
-            : ''; 
+        const workerUrl = window.location.hostname.includes('github.io') || window.location.hostname === 'localhost'
+            ? 'https://wiissdeveloperapps.dpdns.org'
+            : '';
 
         const url = `${workerUrl}/${folder}/${id}.json?t=${Date.now()}`;
-        
-        const response = await fetch(url);
         const t = I18N[this.currentLang] || I18N['es'];
-        if (!response.ok) throw new Error(t.fetchError);
-        
-        const rawText = await response.text();
-        const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
-        
-        return JSON.parse(decompressed || rawText);
+
+        // Un primer escaneo de QR nunca tiene caché local, así que un fallo puntual del Worker
+        // o de la API de GitHub (rate limit, blip transitorio) se veía directamente como error
+        // sin ninguna red de seguridad. Reintentamos un par de veces antes de rendirnos -salvo
+        // en un 404 real, donde reintentar no sirve de nada porque el archivo no existe-.
+        const maxIntentos = 3;
+        let ultimoError;
+        for (let intento = 1; intento <= maxIntentos; intento++) {
+            try {
+                const response = await fetch(url);
+                if (response.status === 404) throw new Error(t.fetchError);
+                if (!response.ok) throw new Error(`HTTP_${response.status}`);
+
+                const rawText = await response.text();
+                const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
+                return JSON.parse(decompressed || rawText);
+            } catch (e) {
+                ultimoError = e;
+                if (e.message === t.fetchError || intento === maxIntentos) break;
+                await new Promise(resolve => setTimeout(resolve, 500 * intento));
+            }
+        }
+        throw new Error(t.fetchError, { cause: ultimoError });
     }
 };
 

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Genera docs/ (version minificada) antes de cada commit y la incluye automaticamente.
+# El codigo fuente legible (js/, css/, index.html) nunca se toca.
+#
+# Se activa una sola vez por clon del repo con:
+#   git config core.hooksPath .githooks
+
+echo "Generando docs/ (minificado) antes del commit..."
+node scripts/build.js
+
+if [ $? -ne 0 ]; then
+  echo "Fallo al generar docs/ - commit cancelado."
+  exit 1
+fi
+
+git add docs
+exit 0

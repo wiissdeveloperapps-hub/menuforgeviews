@@ -1,0 +1,13 @@
+{
+  "name": "menuforge-viewer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Visor estatico de MenuForge (Servido via GitHub Pages)",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "devDependencies": {
+    "terser": "^5.36.0",
+    "clean-css": "^5.3.3"
+  }
+}
