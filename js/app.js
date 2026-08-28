@@ -94,7 +94,8 @@ const app = {
         confTitle: document.getElementById('conf-title'),
         confBtnCancel: document.getElementById('conf-btn-cancel'),
         confBtnAccept: document.getElementById('conf-btn-accept'),
-        poweredByFooterText: document.getElementById('powered-by-footer-text')
+        poweredByFooterText: document.getElementById('powered-by-footer-text'),
+        poweredByFooter: document.getElementById('powered-by-footer')
     },
 
     async init() {
@@ -270,6 +271,10 @@ const app = {
         this.dom.sendOrderBtn.textContent = t.orderBtn || t_wa.orderBtn;
         this.dom.cookieText.textContent = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
+        // El hostelero que pagó "Quitar marca de agua" en la app deja de verla también aquí
+        // -viaja como campo publicado en el JSON del restaurante, no hay compra ni login que
+        // comprobar en esta web pública-.
+        if (this.dom.poweredByFooter) this.dom.poweredByFooter.style.display = rInfo.sinMarca ? 'none' : '';
         if (this.dom.poweredByFooterText) this.dom.poweredByFooterText.innerHTML = t.poweredByFooter || 'Hecho con <strong>MenuForge</strong>';
 
         if (this.dom.confTitle && !this.dom.confTitle.textContent) {
@@ -1666,11 +1671,13 @@ const app = {
                 });
             }
 
-            printHTML += `
-                <div class="pdf-brand-footer">
-                    <span>${t.pdfFooter || 'Menú digital interactivo generado con MenuForge App'}</span>
-                </div>
-            `;
+            if (!this.data?.restaurantInfo?.sinMarca) {
+                printHTML += `
+                    <div class="pdf-brand-footer">
+                        <span>${t.pdfFooter || 'Menú digital interactivo generado con MenuForge App'}</span>
+                    </div>
+                `;
+            }
 
             printHTML += `</div>`;
         });
