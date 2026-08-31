@@ -2045,7 +2045,10 @@ const app = {
         
         let locale = this.currentLang;
         if (locale === 'cn') locale = 'zh-CN';
-        else if (locale === 'sa') locale = 'ar-SA';
+        // "-u-nu-latn" fuerza dígitos latinos (0-9) -sin esto, "ar-SA" usaba numerales
+        // arábigo-índicos (١٢٣...) para el precio, algo que nadie espera ver en un total de
+        // WhatsApp aunque el resto del mensaje esté en árabe-.
+        else if (locale === 'sa') locale = 'ar-SA-u-nu-latn';
         else if (locale === 'en') locale = 'en-US';
         else if (locale === 'pt') locale = 'pt-BR';
 
