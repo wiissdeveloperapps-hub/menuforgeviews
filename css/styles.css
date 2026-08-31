@@ -107,6 +107,21 @@ body.dark-mode header { background-color: rgba(18, 18, 21, 0.88); }
 .wifi-btn { gap: 0; padding: 8px; width: 38px; height: 38px; min-width: 38px; }
 .wifi-btn.disabled { opacity: 0.7; }
 .share-btn { gap: 0; padding: 8px; width: 38px; height: 38px; min-width: 38px; }
+
+/* En móviles estrechos (~360-380px) la fila de idioma + wifi + compartir + PDF + contacto no
+   cabe entera y obliga a hacer scroll horizontal sin ninguna pista visual de que se puede -se
+   ve como si el último icono estuviese "cortado"-. Encoger un poco todo el bloque evita el
+   scroll en la mayoría de móviles reales en vez de depender de que el usuario descubra el swipe. */
+@media (max-width: 380px) {
+    .action-bar { gap: 6px; }
+    .action-icon-btn { padding: 6px; }
+    .action-icon-btn svg { width: 16px; height: 16px; }
+    .action-icon-btn.pdf-btn { padding: 6px; font-size: 0.82em; }
+    .wifi-btn, .share-btn { width: 34px; height: 34px; min-width: 34px; }
+    .lang-selector-wrap { padding: 5px 3px; gap: 3px; }
+    .lang-flag { width: 16px; height: 12px; }
+    #language-selector { font-size: 0.72em; min-width: 1.9rem; }
+}
 .wifi-modal-content { display: grid; gap: 10px; text-align: left; }
 .wifi-modal-row { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 12px; background: rgba(79, 70, 229, 0.06); color: var(--text-light); }
 .wifi-modal-row strong { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
