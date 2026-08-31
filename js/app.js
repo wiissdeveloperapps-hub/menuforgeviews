@@ -55,6 +55,7 @@ const app = {
         langSelect: document.getElementById('language-selector'),
         currentFlag: document.getElementById('current-flag'),
         wifiActionBtn: document.getElementById('wifi-action-btn'),
+        shareActionBtn: document.getElementById('share-action-btn'),
         wifiModal: document.getElementById('wifi-modal'),
         wifiModalTitle: document.getElementById('wifi-modal-title'),
         wifiModalContent: document.getElementById('wifi-modal-content'),
@@ -236,10 +237,14 @@ const app = {
         }
 
         this.dom.langSelect.addEventListener('change', (e) => {
-            this.currentLang = e.target.value;
-            this.updateFlag();
-            this.updateUITexts();
-            this.refreshCurrentView();
+            this.dom.content?.classList.add('lang-fading');
+            setTimeout(() => {
+                this.currentLang = e.target.value;
+                this.updateFlag();
+                this.updateUITexts();
+                this.refreshCurrentView();
+                this.dom.content?.classList.remove('lang-fading');
+            }, 180);
         });
 
         this.applyThemePreference();
@@ -259,6 +264,10 @@ const app = {
         this.dom.btnBack.title = t.back;
         this.dom.filterToggleBtn.title = t.filterButtonTitle || 'Filtrar platos';
         this.dom.filterToggleBtn.setAttribute('aria-label', t.filterToggleAriaLabel || t.filterButtonTitle || 'Filtrar platos');
+        if (this.dom.shareActionBtn) {
+            this.dom.shareActionBtn.title = t.shareMenuBtn || 'Compartir';
+            this.dom.shareActionBtn.setAttribute('aria-label', t.shareMenuBtn || 'Compartir');
+        }
         this.dom.filterModalTitle.textContent = t.filterButtonTitle || 'Filtrar platos';
         
         this.dom.cartModalTitle.textContent = t.cartTitle;
@@ -1534,6 +1543,36 @@ const app = {
             return menus.filter(menu => menu.id === this.currentMenuId);
         }
         return menus;
+    },
+
+    async shareMenu() {
+        const t = I18N[this.currentLang] || I18N['es'];
+        const rInfo = this.data?.restaurantInfo || {};
+        const shareData = {
+            title: rInfo.nombre || t.defaultRestaurant,
+            text: rInfo.nombre ? `${rInfo.nombre} - ${t.defaultMenu}` : t.defaultMenu,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (e) {
+                // El usuario cerró el share sheet sin elegir nada -no es un error real, no hace falta avisar-.
+            }
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(shareData.url);
+            if (this.dom.toastText) this.dom.toastText.textContent = t.shareCopied || 'Enlace copiado';
+            if (this.dom.toast) this.dom.toast.classList.add('show');
+            setTimeout(() => this.dom.toast?.classList.remove('show'), 3000);
+        } catch (e) {
+            if (this.dom.toastText) this.dom.toastText.textContent = t.shareError || 'No se pudo compartir';
+            if (this.dom.toast) this.dom.toast.classList.add('show');
+            setTimeout(() => this.dom.toast?.classList.remove('show'), 3000);
+        }
     },
 
     async printFullMenu() {
