@@ -1506,7 +1506,11 @@ const app = {
             </div>`;
         }
 
-        const baseCardClass = isDailyMenu && isSelected ? 'dish selected-daily-dish' : 'dish';
+        // fade-in plato a plato -antes solo la sección de categoría entera aparecía de golpe al
+        // llegar a ella, aquí cada plato entra por separado según se va viendo, mismo observer
+        // que ya usan las tarjetas de menú y las categorías-. Clase aparte (solo opacidad, sin
+        // transform) para no chocar con el "transform" que ya usa .dish al hacer hover.
+        const baseCardClass = isDailyMenu && isSelected ? 'dish selected-daily-dish fade-in' : 'dish fade-in';
         const cardClass = isAvailable ? baseCardClass : `${baseCardClass} disabled-item`;
         const destacadoHTML = isAvailable ? this.getDestacadoBadgeHTML(dish) : '';
 
@@ -2068,7 +2072,7 @@ const app = {
     },
 
     initScrollAnimations() {
-        const elements = document.querySelectorAll('.fade-in-slide');
+        const elements = document.querySelectorAll('.fade-in-slide, .fade-in');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {

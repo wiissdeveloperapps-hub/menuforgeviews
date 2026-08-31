@@ -374,6 +374,14 @@ body.dark-mode .dish-source-badge { background: rgba(255,255,255,0.08); }
 
 .fade-in-slide { opacity: 0; transform: translateY(15px); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .fade-in-slide.visible { opacity: 1; transform: translateY(0); }
+/* Solo opacidad, sin transform -para elementos como .dish que ya tienen su propio transform
+   de hover; si tocara la misma propiedad, ganaría esta por ir después en el CSS y se
+   cancelaría el efecto de "levantar" la tarjeta al pasar el ratón-. */
+.fade-in { opacity: 0; transition: opacity 0.5s ease; }
+.fade-in.visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+    .fade-in-slide, .fade-in { opacity: 1; transform: none; transition: none; }
+}
 
 @keyframes buttonPop { 0% { transform: scale(1); } 50% { transform: scale(1.13); } 100% { transform: scale(1); } }
 
