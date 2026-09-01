@@ -316,19 +316,27 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
 .menu-card:hover .menu-card-img { transform: scale(1.08); }
 .menu-card-title { color: #ffffff; font-size: 1.6em; font-weight: 800; margin: 0; letter-spacing: -0.02em; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
 
-/* En móvil el grid de inicio ya se ve bien (llena la pantalla). En tablet/web, con solo 2-3
-   tarjetas de 260-360px flotando en un contenedor de 850px, se ve perdido/vacío -se agrandan
-   las tarjetas para ocupar mejor el espacio, y la foto entra con un zoom-asentamiento en vez de
-   aparecer estática, para que la primera impresión "pegue" más. Solo tablet/web -en móvil ya
-   funcionaba bien y no hacía falta tocarlo-. */
-@media (min-width: 640px) {
-    .menu-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 400px)); gap: 24px; }
-    .menu-card { height: 270px; }
-    .menu-card.fade-in-slide .menu-card-img { transform: scale(1.15); opacity: 0; }
-    .menu-card.fade-in-slide.visible .menu-card-img { transform: scale(1); opacity: 1; }
-}
-@media (min-width: 640px) and (prefers-reduced-motion: reduce) {
+/* La foto entra con un zoom-asentamiento en vez de aparecer estática -en cualquier resolución,
+   se nota tanto en móvil como en tablet/web-. */
+.menu-card.fade-in-slide .menu-card-img { transform: scale(1.15); opacity: 0; }
+.menu-card.fade-in-slide.visible .menu-card-img { transform: scale(1); opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
     .menu-card.fade-in-slide .menu-card-img { transform: none; opacity: 1; }
+}
+
+/* En móvil el grid de inicio ya se ve bien (llena la pantalla, una tarjeta por fila). En
+   tablet/web, con solo 2-3 tarjetas de 260-360px flotando en un contenedor de 850px, se ve
+   perdido/vacío -se agrandan las tarjetas Y se ensancha el contenedor solo para esta vista
+   (el de la carta de platos no se toca), para que quepan las 3 en una sola fila en vez de
+   quedar 2+1 suelta-. */
+@media (min-width: 640px) {
+    #main-content:has(.menu-grid) { max-width: 1180px; }
+    /* auto-fill cuenta las columnas probando primero con el tamaño MÁXIMO del minmax -con
+       400px de máximo, 3 columnas + huecos no llegan a caber en 1180px y se queda en solo 2,
+       aunque de sobra cabrían 3 más estrechas-. Bajando el máximo a 370px, 3 sí caben siempre
+       que hay 3 tarjetas, sin dejar de adaptarse solo si algún día hay más. */
+    .menu-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 370px)); gap: 24px; }
+    .menu-card { height: 270px; }
 }
 
 .menu-hero-banner { position: relative; width: 100%; aspect-ratio: 16 / 7; border-radius: var(--radius-main); overflow: hidden; margin-bottom: 28px; box-shadow: var(--shadow-card); }
