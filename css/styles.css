@@ -437,5 +437,6 @@ body.dark-mode .dish-source-badge { background: rgba(255,255,255,0.08); }
 #cookie-banner.show { transform: translateY(0); }
 body.dark-mode #cookie-banner { background: rgba(18, 18, 21, 0.9); }
 .cookie-text { font-size: 0.85em; margin-right: 15px; color: var(--text-muted-light); }
+.cookie-text a { color: var(--accent); font-weight: 600; text-decoration: underline; }
 .btn-cookie { background: var(--accent-gradient); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; box-shadow: 0 6px 15px -3px rgba(79, 70, 229, 0.4); transition: transform 0.2s; }
 .btn-cookie:hover { transform: scale(1.03); }

@@ -278,7 +278,7 @@ const app = {
         this.dom.cartTotalLabel.textContent = t.cartTotal;
         this.dom.cartTableLabel.textContent = t.cartTableLabel;
         this.dom.sendOrderBtn.textContent = t.orderBtn || t_wa.orderBtn;
-        this.dom.cookieText.textContent = t.cookieMsg;
+        this.dom.cookieText.innerHTML = t.cookieMsg;
         this.dom.cookieBtn.textContent = t.cookieBtn;
         // El hostelero que pagó "Quitar marca de agua" en la app deja de verla también aquí
         // -viaja como campo publicado en el JSON del restaurante, no hay compra ni login que
