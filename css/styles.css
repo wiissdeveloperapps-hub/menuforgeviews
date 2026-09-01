@@ -307,9 +307,17 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
 .powered-by-footer a { color: var(--accent); text-decoration: underline; }
 
 /* max en vez de 1fr: si la última fila queda con una sola tarjeta suelta (p.ej. 3 cartas en
-   una rejilla de 2 columnas en tablet), esa tarjeta ya no se estira a todo el ancho de la fila. */
-.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 360px)); gap: 20px; margin-top: 10px; justify-content: center; }
-.menu-card { border-radius: var(--radius-main); cursor: pointer; height: 220px; background-color: var(--card-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease; position: relative; overflow: hidden;}
+   una rejilla de 2 columnas en tablet), esa tarjeta no se estira a todo el ancho de la fila, se
+   queda centrada a su propio tamaño -mejor eso que forzar 3 columnas iguales, que queda raro-.
+   En móvil, minmax(260px, 1fr): la tarjeta usa todo el ancho real del dispositivo en vez de
+   topar en un máximo fijo en px aunque el móvil sea grande -auto-fit, no auto-fill: con
+   justify-content:center, auto-fill crea columnas vacías "fantasma" que le roban el hueco al
+   1fr real y le impiden estirarse; auto-fit las colapsa y el 1fr sí ocupa todo el ancho. */
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 10px; justify-content: center; }
+/* aspect-ratio en vez de una altura fija: la tarjeta crece en proporción al ancho real que le
+   toque en cada dispositivo/resolución, en vez de una altura igual de "plana" en un móvil
+   grande que en uno pequeño, o en tablet que en desktop. */
+.menu-card { width: 100%; height: auto; border-radius: var(--radius-main); cursor: pointer; aspect-ratio: 8 / 5; background-color: var(--card-light); border: 1px solid var(--border-light); box-shadow: var(--shadow-subtle); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease; position: relative; overflow: hidden;}
 .menu-card-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.7s ease; }
 .menu-card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%); z-index: 2; display: flex; align-items: flex-end; padding: 20px; box-sizing: border-box; }
 .menu-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); border-color: rgba(79, 70, 229, 0.35); }
@@ -325,18 +333,13 @@ body.dark-mode .price-input { background-color: #18181b; border-color: rgba(82,8
 }
 
 /* En móvil el grid de inicio ya se ve bien (llena la pantalla, una tarjeta por fila). En
-   tablet/web, con solo 2-3 tarjetas de 260-360px flotando en un contenedor de 850px, se ve
-   perdido/vacío -se agrandan las tarjetas Y se ensancha el contenedor solo para esta vista
-   (el de la carta de platos no se toca), para que quepan las 3 en una sola fila en vez de
-   quedar 2+1 suelta-. */
+   tablet/web, con solo 2-3 tarjetas de 260px flotando en un contenedor de 850px, se ve
+   perdido/vacío -se agrandan las tarjetas para ocupar mejor el espacio-. El mínimo (340px) se
+   elige a propósito para que quepan 2 por fila a este ancho de contenedor pero NO 3 -probado:
+   con 3 en una fila queda peor que 2 más una suelta y centrada-; sigue siendo proporcional
+   (aspect-ratio, no una altura fija) y se adapta solo si algún día hay más tarjetas. */
 @media (min-width: 640px) {
-    #main-content:has(.menu-grid) { max-width: 1180px; }
-    /* auto-fill cuenta las columnas probando primero con el tamaño MÁXIMO del minmax -con
-       400px de máximo, 3 columnas + huecos no llegan a caber en 1180px y se queda en solo 2,
-       aunque de sobra cabrían 3 más estrechas-. Bajando el máximo a 370px, 3 sí caben siempre
-       que hay 3 tarjetas, sin dejar de adaptarse solo si algún día hay más. */
-    .menu-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 370px)); gap: 24px; }
-    .menu-card { height: 270px; }
+    .menu-grid { grid-template-columns: repeat(auto-fit, minmax(340px, 390px)); gap: 24px; }
 }
 
 .menu-hero-banner { position: relative; width: 100%; aspect-ratio: 16 / 7; border-radius: var(--radius-main); overflow: hidden; margin-bottom: 28px; box-shadow: var(--shadow-card); }
