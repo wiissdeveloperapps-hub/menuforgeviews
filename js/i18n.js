@@ -24,7 +24,7 @@ const I18N = {
         locationNotSupported: "Tu navegador no soporta geolocalización.",
         locationPromptTitle: "Verificar ubicación",
         locationPromptMsg: "Para realizar el pedido es necesario comprobar que estás a menos de {meters} metros del restaurante. ¿Deseas activar la localización para enviar el pedido?",
-        poweredByFooter: "© Hecho con <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© Hecho con <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     },
     en: {
         search: "Search dishes...", back: "Back", results: "Search Results", emptyMenu: "This menu is empty.", emptySearch: "No results found for", cookieMsg: "We use cookies to improve your experience. <a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">More information</a>.", cookieBtn: "Accept", cartTitle: "Your Order", cartTotal: "Total:", cartTableLabel: "Select your table:", cartEmpty: "Your order is empty.", cartEmptySelectMsg: "Please select at least one product before sending your order.", tableSelectDefault: "Select", noDescription: "No description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scan a valid QR code to view the menu.", errorTitle: "Error", fetchError: "The menu is not available or cannot be found.", retryBtn: "Retry", notesLabel: "Notes (Choose an option):", notesPlaceholder: "Select predefined notes", filterButtonTitle: "Filter dishes", orderBtn: "Send Order via WhatsApp", noTable: "Please select a table before sending the order.",
@@ -51,7 +51,7 @@ const I18N = {
         locationNotSupported: "Your browser does not support geolocation.",
         locationPromptTitle: "Verify Location",
         locationPromptMsg: "To place an order, it's necessary to verify that you are within {meters} meters of the restaurant. Do you want to activate location services to send the order?",
-        poweredByFooter: "© Made with <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© Made with <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     },
     fr: {
         search: "Rechercher des plats...", back: "Retour", results: "Résultats de recherche", emptyMenu: "Ce menu est vide.", emptySearch: "Aucun résultat pour", cookieMsg: "Nous utilisons des cookies pour améliorer votre expérience. <a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">Plus d'informations</a>.", cookieBtn: "Accepter", cartTitle: "Votre Commande", cartTotal: "Total:", cartTableLabel: "Sélectionnez votre table:", cartEmpty: "Votre commande est vide.", cartEmptySelectMsg: "Veuillez sélectionner au moins un produit avant d'envoyer votre commande.", tableSelectDefault: "Sélectionner", noDescription: "Pas de description.", defaultRestaurant: "Restaurant", defaultMenu: "Menu", invalidQR: "Scannez un code QR valide pour voir le menu.", errorTitle: "Erreur", fetchError: "Le menu n'est pas disponible ou est introuvable.", retryBtn: "Réessayer", notesLabel: "Notes (Choisissez une option) :", notesPlaceholder: "Sélectionnez les notes prédéfinies", filterButtonTitle: "Filtrer les plats", orderBtn: "Envoyer la commande via WhatsApp", noTable: "Veuillez sélectionner une table avant d'envoyer la commande.",
@@ -78,7 +78,7 @@ const I18N = {
         locationNotSupported: "Votre navigateur ne prend pas en charge la géolocalisation.",
         locationPromptTitle: "Vérifier la position",
         locationPromptMsg: "Pour passer une commande, il est nécessaire de vérifier que vous êtes à moins de {meters} mètres du restaurant. Voulez-vous activer les services de localisation pour envoyer la commande ?",
-        poweredByFooter: "© Créé avec <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© Créé avec <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     },
     it: {
         search: "Cerca piatti...", back: "Indietro", results: "Risultati della ricerca", emptyMenu: "Questo menu è vuoto.", emptySearch: "Nessun risultato per", cookieMsg: "Utilizziamo i cookie per migliorare la tua esperienza. <a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">Maggiori informazioni</a>.", cookieBtn: "Accetta", cartTitle: "Il Tuo Ordine", cartTotal: "Totale:", cartTableLabel: "Seleziona il tuo tavolo:", cartEmpty: "Il tuo ordine è vuoto.", cartEmptySelectMsg: "Seleziona almeno un prodotto prima di inviare il tuo ordine.", tableSelectDefault: "Seleziona", noDescription: "Nessuna descrizione.", defaultRestaurant: "Ristorante", defaultMenu: "Menu", invalidQR: "Scansiona un codice QR valido per visualizzare il menu.", errorTitle: "Errore", fetchError: "Il menu non è disponibile o non è stato trovato.", retryBtn: "Riprova", notesLabel: "Note (Scegli un'opzione):", notesPlaceholder: "Seleziona le note predefinite", filterButtonTitle: "Filtra i piatti", orderBtn: "Invia Ordine via WhatsApp", noTable: "Seleziona un tavolo prima di inviare l'ordine.",
@@ -105,7 +105,7 @@ const I18N = {
         locationNotSupported: "Il tuo browser non supporta la geolocalizzazione.",
         locationPromptTitle: "Verifica posizione",
         locationPromptMsg: "Per effettuare un ordine, è necessario verificare di trovarsi a meno di {meters} metri dal ristorante. Vuoi attivare i servizi di localizzazione per inviare l'ordine?",
-        poweredByFooter: "© Realizzato con <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© Realizzato con <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     },
     de: {
         search: "Gerichte suchen...", back: "Zurück", results: "Suchergebnisse", emptyMenu: "Dieses Menü ist leer.", emptySearch: "Keine Ergebnisse für", cookieMsg: "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern. <a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">Weitere Informationen</a>.", cookieBtn: "Akzeptieren", cartTitle: "Ihre Bestellung", cartTotal: "Gesamt:", cartTableLabel: "Wählen Sie Ihren Tisch:", cartEmpty: "Ihre Bestellung ist leer.", cartEmptySelectMsg: "Bitte wählen Sie mindestens ein Produkt aus, bevor Sie Ihre Bestellung senden.", tableSelectDefault: "Auswählen", noDescription: "Keine Beschreibung.", defaultRestaurant: "Restaurant", defaultMenu: "Speisekarte", invalidQR: "Scannen Sie einen gültigen QR-Code, um das Menü anzuzeigen.", errorTitle: "Fehler", fetchError: "Das Menü ist nicht verfügbar oder wurde nicht gefunden.", retryBtn: "Erneut versuchen", notesLabel: "Notizen (Option wählen):", notesPlaceholder: "Vordefinierte Notizen auswählen", filterButtonTitle: "Gerichte filtern", orderBtn: "Bestellung per WhatsApp senden", noTable: "Bitte wählen Sie einen Tisch aus, bevor Sie die Bestellung absenden.",
@@ -132,7 +132,7 @@ const I18N = {
         locationNotSupported: "Ihr Browser unterstützt keine Geolokalisierung.",
         locationPromptTitle: "Standort überprüfen",
         locationPromptMsg: "Um eine Bestellung aufzugeben, muss überprüft werden, ob Sie sich in einem Umkreis von {meters} Metern um das Restaurant befinden. Möchten Sie die Ortungsdienste aktivieren, um die Bestellung zu senden?",
-        poweredByFooter: "© Erstellt mit <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© Erstellt mit <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     },
     pt: {
         search: "Pesquisar pratos...", back: "Voltar", results: "Resultados da pesquisa", emptyMenu: "Este menu está vazio.", emptySearch: "Nenhum resultado para", cookieMsg: "Usamos cookies para melhorar sua experiência. <a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">Mais informações</a>.", cookieBtn: "Aceitar", cartTitle: "Seu Pedido", cartTotal: "Total:", cartTableLabel: "Selecione sua mesa:", cartEmpty: "Seu pedido está vazio.", cartEmptySelectMsg: "Selecione pelo menos um produto antes de enviar seu pedido.", tableSelectDefault: "Selecionar", noDescription: "Sem descrição.", defaultRestaurant: "Restaurante", defaultMenu: "Cardápio", invalidQR: "Escaneie um código QR válido para ver o menu.", errorTitle: "Erro", fetchError: "O menu não está disponível ou não foi encontrado.", retryBtn: "Tentar novamente", notesLabel: "Notas (Escolha uma opção):", notesPlaceholder: "Selecione as notas predefinidas", filterButtonTitle: "Filtrar pratos", orderBtn: "Enviar Pedido via WhatsApp", noTable: "Por favor, selecione uma mesa antes de enviar o pedido.",
@@ -159,7 +159,7 @@ const I18N = {
         locationNotSupported: "Seu navegador não suporta geolocalização.",
         locationPromptTitle: "Verificar localização",
         locationPromptMsg: "Para fazer um pedido, é necessário verificar se você está a menos de {meters} metros do restaurante. Deseja ativar os serviços de localização para enviar o pedido?",
-        poweredByFooter: "© Feito com <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© Feito com <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     },
     cn: {
         search: "搜索菜品...", back: "返回", results: "搜索结果", emptyMenu: "此菜单为空。", emptySearch: "未找到结果", cookieMsg: "我们使用 cookie 来改善您的体验。<a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">更多信息</a>。", cookieBtn: "接受", cartTitle: "您的订单", cartTotal: "总计:", cartTableLabel: "选择您的餐桌:", cartEmpty: "您的订单是空的。", cartEmptySelectMsg: "发送订单前请至少选择一件商品。", tableSelectDefault: "选择", noDescription: "暂无描述。", defaultRestaurant: "餐厅", defaultMenu: "菜单", invalidQR: "请扫描有效的二维码以查看菜单。", errorTitle: "错误", fetchError: "菜单不可用或未找到。", retryBtn: "重试", notesLabel: "备注（请选择一项）：", notesPlaceholder: "请选择预设备注", filterButtonTitle: "筛选菜品", orderBtn: "通过WhatsApp发送订单", noTable: "发送订单前请选择一个桌子。",
@@ -186,7 +186,7 @@ const I18N = {
         locationNotSupported: "您的浏览器不支持地理位置。",
         locationPromptTitle: "验证位置",
         locationPromptMsg: "要下订单，必须验证您距离餐厅在 {meters} 米以内。您想激活定位服务以发送订单吗？",
-        poweredByFooter: "© 使用 <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a> 制作"
+        poweredByFooter: "© 使用 <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a> 制作"
     },
     sa: {
         search: "البحث عن الأطباق...", back: "عودة", results: "نتائج البحث", emptyMenu: "هذه القائمة فارغة.", emptySearch: "لا توجد نتائج لـ", cookieMsg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك. <a href=\"https://sites.google.com/view/politica-contacto-menuforge/inicio\" target=\"_blank\" rel=\"noopener\">مزيد من المعلومات</a>.", cookieBtn: "قبول", cartTitle: "طلبك", cartTotal: "المجموع:", cartTableLabel: "اختر طاولتك:", cartEmpty: "طلبك فارغ.", cartEmptySelectMsg: "يرجى اختيار منتج واحد على الأقل قبل إرسال طلبك.", tableSelectDefault: "اختر", noDescription: "لا يوجد وصف.", defaultRestaurant: "مطعم", defaultMenu: "قائمة طعام", invalidQR: "امسح رمز الاستجابة السريعة (QR) صالح لعرض القائمة.", errorTitle: "خطأ", fetchError: "القائمة غير متوفرة أو لم يتم العثور عليها.", retryBtn: "إعادة المحاولة", notesLabel: "ملاحظات (اختر خياراً):", notesPlaceholder: "اختر الملاحظات الجاهزة", filterButtonTitle: "تصفية الأطباق", orderBtn: "إرسال الطلب عبر الواتساب", noTable: "يرجى تحديد طاولة قبل إرسال الطلب.", 
@@ -213,7 +213,7 @@ const I18N = {
         locationNotSupported: "متصفحك لا يدعم تحديد الموقع.",
         locationPromptTitle: "Verificar ubicación",
         locationPromptMsg: "Para realizar el pedido es necesario comprobar que estás a menos de {meters} metros du restaurante. ¿Deseas activar la localización para enviar el pedido?",
-        poweredByFooter: "© بدعم من <a href=\"https://wsapps.dpdns.org\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
+        poweredByFooter: "© بدعم من <a href=\"https://wsapps.dpdns.org/menuforgeweb/\" target=\"_blank\" rel=\"noopener\"><strong>MenuForge App</strong></a>"
     }
 };
 
