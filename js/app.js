@@ -2132,35 +2132,71 @@ const app = {
     },
 
     async fetchRemote(id, folder) {
-        const workerUrl = window.location.hostname.includes('github.io') || window.location.hostname === 'localhost'
-            ? 'https://wiissdeveloperapps.dpdns.org'
-            : '';
-
-        const url = `${workerUrl}/${folder}/${id}.json?t=${Date.now()}`;
         const t = I18N[this.currentLang] || I18N['es'];
+
+        // Dominio "propio" desde el que probar primero: si ya estamos en wiissapps.com (o un
+        // subdominio de nodo), usamos ruta relativa -mismo host que el usuario ve-; si se abre
+        // desde github.io o localhost (pruebas), usamos wiissapps.com directamente en vez del
+        // dominio antiguo wiissdeveloperapps.dpdns.org, que ya no está activo.
+        const enWiissapps = /(^|\.)wiissapps\.com$/i.test(window.location.hostname);
+        const origenPropio = enWiissapps ? '' : 'https://wiissapps.com';
+
+        // Dominio de respaldo: la URL directa de workers.dev del mismo Worker. Los operadores
+        // españoles a veces bloquean rangos de IP de Cloudflare compartidos por miles de webs
+        // (colateral de los bloqueos antipiratería de LaLiga durante los partidos, sobre todo
+        // domingos) -eso corta la conexión al dominio propio sin ni siquiera dar un error HTTP,
+        // así que reintentar contra el mismo dominio no sirve de nada-. workers.dev usa IPs
+        // distintas y normalmente no se ve afectado, así que sirve de red de seguridad.
+        const ORIGEN_RESPALDO = 'https://flat-mud-d0f3.wiissdeveloper.workers.dev';
+
+        const construirUrl = (origen) => `${origen}/${folder}/${id}.json?t=${Date.now()}`;
+
+        async function fetchConTimeout(url, timeoutMs) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                return await fetch(url, { signal: controller.signal });
+            } finally {
+                clearTimeout(timer);
+            }
+        }
 
         // Un primer escaneo de QR nunca tiene caché local, así que un fallo puntual del Worker
         // o de la API de GitHub (rate limit, blip transitorio) se veía directamente como error
-        // sin ninguna red de seguridad. Reintentamos un par de veces antes de rendirnos -salvo
+        // sin ninguna red de seguridad. Reintenta contra el mismo origen antes de rendirse -salvo
         // en un 404 real, donde reintentar no sirve de nada porque el archivo no existe-.
-        const maxIntentos = 3;
-        let ultimoError;
-        for (let intento = 1; intento <= maxIntentos; intento++) {
-            try {
-                const response = await fetch(url);
-                if (response.status === 404) throw new Error(t.fetchError);
-                if (!response.ok) throw new Error(`HTTP_${response.status}`);
+        async function intentarContra(origen, timeoutMs, maxIntentos) {
+            let ultimoError;
+            for (let intento = 1; intento <= maxIntentos; intento++) {
+                try {
+                    const response = await fetchConTimeout(construirUrl(origen), timeoutMs);
+                    if (response.status === 404) throw new Error(t.fetchError);
+                    if (!response.ok) throw new Error(`HTTP_${response.status}`);
 
-                const rawText = await response.text();
-                const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
-                return JSON.parse(decompressed || rawText);
-            } catch (e) {
-                ultimoError = e;
-                if (e.message === t.fetchError || intento === maxIntentos) break;
-                await new Promise(resolve => setTimeout(resolve, 500 * intento));
+                    const rawText = await response.text();
+                    const decompressed = LZString.decompressFromEncodedURIComponent(rawText);
+                    return JSON.parse(decompressed || rawText);
+                } catch (e) {
+                    ultimoError = e;
+                    if (e.message === t.fetchError) throw e;
+                    if (intento < maxIntentos) await new Promise(resolve => setTimeout(resolve, 500 * intento));
+                }
             }
+            throw ultimoError;
         }
-        throw new Error(t.fetchError, { cause: ultimoError });
+
+        try {
+            return await intentarContra(origenPropio, 6000, 2);
+        } catch (e) {
+            if (e.message === t.fetchError) throw new Error(t.fetchError, { cause: e });
+            // No fue un 404 real -probablemente un bloqueo/timeout de red-, probamos el respaldo.
+        }
+
+        try {
+            return await intentarContra(ORIGEN_RESPALDO, 8000, 2);
+        } catch (e) {
+            throw new Error(t.fetchError, { cause: e });
+        }
     }
 };
 
