@@ -2131,46 +2131,46 @@ const app = {
         return JSON.parse(pako.inflate(new Uint8Array(compressed), { to: 'string' }));
     },
 
+    /**
+     * Lee el JSON de un restaurante/menú directo de raw.githubusercontent.com, probando los 11
+     * repos (el base "menuforgeviews" y menuforgeviewsN2..N11) en orden hasta encontrarlo -los
+     * IDs son únicos entre nodos, así que no hay ambigüedad-.
+     *
+     * Antes esto pasaba por el Worker de Cloudflare (wiissapps.com), pero los operadores
+     * españoles bloquean colateralmente rangos de IP de Cloudflare compartidos por miles de
+     * webs (antipiratería de LaLiga durante los partidos, sobre todo domingos) -eso corta la
+     * conexión sin ni siquiera dar un error HTTP, así que ningún reintento contra el mismo sitio
+     * servía de nada-. raw.githubusercontent.com es infraestructura de GitHub, no de Cloudflare,
+     * así que no le afecta ese bloqueo -y de paso tampoco comparte el límite de 60-5000
+     * peticiones/hora de api.github.com, que sí tenía el Worker-.
+     */
     async fetchRemote(id, folder) {
         const t = I18N[this.currentLang] || I18N['es'];
-
-        // Dominio "propio" desde el que probar primero: si ya estamos en wiissapps.com (o un
-        // subdominio de nodo), usamos ruta relativa -mismo host que el usuario ve-; si se abre
-        // desde github.io o localhost (pruebas), usamos wiissapps.com directamente en vez del
-        // dominio antiguo wiissdeveloperapps.dpdns.org, que ya no está activo.
-        const enWiissapps = /(^|\.)wiissapps\.com$/i.test(window.location.hostname);
-        const origenPropio = enWiissapps ? '' : 'https://wiissapps.com';
-
-        // Dominio de respaldo: la URL directa de workers.dev del mismo Worker. Los operadores
-        // españoles a veces bloquean rangos de IP de Cloudflare compartidos por miles de webs
-        // (colateral de los bloqueos antipiratería de LaLiga durante los partidos, sobre todo
-        // domingos) -eso corta la conexión al dominio propio sin ni siquiera dar un error HTTP,
-        // así que reintentar contra el mismo dominio no sirve de nada-. workers.dev usa IPs
-        // distintas y normalmente no se ve afectado, así que sirve de red de seguridad.
-        const ORIGEN_RESPALDO = 'https://flat-mud-d0f3.wiissdeveloper.workers.dev';
-
-        const construirUrl = (origen) => `${origen}/${folder}/${id}.json?t=${Date.now()}`;
+        const REPO_OWNER = 'wiissdeveloperapps-hub';
+        const TOTAL_NODOS = 11;
+        const nombreRepoDeNodo = (n) => n === 1 ? 'menuforgeviews' : `menuforgeviewsN${n}`;
 
         async function fetchConTimeout(url, timeoutMs) {
             const controller = new AbortController();
             const timer = setTimeout(() => controller.abort(), timeoutMs);
             try {
-                return await fetch(url, { signal: controller.signal });
+                return await fetch(url, { signal: controller.signal, cache: 'no-store' });
             } finally {
                 clearTimeout(timer);
             }
         }
 
-        // Un primer escaneo de QR nunca tiene caché local, así que un fallo puntual del Worker
-        // o de la API de GitHub (rate limit, blip transitorio) se veía directamente como error
-        // sin ninguna red de seguridad. Reintenta contra el mismo origen antes de rendirse -salvo
-        // en un 404 real, donde reintentar no sirve de nada porque el archivo no existe-.
-        async function intentarContra(origen, timeoutMs, maxIntentos) {
+        // Un primer escaneo de QR nunca tiene caché local, así que un blip puntual (poco
+        // probable en raw.githubusercontent.com, pero por si acaso) se vería directamente como
+        // error sin red de seguridad. Reintenta contra el mismo repo antes de darlo por
+        // no encontrado ahí -salvo un 404 real, donde reintentar no sirve de nada-.
+        async function intentarRepo(repoName, timeoutMs, maxIntentos) {
+            const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${repoName}/main/contents/${folder}/${id}.json?t=${Date.now()}`;
             let ultimoError;
             for (let intento = 1; intento <= maxIntentos; intento++) {
                 try {
-                    const response = await fetchConTimeout(construirUrl(origen), timeoutMs);
-                    if (response.status === 404) throw new Error(t.fetchError);
+                    const response = await fetchConTimeout(url, timeoutMs);
+                    if (response.status === 404) throw new Error('NOT_IN_THIS_REPO');
                     if (!response.ok) throw new Error(`HTTP_${response.status}`);
 
                     const rawText = await response.text();
@@ -2178,25 +2178,25 @@ const app = {
                     return JSON.parse(decompressed || rawText);
                 } catch (e) {
                     ultimoError = e;
-                    if (e.message === t.fetchError) throw e;
-                    if (intento < maxIntentos) await new Promise(resolve => setTimeout(resolve, 500 * intento));
+                    if (e.message === 'NOT_IN_THIS_REPO') throw e;
+                    if (intento < maxIntentos) await new Promise(resolve => setTimeout(resolve, 400 * intento));
                 }
             }
             throw ultimoError;
         }
 
-        try {
-            return await intentarContra(origenPropio, 6000, 2);
-        } catch (e) {
-            if (e.message === t.fetchError) throw new Error(t.fetchError, { cause: e });
-            // No fue un 404 real -probablemente un bloqueo/timeout de red-, probamos el respaldo.
+        let ultimoError;
+        for (let nodo = 1; nodo <= TOTAL_NODOS; nodo++) {
+            try {
+                return await intentarRepo(nombreRepoDeNodo(nodo), 6000, 2);
+            } catch (e) {
+                ultimoError = e;
+                // 404 real en este repo -no está aquí, seguimos probando el siguiente nodo-.
+                // Cualquier otro fallo (timeout, red...) también seguimos probando: mejor
+                // intentar los 11 antes de rendirse que fallar por un problema en uno solo.
+            }
         }
-
-        try {
-            return await intentarContra(ORIGEN_RESPALDO, 8000, 2);
-        } catch (e) {
-            throw new Error(t.fetchError, { cause: e });
-        }
+        throw new Error(t.fetchError, { cause: ultimoError });
     }
 };
 
