@@ -100,12 +100,23 @@ const app = {
     },
 
     async init() {
-        let rawBrowserLang = navigator.language.split('-')[0].toLowerCase();
-        if (rawBrowserLang === 'zh') rawBrowserLang = 'cn';
-        if (rawBrowserLang === 'ar') rawBrowserLang = 'sa';
-        
         const supportedLangs = Object.keys(I18N);
-        this.currentLang = supportedLangs.includes(rawBrowserLang) ? rawBrowserLang : 'en';
+
+        // El idioma elegido a mano por el visitante tiene prioridad sobre el detectado del
+        // navegador -antes no se guardaba en ningún sitio, así que si algo volvía a ejecutar esta
+        // detección (una recarga, una re-inicialización periódica...) pisaba la elección manual
+        // sin avisar, dando la sensación de que el idioma "cambiaba solo al rato".
+        let savedLang = null;
+        try { savedLang = localStorage.getItem('menuforge-viewer-lang'); } catch (e) {}
+
+        if (savedLang && supportedLangs.includes(savedLang)) {
+            this.currentLang = savedLang;
+        } else {
+            let rawBrowserLang = navigator.language.split('-')[0].toLowerCase();
+            if (rawBrowserLang === 'zh') rawBrowserLang = 'cn';
+            if (rawBrowserLang === 'ar') rawBrowserLang = 'sa';
+            this.currentLang = supportedLangs.includes(rawBrowserLang) ? rawBrowserLang : 'en';
+        }
 
         const tInit = I18N[this.currentLang] || I18N['es'];
         document.getElementById('restaurant-name').textContent = tInit.loading;
@@ -240,6 +251,7 @@ const app = {
             this.dom.content?.classList.add('lang-fading');
             setTimeout(() => {
                 this.currentLang = e.target.value;
+                try { localStorage.setItem('menuforge-viewer-lang', this.currentLang); } catch (e) {}
                 this.updateFlag();
                 this.updateUITexts();
                 this.refreshCurrentView();
@@ -1660,10 +1672,16 @@ const app = {
             <div class="pdf-wrapper" lang="${langAttr}">
         `;
 
+        let usedLangFallback = false;
         menus.forEach((menu) => {
             let trans = menu.traducciones?.[this.currentLang];
             if (!trans && menu.traducciones) {
+                // No hay traducción de esta carta al idioma seleccionado -antes se caía aquí en
+                // silencio, dando la sensación de "se ha descargado en otro idioma" sin ninguna
+                // explicación. Se sigue mostrando algo (mejor que una carta vacía), pero ahora se
+                // avisa al usuario después de generar el PDF en vez de cambiar de idioma sin decir nada.
                 trans = menu.traducciones[Object.keys(menu.traducciones)[0]];
+                usedLangFallback = true;
             }
 
             const menuName = trans?.nombreCarta || this.getMenuTitle(menu);
@@ -1742,6 +1760,11 @@ const app = {
 
         html2pdf().set(opt).from(tempContainer).save().then(() => {
             removeOverlay();
+            if (usedLangFallback) {
+                if (this.dom.toastText) this.dom.toastText.textContent = t.pdfLangFallback || 'Some menus were not available in your language and were included in their original language.';
+                if (this.dom.toast) this.dom.toast.classList.add('show');
+                setTimeout(() => this.dom.toast?.classList.remove('show'), 4000);
+            }
         }).catch(err => {
             console.error('Error generando PDF:', err);
             removeOverlay();
